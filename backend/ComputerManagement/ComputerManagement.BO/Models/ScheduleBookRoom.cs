@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputerManagement.BO
+namespace ComputerManagement.BO.Models
 {
     [Table("schedule_book_room")]
     public class ScheduleBookRoom : BaseModel

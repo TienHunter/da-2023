@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapper\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComputerManagement.BO\ComputerManagement.BO.csproj" />
+    <ProjectReference Include="..\ComputerManagement.Lib\ComputerManagement.Lib.csproj" />
+    <ProjectReference Include="..\ComputerManagerment.Repos\ComputerManagerment.Repos.csproj" />
+  </ItemGroup>
+
 </Project>

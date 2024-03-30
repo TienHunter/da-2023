@@ -23,8 +23,4 @@
     <ProjectReference Include="..\ComputerManagement.Common\ComputerManagement.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-  </ItemGroup>
-
 </Project>

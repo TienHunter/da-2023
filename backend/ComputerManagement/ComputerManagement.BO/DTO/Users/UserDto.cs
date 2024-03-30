@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputerManagement.BO.Models
+namespace ComputerManagement.BO.DTO
 {
-    [Table("user")]
-    public class User:BaseModel
+    public class UserDto
     {
+        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
         public string Fullname { get; set; }
         public int RoleID { get; set; }
         public string RoleIDText { get; set; }
-        public ICollection<ScheduleBookRoom> ScheduleBookRooms { get; } = new List<ScheduleBookRoom>();
     }
 }
