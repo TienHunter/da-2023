@@ -54,6 +54,7 @@ namespace ComputerManagement.API.Middlewares
                 // Write the JSON response to the HTTP response
                 await context.Response.WriteAsync(CmJsonConvert.SerializeObject(new ServiceResponse
                 {
+                    Success = false,
                     Code = ServiceResponseCode.Exception,
                     Message = ex.Message,
                     Data = null

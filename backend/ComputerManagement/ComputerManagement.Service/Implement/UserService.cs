@@ -35,7 +35,7 @@ namespace ComputerManagement.Service.Implement
             var rs = new ServiceResponse();
             var userExist = await _userRepo.GetQueryable()
                                     .Where(u => u.Username == userLogin.Accountname || u.Email == userLogin.Accountname)
-                                    .SingleAsync() ?? throw new BaseException
+                                    .FirstOrDefaultAsync() ?? throw new BaseException
                 {
                     StatusCode = HttpStatusCode.NotFound,
                     Code = ServiceResponseCode.NotUserLogin
