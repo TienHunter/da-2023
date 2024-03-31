@@ -27,8 +27,8 @@ namespace ComputerManagement.Data.Seed
                 // Định nghĩa các đối tượng người dùng (User)
                 var users = new List<User>
                     {
-                        new User { Id = Guid.NewGuid(), Username = "admin",Email = "admin@gmail.com",Fullname="admin", Password = passwordHasher.Hash("123456"), RoleID = (int)UserRole.Admin },
-                        new User { Id = Guid.NewGuid(), Username = "teacher",Email = "teacher@gmail.com",Fullname="teacher", Password = passwordHasher.Hash("1"),RoleID = (int)UserRole.Teacher  },
+                        new User { Id = Guid.NewGuid(), Username = "admin",Email = "admin@gmail.com",Fullname="admin", Password = passwordHasher.Hash("123456"), RoleID = UserRole.Admin },
+                        new User { Id = Guid.NewGuid(), Username = "teacher",Email = "teacher@gmail.com",Fullname="teacher", Password = passwordHasher.Hash("1"),RoleID = UserRole.Teacher  },
                         // Thêm các đối tượng người dùng khác vào danh sách
                     };
                 _appContextData.Users.AddRange(users);

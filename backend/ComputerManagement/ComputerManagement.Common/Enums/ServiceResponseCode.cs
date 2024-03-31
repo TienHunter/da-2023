@@ -18,6 +18,7 @@ namespace ComputerManagement.Common.Enums
         WrongPassword=5,
         UsernameConflict = 6,
         EmailConflict = 7,
+        NotFoundUser = 8,
 
     }
 }

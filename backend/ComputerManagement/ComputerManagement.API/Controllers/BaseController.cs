@@ -1,11 +1,14 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComputerManagement.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public abstract class BaseController<TDto, TModel> : ControllerBase
     {
@@ -16,7 +19,7 @@ namespace ComputerManagement.API.Controllers
             _baseService = baseService;
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var rs = new ServiceResponse
@@ -26,10 +29,18 @@ namespace ComputerManagement.API.Controllers
             return Ok(rs);
         }
 
-        [HttpGet("")]
-        public virtual async Task<IActionResult> GetList()
+        [HttpGet("GetList")]
+        public virtual async Task<IActionResult> GetList([FromQuery] PagingParam pagingParam)
         {
-            throw new NotImplementedException();
+            var rs = new ServiceResponse();
+            var (enitties, totalCount) = await _baseService.GetListAsync(pagingParam);
+            rs.Data = new
+            {
+                List = enitties,
+                Total = totalCount
+            };
+            return Ok(rs);
+            
         }
 
         [HttpPost("")]
@@ -42,8 +53,8 @@ namespace ComputerManagement.API.Controllers
             return Ok(rs);
         }
 
-        [HttpPut("")]
-        public virtual async Task<IActionResult> Update([FromBody] TDto dto)
+        [HttpPut("{id}")]
+        public virtual async Task<IActionResult> Update([FromBody] TDto dto,[FromRoute] [Required] Guid id)
         {
             var rs = new ServiceResponse
             {

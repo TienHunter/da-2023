@@ -15,7 +15,7 @@ namespace ComputerManagement.BO.Models
         public string Password { get; set; }
         public string Email { get; set; }
         public string Fullname { get; set; }
-        public int RoleID { get; set; }
+        public UserRole RoleID { get; set; }
         public string? RoleIDText { get; set; }
         public UserState State { get; set; }
         public ICollection<ScheduleBookRoom> ScheduleBookRooms { get; } = new List<ScheduleBookRoom>();

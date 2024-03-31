@@ -9,7 +9,7 @@ namespace ComputerManagerment.Repos.Interface
     public interface IBaseRepo<T> 
     {
         IQueryable<T> GetQueryable();
-        Task<(List<T> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, List<string> fieldsSearch, Dictionary<string, string> fieldsToSort);
+        Task<(List<T> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc);
 
         Task<T?> GetAsync(Guid id);
 

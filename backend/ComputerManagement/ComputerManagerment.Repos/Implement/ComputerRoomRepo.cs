@@ -1,44 +1,37 @@
-﻿using ComputerManagement.BO;
-using ComputerManagement.BO.Models;
+﻿using ComputerManagement.BO.Models;
 using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComputerManagerment.Repos.Implement
 {
-    public class UserRepo : BaseRepo<User>, IUserRepop
+    public class ComputerRoomRepo : BaseRepo<ComputerRoom> , IComputerRoomRepo
     {
-        public UserRepo(AppDbContext dbContext) : base(dbContext)
+        public ComputerRoomRepo(AppDbContext dbContext) : base(dbContext)
         {
             
         }
 
-        public override async Task<(List<User> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<ComputerRoom> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             var query = _dbSet.AsQueryable();
-            var entities = new List<User>();
+            var entities = new List<ComputerRoom>();
 
             if (!string.IsNullOrEmpty(keySearch))
             {
-                query = query.Where(e => e.Username.Contains(keySearch) || e.Email.Contains(keySearch) || e.Fullname.Contains(keySearch));
+                query = query.Where(e => e.Name.Contains(keySearch));
             }
 
-            switch(fieldSort?.ToLower())
+            switch (fieldSort?.ToLower())
             {
-                case "Username":
-                    query = sortAsc ?  query.OrderBy(e => e.Username) : query.OrderByDescending(e => e.Username);
-                    break;
-                case "Email":
-                    query = sortAsc ? query.OrderBy(e => e.Email) : query.OrderByDescending(e => e.Email);
-                    break;
-                case "Fullname":
-                    query = sortAsc ? query.OrderBy(e => e.Fullname) : query.OrderByDescending(e => e.Fullname);
+                
+                case "Name":
+                    query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
                 case "UpdatedAt":
                     query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
@@ -67,6 +60,5 @@ namespace ComputerManagerment.Repos.Implement
 
             return (entities, totalCount);
         }
-
     }
 }

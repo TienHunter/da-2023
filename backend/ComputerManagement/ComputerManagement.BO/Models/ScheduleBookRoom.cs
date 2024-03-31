@@ -14,7 +14,13 @@ namespace ComputerManagement.BO.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public ScheduleBookRoomState State { get; set; }
+
+        [ForeignKey("ComputerRoom")]
+        public Guid ComputerRoomId { get; set; }
         public ComputerRoom ComputerRoom { get; set; } = null;
+
+        [ForeignKey("User")]
+        public Guid UserId { get; set; }
         public User User { get; set; } = null;
     }
 }

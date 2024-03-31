@@ -37,7 +37,7 @@ namespace ComputerManagement.Service.Implement
             _contextData = serviceProvider.GetService(typeof(ContextData)) as ContextData;
         }
 
-        public async Task<TModel> AddAsync(TDto dto)
+        public async Task<TDto> AddAsync(TDto dto)
         {
             var model = _mapper.Map<TModel>(dto);
             await BeforeSaveAsync(model);
@@ -45,7 +45,7 @@ namespace ComputerManagement.Service.Implement
             if (rs)
             {
                 await AfterSaveAsync(model);
-                return model;
+                return _mapper.Map<TDto>(model);
             }
             else
             {
@@ -97,19 +97,51 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
-        public Task<TModel> GetAsync(Guid id)
+        public async Task<TDto> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var model = await _baseRepo.GetAsync(id);
+            if(model == null)
+            {
+                var nameCode = "NotFound" + nameof(TModel);
+                if (Enum.TryParse(typeof(ServiceResponseCode), nameCode, out object enumValue))
+                {
+                    ServiceResponseCode code = (ServiceResponseCode)enumValue;
+                    throw new BaseException
+                    {
+                        StatusCode = HttpStatusCode.NotFound,
+                        Code = code
+                    };
+                }
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Code = ServiceResponseCode.Error
+                };
+            }
+            return _mapper.Map<TDto>(model);
         }
-        public async Task<(List<TModel>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, List<string> fieldsSearch, Dictionary<string, string> fieldToSort)
+        public async Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam)
         {
-            var (entities, totalCount) = await _baseRepo.GetListAsync(keySearch, pageNumber, pageSize, fieldsSearch, fieldToSort);
-            return (entities, totalCount);
+            var (entities, totalCount) = await _baseRepo.GetListAsync(pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
+            var dtos = _mapper.Map<List<TDto>>(entities);
+            return (dtos, totalCount);
         }
 
-        public Task<TModel> UpdateAsync(TDto dto)
+        public async Task<TDto> UpdateAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            var model = _mapper.Map<TModel>(dto);
+            await BeforeSaveAsync(model);
+            // await ValidateBeforeSave(model);
+            var rs = await _baseRepo.UpdateAsync(model);
+            if (rs)
+            {
+                await AfterSaveAsync(model);
+                return _mapper.Map<TDto>(model);
+            }
+            else
+            {
+                throw new BaseException();
+            }
         }
 
 

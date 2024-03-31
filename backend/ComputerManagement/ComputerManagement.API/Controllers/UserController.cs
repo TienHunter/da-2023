@@ -2,6 +2,7 @@
 using ComputerManagement.BO.DTO.Users;
 using ComputerManagement.BO.Models;
 using ComputerManagement.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace ComputerManagement.API.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public virtual async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
@@ -23,6 +25,7 @@ namespace ComputerManagement.API.Controllers
             return Ok(rs);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public virtual async Task<IActionResult> Register([FromBody] UserRegister userRegister)
         {
@@ -37,5 +40,15 @@ namespace ComputerManagement.API.Controllers
 
             return Ok(rs);
         }
+
+        [HttpPut("Logout")]
+        public virtual IActionResult Logout()
+        {
+            var rs = new ServiceResponse();
+            _userService.Logout();
+            return Ok(rs);
+        }
+
+
     }
 }

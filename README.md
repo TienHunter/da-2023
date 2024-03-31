@@ -1,5 +1,7 @@
 # da-2023
 
+## connection string appsettings.json
+
 ## migrate-db
 
 # dotnet ef migrations add $(Get-Date -Format "yyyyMMddHHmmss") --project ComputerManagement.Data

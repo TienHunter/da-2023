@@ -33,5 +33,7 @@ namespace ComputerManagement.Service
         Task<ServiceResponse> ChangePassword(UserChangePassword userChangePassword);
 
         Task<ServiceResponse> ResetPassword(UserResetPassword userResetPassword);
+
+        void Logout();
     }
 }

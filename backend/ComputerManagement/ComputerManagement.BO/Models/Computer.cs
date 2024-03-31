@@ -18,7 +18,8 @@ namespace ComputerManagement.BO.Models
         public ComputerState State { get; set; }
         public ComputerCondition Condition { get; set; }
 
+        [ForeignKey("ComputerRoom")]
+        public Guid ComputerRoomId { get; set; }
         public ComputerRoom ComputerRoom { get; set; }
-
     }
 }

@@ -15,6 +15,5 @@ namespace ComputerManagement.BO.Models
         public int CurrentCapacity { get; set; }
         public ICollection<Computer> Computers { get; } = new List<Computer>();
         public ICollection<ScheduleBookRoom> ScheduleBookRooms { get; } = new List<ScheduleBookRoom>();
-
     }
 }

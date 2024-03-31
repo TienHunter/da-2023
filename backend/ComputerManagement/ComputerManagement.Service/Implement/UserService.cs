@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -133,6 +134,22 @@ namespace ComputerManagement.Service.Implement
         public Task<ServiceResponse> ResetPassword(UserResetPassword userResetPassword)
         {
             throw new NotImplementedException();
+        }
+
+        public void Logout()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                if (httpContext.Request.Cookies["AccessToken"] != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(-1)
+                    };
+                    httpContext.Response.Cookies.Append("AccessToken", "", cookieOptions);
+                }
+            }
         }
     }
 }
