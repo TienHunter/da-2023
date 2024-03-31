@@ -8,15 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mapper\" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ComputerManagement.BO\ComputerManagement.BO.csproj" />
-    <ProjectReference Include="..\ComputerManagement.Lib\ComputerManagement.Lib.csproj" />
     <ProjectReference Include="..\ComputerManagerment.Repos\ComputerManagerment.Repos.csproj" />
   </ItemGroup>
 

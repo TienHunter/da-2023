@@ -1,13 +1,9 @@
 ﻿using ComputerManagement.BO;
-using ComputerManagement.BO.Data;
+using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 namespace ComputerManagerment.Repos.Implement
 {
     public class BaseRepo<T> : IBaseRepo<T> where T : class
@@ -28,7 +24,7 @@ namespace ComputerManagerment.Repos.Implement
 
         public virtual async Task<bool> AddAsync(T item)
         {
-            _dbSet.Update(item);
+            _dbSet.AddAsync(item);
             return await _dbContext.SaveChangesAsync() > 0;
         }
 

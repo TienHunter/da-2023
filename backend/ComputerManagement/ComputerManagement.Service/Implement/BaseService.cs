@@ -5,6 +5,8 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
 using ComputerManagerment.Repos.Interface;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,7 @@ namespace ComputerManagement.Service.Implement
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork _uow;
         protected readonly ContextData _contextData;
+        
 
         public BaseService(IServiceProvider serviceProvider, IBaseRepo<TModel> baseRepo)
         {

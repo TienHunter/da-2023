@@ -1,6 +1,6 @@
 ﻿using ComputerManagement.BO;
-using ComputerManagement.BO.Data;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using System;
 using System.Collections.Generic;

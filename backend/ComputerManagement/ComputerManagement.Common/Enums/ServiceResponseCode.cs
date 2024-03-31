@@ -15,6 +15,9 @@ namespace ComputerManagement.Common.Enums
         Error = 99,
         Exception = 999,
         NotUserLogin = 4,
-        WrongPassword=5
+        WrongPassword=5,
+        UsernameConflict = 6,
+        EmailConflict = 7,
+
     }
 }

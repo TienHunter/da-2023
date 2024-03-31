@@ -3,16 +3,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ComputerManagement.BO.Migrations
+namespace ComputerManagement.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class _20240327213714 : Migration
+    public partial class _20240331102600 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
-                name: "ComputerRoom",
+                name: "computer_room",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -29,12 +32,64 @@ namespace ComputerManagement.BO.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComputerRoom", x => x.Id);
+                    table.PrimaryKey("PK_computer_room", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Computer",
+                name: "refresh_token",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ReToken = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ExpireTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_refresh_token", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "user",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Fullname = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RoleID = table.Column<int>(type: "int", nullable: false),
+                    RoleIDText = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "computer",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -56,18 +111,18 @@ namespace ComputerManagement.BO.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Computer", x => x.Id);
+                    table.PrimaryKey("PK_computer", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Computer_ComputerRoom_ComputerRoomId",
+                        name: "FK_computer_computer_room_ComputerRoomId",
                         column: x => x.ComputerRoomId,
-                        principalTable: "ComputerRoom",
+                        principalTable: "computer_room",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ScheduleBookRoom",
+                name: "schedule_book_room",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -85,35 +140,35 @@ namespace ComputerManagement.BO.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduleBookRoom", x => x.Id);
+                    table.PrimaryKey("PK_schedule_book_room", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScheduleBookRoom_ComputerRoom_ComputerRoomId",
+                        name: "FK_schedule_book_room_computer_room_ComputerRoomId",
                         column: x => x.ComputerRoomId,
-                        principalTable: "ComputerRoom",
+                        principalTable: "computer_room",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ScheduleBookRoom_Users_UserId",
+                        name: "FK_schedule_book_room_user_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Computer_ComputerRoomId",
-                table: "Computer",
+                name: "IX_computer_ComputerRoomId",
+                table: "computer",
                 column: "ComputerRoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduleBookRoom_ComputerRoomId",
-                table: "ScheduleBookRoom",
+                name: "IX_schedule_book_room_ComputerRoomId",
+                table: "schedule_book_room",
                 column: "ComputerRoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduleBookRoom_UserId",
-                table: "ScheduleBookRoom",
+                name: "IX_schedule_book_room_UserId",
+                table: "schedule_book_room",
                 column: "UserId");
         }
 
@@ -121,13 +176,19 @@ namespace ComputerManagement.BO.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Computer");
+                name: "computer");
 
             migrationBuilder.DropTable(
-                name: "ScheduleBookRoom");
+                name: "refresh_token");
 
             migrationBuilder.DropTable(
-                name: "ComputerRoom");
+                name: "schedule_book_room");
+
+            migrationBuilder.DropTable(
+                name: "computer_room");
+
+            migrationBuilder.DropTable(
+                name: "user");
         }
     }
 }

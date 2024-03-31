@@ -1,4 +1,5 @@
-﻿using ComputerManagement.BO.Models;
+﻿using ComputerManagement.BO.Lib.Interface;
+using ComputerManagement.BO.Models;
 using ComputerManagement.Common.Configs;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputerManagement.Lib
+namespace ComputerManagement.BO.Lib.Implement
 {
     public class JwtGenerator : IJwtGenerator
     {

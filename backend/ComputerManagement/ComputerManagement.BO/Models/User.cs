@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComputerManagement.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,7 +16,8 @@ namespace ComputerManagement.BO.Models
         public string Email { get; set; }
         public string Fullname { get; set; }
         public int RoleID { get; set; }
-        public string RoleIDText { get; set; }
+        public string? RoleIDText { get; set; }
+        public UserState State { get; set; }
         public ICollection<ScheduleBookRoom> ScheduleBookRooms { get; } = new List<ScheduleBookRoom>();
     }
 }

@@ -1,5 +1,5 @@
-﻿using ComputerManagement.BO;
-using ComputerManagement.BO.Data;
+﻿
+using ComputerManagement.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;

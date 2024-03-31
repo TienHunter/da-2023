@@ -13,13 +13,13 @@ namespace ComputerManagement.BO.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public string UpdatedBy { get; set;}
+        public string? UpdatedBy { get; set;}
         public DateTime UpdatedAt { get; set;}
 
         [NotMapped]
-        public CmEntityState CmEntityState { get; set; }
+        public CmEntityState CmEntityState { get; set; } =  CmEntityState.Add;
     }
 }

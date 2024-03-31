@@ -9,9 +9,11 @@ namespace ComputerManagement.API.Middlewares
     public class AuthMiddleware
     {
         private readonly RequestDelegate _next;
-        public AuthMiddleware(RequestDelegate next)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor)
         {
             _next = next;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task Invoke(HttpContext context)
@@ -37,6 +39,18 @@ namespace ComputerManagement.API.Middlewares
         {
             try
             {
+                // Truy cập HttpContext từ IHttpContextAccessor
+                var httpContext = _httpContextAccessor.HttpContext;
+                // Lấy Access Token từ cookie
+                var accessToken = httpContext.Request.Cookies["AccessToken"];
+
+                // Kiểm tra xem Access Token có tồn tại hay không
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    // Gán Access Token vào header "Authorization" của yêu cầu HTTP
+                    context.Request.Headers["Authorization"] = "Bearer " + accessToken;
+                }
+
                 string authorizationHeader = context.Request.Headers["Authorization"];
                 string token = null;
 

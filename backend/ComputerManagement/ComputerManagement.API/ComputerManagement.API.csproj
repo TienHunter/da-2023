@@ -23,9 +23,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ComputerManagement.BO\ComputerManagement.BO.csproj" />
-		<ProjectReference Include="..\ComputerManagement.Lib\ComputerManagement.Lib.csproj" />
 		<ProjectReference Include="..\ComputerManagement.Service\ComputerManagement.Service.csproj" />
 		<ProjectReference Include="..\ComputerManagerment.Repos\ComputerManagerment.Repos.csproj" />
+		<ProjectReference Include="..\ComputerManagement.Data\ComputerManagement.Data.csproj" />
 	</ItemGroup>
 
 </Project>

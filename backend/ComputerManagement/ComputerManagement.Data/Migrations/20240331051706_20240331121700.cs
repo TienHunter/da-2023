@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace ComputerManagement.BO.Migrations
+namespace ComputerManagement.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class _20240327214646 : Migration
+    public partial class _20240331121700 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

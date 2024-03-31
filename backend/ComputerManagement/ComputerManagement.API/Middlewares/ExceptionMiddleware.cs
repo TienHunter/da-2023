@@ -1,7 +1,7 @@
-﻿using ComputerManagement.BO.DTO;
+﻿using ComputerManagement.BO;
+using ComputerManagement.BO.DTO;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
-using ComputerManagement.Lib;
 using System.Net;
 
 namespace ComputerManagement.API.Middlewares
@@ -38,7 +38,8 @@ namespace ComputerManagement.API.Middlewares
                 {
                     Code = baseException.Code,
                     Message = baseException.Message,
-                    Data = baseException.Data
+                    Data = baseException.Data,
+                    Success = false,
                 };
 
                 // Convert the error response to JSON

@@ -1,5 +1,5 @@
 ﻿using ComputerManagement.BO;
-using ComputerManagement.BO.Data;
+using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore.Storage;
 
