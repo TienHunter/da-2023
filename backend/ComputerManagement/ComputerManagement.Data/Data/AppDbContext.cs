@@ -14,10 +14,8 @@ namespace ComputerManagement.Data
 {
     public class AppDbContext : DbContext
     {
-        private readonly PasswordHasher _passwordHaser;
         public AppDbContext(DbContextOptions options ) : base( options )
         {
-           _passwordHaser = new PasswordHasher();
         }
         public DbSet<User> Users { get; set; }
         public DbSet<ComputerRoom> ComputerRooms { get; set; }

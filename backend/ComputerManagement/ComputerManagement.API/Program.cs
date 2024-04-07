@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 using ComputerManagement.Data;
 using ComputerManagement.BO.Lib.Implement;
 using ComputerManagement.BO.Lib.Interface;
 using ComputerManagement.Data.Seed;
-using ComputerManagement.API.Middlewares;
+using ComputerManagement.Api.Middlewares;
+using ComputerManagement.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), x => x.MigrationsAssembly("ComputerManagement.Data")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString, sqlServerOptions =>
+    {
+        sqlServerOptions.MigrationsAssembly("ComputerManagement.Data");
+    });
+    options.EnableSensitiveDataLogging();
+});
 builder.Services.AddTransient<SeederData>();
 
 // add di jwtconfig
@@ -62,9 +69,15 @@ builder.Services.AddScoped<ContextData>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<IUserRepop, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IComputerRoomRepo, ComputerRoomRepo>();
+builder.Services.AddScoped<IComputerRoomService, ComputerRoomService>();
+
+builder.Services.AddScoped<IComputerRepo, ComputerRepo>();
+builder.Services.AddScoped<IComputerRoomService, ComputerRoomService>();
 
 // add cors
 builder.Services.AddCors(options =>
@@ -72,20 +85,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CorsPolicy",
         policy =>
         {
-            policy.WithOrigins()
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-                    ;
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+            policy.AllowAnyOrigin();
         });
 
 });
 
 var app = builder.Build();
-
-if(args.Length == 1 && args[0].ToLower() == "seeddata")
+app.UseCors("CorsPolicy");
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
     var scopedFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-    using(var scope = scopedFactory.CreateScope())
+    using (var scope = scopedFactory.CreateScope())
     {
         var service = scope.ServiceProvider.GetService<SeederData>();
         service.Seed();

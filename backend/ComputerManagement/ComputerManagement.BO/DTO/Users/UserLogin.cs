@@ -10,7 +10,7 @@ namespace ComputerManagement.BO.DTO
     public class UserLogin
     {
         [Required]
-        public string Accountname { get; set; }
+        public string Username { get; set; }
 
         [Required]
         public string Password { get; set; }

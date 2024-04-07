@@ -10,5 +10,18 @@ namespace ComputerManagement.Service.Interface
 {
     public interface IComputerService : IBaseService<ComputerDto, Computer>
     {
+        /// <summary>
+        /// lấy ra thông tin máy tính theo địa chỉ mac address
+        /// </summary>
+        /// <param name="macAddress"></param>
+        /// <returns></returns>
+        Task<ComputerDto> GetComputerByMacAddress(string macAddress);
+
+        /// <summary>
+        /// cập nhật state của máy tính theo địa chỉ mac
+        /// </summary>
+        /// <param name="macAddress"></param>
+        /// <returns></returns>
+        Task<bool> UpdateStateByMacAddressAsync(string macAddress);
     }
 }

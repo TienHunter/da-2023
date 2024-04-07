@@ -4,7 +4,7 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using System.Net;
 
-namespace ComputerManagement.API.Middlewares
+namespace ComputerManagement.Api.Middlewares
 {
     public class ExceptionMiddleware
     {

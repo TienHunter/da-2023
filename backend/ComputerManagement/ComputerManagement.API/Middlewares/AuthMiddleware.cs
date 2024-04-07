@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 
-namespace ComputerManagement.API.Middlewares
+namespace ComputerManagement.Api.Middlewares
 {
     public class AuthMiddleware
     {
@@ -40,24 +40,16 @@ namespace ComputerManagement.API.Middlewares
             try
             {
                 // Truy cập HttpContext từ IHttpContextAccessor
-                var httpContext = _httpContextAccessor.HttpContext;
+                //var httpContext = _httpContextAccessor.HttpContext;
                 // Lấy Access Token từ cookie
-                var accessToken = httpContext.Request.Cookies["AccessToken"];
-
-                // Kiểm tra xem Access Token có tồn tại hay không
-                if (!string.IsNullOrEmpty(accessToken))
-                {
-                    // Gán Access Token vào header "Authorization" của yêu cầu HTTP
-                    context.Request.Headers["Authorization"] = "Bearer " + accessToken;
-                }
+                // var accessToken = httpContext.Request.Cookies["AccessToken"];
 
                 string authorizationHeader = context.Request.Headers["Authorization"];
                 string token = null;
-
                 if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
                 {
                     // Extract the token from the "Bearer " prefix
-                    token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                    token = authorizationHeader["Bearer ".Length..].Trim();
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtToken = tokenHandler.ReadJwtToken(token);
 
@@ -68,9 +60,9 @@ namespace ComputerManagement.API.Middlewares
                     var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Email")?.Value;
                     var userId = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
                     var fullname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Name")?.Value;
-                    if(Guid.TryParse(userId, out Guid uID))
+                    if (Guid.TryParse(userId, out Guid uID))
                     {
-                        contextData.UserId = uID;
+                        contextData.UserID = uID;
                     }
                     contextData.Username = username;
                     contextData.Fullname = fullname;

@@ -23,7 +23,8 @@ namespace ComputerManagement.Service.Implement
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserRepop _userRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IServiceProvider serviceProvider, IUserRepop userRepo) : base(serviceProvider, userRepo) {
+        public UserService(IServiceProvider serviceProvider, IUserRepop userRepo) : base(serviceProvider, userRepo)
+        {
             _userRepo = userRepo;
             _jwtGenerate = serviceProvider.GetService(typeof(IJwtGenerator)) as IJwtGenerator;
             _passwordHasher = serviceProvider.GetService(typeof(IPasswordHasher)) as IPasswordHasher;
@@ -35,37 +36,44 @@ namespace ComputerManagement.Service.Implement
         {
             var rs = new ServiceResponse();
             var userExist = await _userRepo.GetQueryable()
-                                    .Where(u => u.Username == userLogin.Accountname || u.Email == userLogin.Accountname)
+                                    .Where(u => u.Username == userLogin.Username || u.Email == userLogin.Username)
                                     .FirstOrDefaultAsync() ?? throw new BaseException
-                {
-                    StatusCode = HttpStatusCode.NotFound,
-                    Code = ServiceResponseCode.NotUserLogin
-                };
+                                    {
+                                        StatusCode = HttpStatusCode.BadRequest,
+                                        Code = ServiceResponseCode.WrongLogin
+                                    };
             bool verifyPassword = _passwordHasher.Verify(userExist.Password, userLogin.Password);
             if (verifyPassword)
             {
                 var accessToken = _jwtGenerate.GenerateJwt(userExist);
 
                 var httpContext = _httpContextAccessor.HttpContext;
-                if (httpContext != null)
+
+                // Gán Access Token vào cookie
+                //httpContext.Response.Cookies.Append("AccessToken", accessToken, new CookieOptions
+                //{
+                //    HttpOnly = true, // Chỉ có thể truy cập từ phía máy chủ
+                //    Secure = true, // Chỉ gửi cookie qua kết nối HTTPS
+                //    SameSite = SameSiteMode.Strict // Giảm nguy cơ tấn công CSRF
+                //                                   // Có thể thêm các thuộc tính khác của cookie ở đây
+                //});
+                rs.Data = new
                 {
-                    // Gán Access Token vào cookie
-                    httpContext.Response.Cookies.Append("AccessToken", accessToken, new CookieOptions
-                    {
-                        HttpOnly = true, // Chỉ có thể truy cập từ phía máy chủ
-                        Secure = true, // Chỉ gửi cookie qua kết nối HTTPS
-                        SameSite = SameSiteMode.Strict // Giảm nguy cơ tấn công CSRF
-                                                       // Có thể thêm các thuộc tính khác của cookie ở đây
-                    });
-                }
-                 rs.Data = true;
+                    AccessToken = accessToken,
+                    UserID = userExist.Id,
+                    Email = userExist.Email,
+                    Fullname = userExist.Fullname,
+                    Username = userExist.Username,
+                    RoleID = userExist.RoleID,
+                };
                 return rs;
-            }else
+            }
+            else
             {
                 throw new BaseException
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    Code = ServiceResponseCode.WrongPassword
+                    Code = ServiceResponseCode.WrongLogin
                 };
             }
         }
@@ -74,7 +82,7 @@ namespace ComputerManagement.Service.Implement
         {
             var rs = new ServiceResponse();
             var useExistByUsername = await _userRepo.GetQueryable().Where(u => u.Username == userRegister.Username).FirstOrDefaultAsync();
-            if(useExistByUsername != null)
+            if (useExistByUsername != null)
             {
                 throw new BaseException
                 {
@@ -107,19 +115,19 @@ namespace ComputerManagement.Service.Implement
         public async Task<ServiceResponse> ChangePassword(UserChangePassword userChangePassword)
         {
             var rs = new ServiceResponse();
-            var user = await _userRepo.GetAsync(_contextData.UserId) ?? throw new BaseException
+            var user = await _userRepo.GetAsync(_contextData.UserID) ?? throw new BaseException
             {
-                StatusCode= HttpStatusCode.NotFound,
+                StatusCode = HttpStatusCode.NotFound,
                 Code = ServiceResponseCode.Exception
             };
 
             var veryfyPassword = _passwordHasher.Verify(user.Password, userChangePassword.OldPassword);
-            if(!veryfyPassword)
+            if (!veryfyPassword)
             {
                 throw new BaseException
                 {
                     StatusCode = HttpStatusCode.Conflict,
-                    Code = ServiceResponseCode.WrongPassword
+                    Code = ServiceResponseCode.WrongLogin
                 };
             }
             user.CmEntityState = CmEntityState.Update;

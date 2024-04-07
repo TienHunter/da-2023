@@ -13,8 +13,13 @@ namespace ComputerManagement.Service.Interface
         Task<TDto> AddAsync(TDto dto);
         Task<TDto> UpdateAsync(TDto dto);
         Task<bool> DeleteAsync(Guid id);
-        Task BeforeSaveAsync(TModel entity);
-        Task AfterSaveAsync(TModel entity);
+        Task<TModel> BeforeAddAsync(TDto dto);
+        Task AfterAddAsync(TModel model);
+        Task<TModel> BeforeUpdateAsync(TDto dto);
+        Task AfterUpdateAsync(TModel model);
+        Task ValidateBeforeAddAsync(TModel model);
+        Task ValidateBeforeUpdateAsync(TModel model);
+        Task ValidateBeforeDeleteAsync(Guid id);
         Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam);
     }
 }

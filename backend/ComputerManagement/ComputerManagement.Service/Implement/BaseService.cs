@@ -26,7 +26,7 @@ namespace ComputerManagement.Service.Implement
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork _uow;
         protected readonly ContextData _contextData;
-        
+        #endregion
 
         public BaseService(IServiceProvider serviceProvider, IBaseRepo<TModel> baseRepo)
         {
@@ -39,12 +39,13 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<TDto> AddAsync(TDto dto)
         {
-            var model = _mapper.Map<TModel>(dto);
-            await BeforeSaveAsync(model);
+            
+            var model = await BeforeAddAsync(dto);
+            await this.ValidateBeforeAddAsync(model);
             var rs = await _baseRepo.AddAsync(model);
             if (rs)
             {
-                await AfterSaveAsync(model);
+                await AfterAddAsync(model);
                 return _mapper.Map<TDto>(model);
             }
             else
@@ -54,8 +55,36 @@ namespace ComputerManagement.Service.Implement
 
         }
 
+        public async Task AfterAddAsync(TModel entity)
+        {
+            
+        }
+
         public virtual async Task AfterSaveAsync(TModel entity)
         {
+
+        }
+
+        public Task AfterUpdateAsync(TModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TModel> BeforeAddAsync(TDto dto)
+        {
+            var model = _mapper.Map<TModel>(dto);
+            if (model is BaseModel)
+            {
+                var baseModel = model as BaseModel;
+
+                baseModel.Id = Guid.NewGuid();
+                baseModel.CreatedBy = _contextData.Fullname;
+                baseModel.CreatedAt = DateTime.Now;
+                baseModel.UpdatedBy = _contextData.Fullname;
+                baseModel.UpdatedAt = DateTime.Now;
+                
+            }
+            return model;
 
         }
 
@@ -82,19 +111,27 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
+        public async Task<TModel> BeforeUpdateAsync(TDto dto)
+        {
+            var model = _mapper.Map<TModel>(dto);
+            if (model is BaseModel)
+            {
+                var baseModel = model as BaseModel;
+                baseModel.UpdatedBy = _contextData.Fullname;
+                baseModel.UpdatedAt = DateTime.Now;
+
+            }
+            return model;
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             var entityExist = await _baseRepo.GetAsync(id);
-            if (entityExist != null)
+            if (entityExist == null)
             {
-                return await _baseRepo.DeleteAsync(entityExist);
-            }else
-            {
-                throw new BaseException
-                {
-                    StatusCode = HttpStatusCode.NotFound
-                };
+                this.ThrowNotFoundException();
             }
+            return await _baseRepo.DeleteAsync(entityExist);
         }
 
         public async Task<TDto> GetAsync(Guid id)
@@ -129,13 +166,12 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<TDto> UpdateAsync(TDto dto)
         {
-            var model = _mapper.Map<TModel>(dto);
-            await BeforeSaveAsync(model);
-            // await ValidateBeforeSave(model);
+            var model = await BeforeUpdateAsync(dto);
+            await this.ValidateBeforeUpdateAsync(model);
             var rs = await _baseRepo.UpdateAsync(model);
             if (rs)
             {
-                await AfterSaveAsync(model);
+                await AfterUpdateAsync(model);
                 return _mapper.Map<TDto>(model);
             }
             else
@@ -144,7 +180,51 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
+        public virtual async Task ValidateBeforeAddAsync(TModel model)
+        {
+            
+        }
 
-        #endregion
+        public virtual async Task ValidateBeforeDeleteAsync(Guid id)
+        {
+            var modelExist = await _baseRepo.GetAsync(id);
+            if(modelExist == null)
+            {
+                this.ThrowNotFoundException();
+            }
+        }
+
+        public virtual async Task ValidateBeforeUpdateAsync(TModel model)
+        {
+            if (model is BaseModel)
+            {
+                var baseModel = model as BaseModel;
+                var modelExist = await _baseRepo.GetAsync(baseModel.Id);
+                if(modelExist == null)
+                {
+                    this.ThrowNotFoundException();
+                }    
+            }
+        }
+
+        protected void ThrowNotFoundException()
+        {
+            var nameCode = "NotFound" + nameof(TModel);
+            if (Enum.TryParse(typeof(ServiceResponseCode), nameCode, out object enumValue))
+            {
+                ServiceResponseCode code = (ServiceResponseCode)enumValue;
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Code = code
+                };
+            }
+            throw new BaseException
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Code = ServiceResponseCode.Error
+            };
+        }
+        
     }
 }

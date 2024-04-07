@@ -12,11 +12,12 @@ namespace ComputerManagement.BO.DTO
     public class ComputerDto
     {
         public Guid Id { get; set; }
-        public string AddressIP { get; set; }
+        public string MacAddress { get; set; }
         public string Name { get; set; }
         public int PositionX { get; set; }
         public int PositionY { get; set; }
         public ComputerState State { get; set; }
+        public DateTime StateTime { get; set; }
         public ComputerCondition Condition { get; set; }
         public Guid ComputerRoomId { get; set; }
         public ComputerRoom ComputerRoom { get; set; } = null;
