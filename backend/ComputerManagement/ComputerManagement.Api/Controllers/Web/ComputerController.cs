@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerManagement.Controllers.Web
 {
-    public partial class CompanyController : BaseController<ComputerDto, Computer>
+    public partial class ComputerController : BaseController<ComputerDto, Computer>
     {
         private readonly IComputerService _computerService;
-        public CompanyController(IComputerService computerService) : base(computerService)
+        public ComputerController(IComputerService computerService) : base(computerService)
         {
             _computerService = computerService;
         }

@@ -16,7 +16,14 @@ namespace ComputerManagement.Api.Controllers.Agent
         {
             var rs = new ServiceResponse();
             rs.Data = await _computerService.UpdateStateByMacAddressAsync(macAddress);
-            return Ok();
+            return Ok(rs);
+        }
+        [HttpGet("{macAddress}")]
+        public async Task<IActionResult> GetCommputerByMacAddress([FromRoute] string macAddress)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _computerService.GetComputerByMacAddress(macAddress);
+            return Ok(rs);
         }
     }
 }

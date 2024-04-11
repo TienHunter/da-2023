@@ -20,7 +20,7 @@ namespace ComputerManagement.BO.DTO
         public DateTime StateTime { get; set; }
         public ComputerCondition Condition { get; set; }
         public Guid ComputerRoomId { get; set; }
-        public ComputerRoom ComputerRoom { get; set; } = null;
+        public ComputerRoom? ComputerRoom { get; set; } = null;
         public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }

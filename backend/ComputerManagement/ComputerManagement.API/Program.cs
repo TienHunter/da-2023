@@ -77,7 +77,7 @@ builder.Services.AddScoped<IComputerRoomRepo, ComputerRoomRepo>();
 builder.Services.AddScoped<IComputerRoomService, ComputerRoomService>();
 
 builder.Services.AddScoped<IComputerRepo, ComputerRepo>();
-builder.Services.AddScoped<IComputerRoomService, ComputerRoomService>();
+builder.Services.AddScoped<IComputerService, ComputerService>();
 
 // add cors
 builder.Services.AddCors(options =>
