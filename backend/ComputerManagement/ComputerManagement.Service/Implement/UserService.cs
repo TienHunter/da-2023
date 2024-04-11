@@ -45,9 +45,26 @@ namespace ComputerManagement.Service.Implement
             bool verifyPassword = _passwordHasher.Verify(userExist.Password, userLogin.Password);
             if (verifyPassword)
             {
+                // check state user
+                if(userExist.State == UserState.Pending)
+                {
+                    throw new BaseException
+                    {
+                        StatusCode = HttpStatusCode.Conflict,
+                        Code = ServiceResponseCode.UserPending
+                    };
+                }
+                if(userExist.State == UserState.Revoked)
+                {
+                    throw new BaseException
+                    {
+                        StatusCode = HttpStatusCode.Conflict,
+                        Code = ServiceResponseCode.UserRevoked
+                    };
+                }
                 var accessToken = _jwtGenerate.GenerateJwt(userExist);
 
-                var httpContext = _httpContextAccessor.HttpContext;
+               // var httpContext = _httpContextAccessor.HttpContext;
 
                 // Gán Access Token vào cookie
                 //httpContext.Response.Cookies.Append("AccessToken", accessToken, new CookieOptions
@@ -102,12 +119,11 @@ namespace ComputerManagement.Service.Implement
             }
 
             var user = _mapper.Map<User>(userRegister);
-            await base.BeforeSaveAsync(user);
             user.Password = _passwordHasher.Hash(user.Password);
             // xử lý phân quyền và trạng thái làm sau
             //user.RoleID = (int)UserRole.Teacher;
             //user.State = UserState.Active;
-
+            base.BeforeAddAsync(user);
             rs.Data = await _userRepo.AddAsync(user);
             return rs;
         }
@@ -118,7 +134,7 @@ namespace ComputerManagement.Service.Implement
             var user = await _userRepo.GetAsync(_contextData.UserID) ?? throw new BaseException
             {
                 StatusCode = HttpStatusCode.NotFound,
-                Code = ServiceResponseCode.Exception
+                Code = ServiceResponseCode.NotFoundUser
             };
 
             var veryfyPassword = _passwordHasher.Verify(user.Password, userChangePassword.OldPassword);
@@ -130,10 +146,8 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.WrongLogin
                 };
             }
-            user.CmEntityState = CmEntityState.Update;
-            await base.BeforeSaveAsync(user);
             user.Password = _passwordHasher.Hash(userChangePassword.NewPassword);
-
+            base.BeforeUpdateAsync(user);
             rs.Data = await _userRepo.UpdateAsync(user);
 
             return rs;
@@ -146,18 +160,50 @@ namespace ComputerManagement.Service.Implement
 
         public void Logout()
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext != null)
+            //var httpContext = _httpContextAccessor.HttpContext;
+            //if (httpContext != null)
+            //{
+            //    if (httpContext.Request.Cookies["AccessToken"] != null)
+            //    {
+            //        var cookieOptions = new CookieOptions
+            //        {
+            //            Expires = DateTime.Now.AddDays(-1)
+            //        };
+            //        httpContext.Response.Cookies.Append("AccessToken", "", cookieOptions);
+            //    }
+            //}
+        }
+
+        public async Task<bool> UpdateUserByAdminAsync(UserUpdateByAdmin userUpdateByAdmin, Guid id)
+        {
+            // check author
+            //if(_contextData.RoleID != UserRole.Admin)
+            //{
+            //    throw new BaseException
+            //    {
+            //        StatusCode = HttpStatusCode.Forbidden,
+            //        Code = ServiceResponseCode.Forbidden
+            //    };
+            //}
+
+            var userAuth = await _userRepo.GetAsync(_contextData.UserID);
+            if(userAuth?.RoleID != UserRole.Admin)
             {
-                if (httpContext.Request.Cookies["AccessToken"] != null)
+                throw new BaseException
                 {
-                    var cookieOptions = new CookieOptions
-                    {
-                        Expires = DateTime.Now.AddDays(-1)
-                    };
-                    httpContext.Response.Cookies.Append("AccessToken", "", cookieOptions);
-                }
+                    StatusCode = HttpStatusCode.Forbidden,
+                    Code = ServiceResponseCode.Forbidden
+                };
             }
+            var userExist = await _userRepo.GetAsync(id) ?? throw new BaseException
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Code = ServiceResponseCode.NotFoundUser
+            };
+
+            _mapper.Map(userUpdateByAdmin, userExist);
+
+            return await _userRepo.UpdateAsync(userExist);
         }
     }
 }

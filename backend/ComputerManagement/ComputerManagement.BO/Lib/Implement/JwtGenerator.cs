@@ -37,6 +37,7 @@ namespace ComputerManagement.BO.Lib.Implement
                     new Claim("Email", user.Email),
                     new Claim("Username", user.Username),
                     new Claim("UserId", user.Id.ToString()),
+                    new Claim("RoleID", user.RoleID.ToString()),
 
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),

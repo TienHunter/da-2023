@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerManagement.Controllers.Web
 {
-    [ApiController]
+    [Authorize]
     public class UserController : BaseController<UserDto, User>
     {
         private readonly IUserService _userService;
@@ -41,6 +41,7 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
+        [AllowAnonymous]
         [HttpPut("Logout")]
         public IActionResult Logout()
         {
@@ -56,5 +57,12 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
+        [HttpPut("update-by-admin/{id}")]
+        public async Task<IActionResult> UpdateByAdmin([FromBody] UserUpdateByAdmin userUpdateByAdmin, [FromRoute] Guid id)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _userService.UpdateUserByAdminAsync(userUpdateByAdmin, id);
+            return Ok(rs);
+        }
     }
 }

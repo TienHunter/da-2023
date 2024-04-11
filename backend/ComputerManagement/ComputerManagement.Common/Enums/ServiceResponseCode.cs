@@ -21,6 +21,9 @@ namespace ComputerManagement.Common.Enums
         NotFoundComputer = 9,
         ComputerRoomNameConflic = 10,
         NotFoundComputerRoom=11,
+        UserPending=12,
+        UserRevoked=13,
+        Forbidden = 14,
 
     }
 }

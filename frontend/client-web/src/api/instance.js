@@ -33,7 +33,7 @@ instance.interceptors.response.use(
       if (status === 401) {
          // Xử lý đăng xuất ở đây
          // xóa token đi
-         console.log(router);
+         localStore.clear();
          router.push({ name: "Login", params: {} });
       } else {
          return Promise.reject(error.response.data);

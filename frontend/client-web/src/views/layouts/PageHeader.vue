@@ -48,9 +48,9 @@
   } from "@ant-design/icons-vue";
   import { userService } from "@/api";
 
-  const logout = async () => {
+  const logout = () => {
     try {
-      await userService.logout();
+      localStorage.clear();
       window.location.href = "/login";
     } catch (error) {
       message.error();

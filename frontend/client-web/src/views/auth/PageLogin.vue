@@ -11,7 +11,6 @@
         class="w-full"
         layout="vertical"
         @finish="onFinish"
-        @validate="onValidate"
       >
         <a-form-item :wrapper-col="{ span: 24 }">
           <h2 class="login-title">{{ $t("auth.Login") }}</h2>
@@ -79,7 +78,7 @@
   const validatePassword = async (_rule, value) => {
     if (value === "") {
       return Promise.reject($t("auth.PasswordRequired"));
-    } else if (isCallCheck.value == true && loginInfo.username) {
+    } else if (isCallCheck.value == true) {
       isCallCheck.value = false;
       try {
         let userInfo = await userService.login(loginInfo);
@@ -103,10 +102,15 @@
           case ResponseCode.WrongLogin:
             return Promise.reject($t("auth.WrongLogin"));
             break;
-
+          case ResponseCode.UserPending:
+            message.warning($t("auth.UserPending"));
+            break;
+          case ResponseCode.UserRevoked:
+            message.warning($t("auth.UserRevoked"));
+            break;
           default:
-            message.error("create job failure");
-            return Promise.resolve($t("UnKnowError"));
+            message.error($t("UnKnowError"));
+            return Promise.resolve();
             break;
         }
       }
@@ -131,37 +135,15 @@
   };
   const onFinish = async (value) => {
     try {
+      isLoading.value = true;
       isCallCheck.value = true;
-      // await formLoginRef.value.validate();
       await formLoginRef.value.validateFields("password");
       router.push({ name: "Dashboard" });
     } catch (error) {
+      console.log(error);
     } finally {
       isLoading.value = false;
     }
-  };
-  const onSubmit = async () => {
-    try {
-      await formLoginRef.value.validate();
-      isCallCheck.value = true;
-      // await formLoginRef.value.validate();
-      await formLoginRef.value.validate();
-    } catch (error) {
-      console.log("error", error);
-    }
-
-    // // call api
-    // let res = await authService.login(value);
-    // console.log(res);
-    // if (res.Success && res.Data) {
-    //   // decode token
-    //   let info = jwtDecode(res.Data);
-    //   console.log(info);
-    //   // set token vao localStorage
-    //   router.push({ name: "Dashboard" });
-    // } else {
-    //   messageError.value = res.Message ?? "";
-    // }
   };
 </script>
 

@@ -34,8 +34,9 @@ export default {
       RegisterSuccess: "Đăng ký tài khoản thành công .Vui lòng liên hệ admin để xác thực tài khoản",
       UsernameConflict: "Tài khoản đã tồn tại",
       EmailConflict: "Email đã được sử dụng",
-      EmailInvalid: "Email không đúng định dạng"
-
+      EmailInvalid: "Email không đúng định dạng",
+      UserPending: "Tài khoản đang chờ duyệt, Vui lòng liên hệ quản trị viên",
+      UserRevoked: "Tài khoản đã bị thu hồi, Vui lòng liên hệ quản trị viên"
    },
    ComputerRoom: {
       Name: "Tên phòng máy",
@@ -50,5 +51,19 @@ export default {
          StateRequired: "Vui lòng chọn tình trạng phòng máy",
          NotFound: "Không tìm thấy phòng máy",
       }
+   },
+   User: {
+      Username: "Tài khoản",
+      Email: "Email",
+      Fullname: "Họ và tên",
+      Role: "Quyền",
+      State: "Trạng thái tài khoản",
+      NotFoundUser: "Không tìm thấy người dùng",
+      RoleAdmin: "Quản trị viên",
+      RoleTeacher: "Giảng viên",
+      RoleNo: "Không có quyền",
+      UserPending: "Chờ duyệt",
+      UserActive: "Hoạt động",
+      UserRevoked: "Đã thu hồi",
    }
 }

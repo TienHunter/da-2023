@@ -20,5 +20,8 @@ class UserSerivce extends baseService {
    async checkLogin() {
       return await instance.get(`${this.getEndpoint()}/check-login`);
    }
+   async updateByAdmin(data, id) {
+      return await instance.put(`${this.getEndpoint()}/update-by-admin/${id}`, data);
+   }
 }
 export default new UserSerivce();

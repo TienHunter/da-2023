@@ -6,10 +6,5 @@ class ComputerRoomService extends baseService {
       super(); // Gọi constructor của lớp cha
       // Các định nghĩa riêng của lớp con...
    }
-
-   async getList(params) {
-      return await instance.post(`${this.getEndpoint()}/GetList`, params);
-   }
-
 }
 export default new ComputerRoomService();

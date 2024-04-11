@@ -67,11 +67,13 @@
     useRoute,
     onBeforeRouteUpdate,
     onBeforeRouteLeave,
+    useRouter,
   } from "vue-router";
   import { computerRoomService } from "@/api";
   import { ResponseCode, FormMode } from "../../constants";
   import { message } from "ant-design-vue";
   const route = useRoute();
+  const router = useRouter();
   const formRef = ref();
   const labelCol = {
     span: 5,
@@ -81,8 +83,8 @@
   };
   let formState = reactive({
     name: "",
-    maxCapacity: 40,
-    state: 1,
+    maxCapacity: 0,
+    state: null,
   });
   const loading = reactive({
     isLoadingSave: false,
@@ -157,7 +159,7 @@
       try {
         let computer =
           route.meta.formMode === FormMode.Update
-            ? await computerRoomService.update(formState)
+            ? await computerRoomService.update(formState, route.params.id)
             : await computerRoomService.add(formState);
         if (computer?.success && computer?.data) {
           router.push({
@@ -166,6 +168,7 @@
           });
         }
       } catch (error) {
+        console.log(error);
         switch (error?.Code) {
           case ResponseCode.ComputerRoomNameConflic:
             isCallCheck.value = true;

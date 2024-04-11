@@ -18,12 +18,13 @@ class BaseService {
    };
 
    /**
-    * update record
-    * @param {*} record
-    * @returns
+    * 
+    * @param {*} record 
+    * @param {*} id 
+    * @returns 
     */
-   async update(record) {
-      return await instance.put(`${this.getEndpoint()}`, record);
+   async update(record, id) {
+      return await instance.put(`${this.getEndpoint()}/${id}`, record);
    }
 
    /**
@@ -36,6 +37,9 @@ class BaseService {
 
    async getById(id) {
       return await instance.get(`${this.getEndpoint()}/${id}`);
+   }
+   async getList(params) {
+      return await instance.post(`${this.getEndpoint()}/GetList`, params);
    }
 }
 export default BaseService;

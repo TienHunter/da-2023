@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ComputerManagement.BO.DTO;
+using ComputerManagement.BO.DTO.Users;
 using ComputerManagement.BO.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace ComputerManagement.Service.Mapper
         {
             CreateMap<UserDto, User>().ReverseMap();
             CreateMap<UserRegister, User>();
+            CreateMap<UserUpdateByAdmin, User>();
         }
     }
 }

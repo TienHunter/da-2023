@@ -35,10 +35,7 @@ namespace ComputerManagement.Service.Implement
         public async Task<bool> UpdateStateByMacAddressAsync(string macAddress)
         {
             var computerExist = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).FirstOrDefaultAsync();
-            if(computerExist == null)
-            {
-                base.ThrowNotFoundException();
-            }
+            base.CheckNullModel(computerExist);
             computerExist.State = ComputerState.On;
             computerExist.StateTime = DateTime.Now;
 

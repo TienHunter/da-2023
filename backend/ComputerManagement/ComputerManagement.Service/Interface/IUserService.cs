@@ -35,5 +35,13 @@ namespace ComputerManagement.Service
         Task<ServiceResponse> ResetPassword(UserResetPassword userResetPassword);
 
         void Logout();
+
+        /// <summary>
+        /// Cập nhật thông tin người dùng bởi admin
+        /// </summary>
+        /// <param name="userUpdateByAdmin"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> UpdateUserByAdminAsync(UserUpdateByAdmin userUpdateByAdmin, Guid id);
     }
 }

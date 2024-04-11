@@ -24,6 +24,6 @@ namespace ComputerManagement.Common.Enums
         /// <summary>
         /// thu hồi
         /// </summary>
-        Revoke = 2,
+        Revoked = 2,
     }
 }

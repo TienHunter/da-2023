@@ -29,17 +29,38 @@
         @change="handleTableChange"
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
-            <a>
-              {{ record.name }}
-            </a>
+          <template v-if="column.key === 'username'">
+            <router-link :to="{ name: 'UserView', params: { id: record.id } }">
+              {{ record.username }}
+            </router-link>
           </template>
           <template v-else-if="column.key === 'state'">
             <span>
-              <a-tag :color="record.colorState">
-                {{ record.textState }}
+              <a-tag :color="record.colorUserState">
+                {{ record.textUserState }}
               </a-tag>
             </span>
+          </template>
+          <template v-else-if="column.key === 'roleID'">
+            <span>
+              <a-tag :color="record.colorUserRole">
+                {{ record.textUserRole }}
+              </a-tag>
+            </span>
+          </template>
+          <template v-else-if="column.key === 'operation'">
+            <div class="flex gap-2">
+              <a-button round>
+                <template #icon>
+                  <EditOutlined />
+                </template>
+              </a-button>
+              <a-button round class="bg-red-200">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+              </a-button>
+            </div>
           </template>
         </template>
       </a-table>
@@ -49,7 +70,9 @@
 <script setup>
   import { computed, onBeforeMount, reactive, ref } from "vue";
   import { useRouter } from "vue-router";
-  import { computerRoomService } from "../../api";
+  import _ from "lodash";
+  import { computerRoomService, userService } from "../../api";
+  import util from "@/utils/util";
   // ========== start state ==========
   const router = useRouter();
   const loading = reactive({
@@ -58,21 +81,27 @@
   });
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "200px",
-    },
-    {
-      title: "CurrentCapacity",
-      dataIndex: "currentCapacity",
-      key: "currentCapacity",
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
       width: "150px",
     },
     {
-      title: "MaxCapacity",
-      dataIndex: "maxCapacity",
-      key: "maxCapacity",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "150px",
+    },
+    {
+      title: "Fullname",
+      dataIndex: "fullname",
+      key: "fullname",
+      width: "150px",
+    },
+    {
+      title: "Role",
+      dataIndex: "roleID",
+      key: "roleID",
       width: "150px",
     },
     {
@@ -82,10 +111,10 @@
       width: "150px",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: "150px",
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
     },
   ];
   const pagingParam = reactive({
@@ -102,7 +131,7 @@
     pageSize: pagingParam.pageSize,
     showTotal: (total) => `Total ${total} items`,
   }));
-  let dataSource = reactive([]);
+  let dataSource = ref([]);
   const selectRows = reactive({
     selectedRowKeys: [],
   });
@@ -112,15 +141,24 @@
   onBeforeMount(async () => {
     try {
       loading.loadingTable = true;
-      let rs = await computerRoomService.getList(pagingParam);
+      let rs = await userService.getList(pagingParam);
       if (rs.success && rs.data) {
-        dataSource = reactive(
+        dataSource.value = _.cloneDeep(
           rs.data.list?.map((item) => {
-            item.colorState = genColorState(item.State);
-            item.textState = genTextState(item.State);
+            const { colorUserState, textUserState } = util.getViewUserState(
+              item.state
+            );
+            item.colorUserState = colorUserState;
+            item.textUserState = textUserState;
+            const { colorUserRole, textUserRole } = util.getViewUserRole(
+              item.roleID
+            );
+            item.colorUserRole = colorUserRole;
+            item.textUserRole = textUserRole;
             return item;
           })
         );
+
         pagingParam.total = rs.data.total || 0;
       }
     } catch (error) {
@@ -154,50 +192,6 @@
     //    sortOrder: sorter.order,
     //    ...filters,
     //  });
-  };
-
-  /**
-   * gen ra màu cho trường state
-   * @param {*} state
-   */
-  const genColorState = (state) => {
-    let color = "volcano";
-    switch (color) {
-      case 0:
-        color = "volcano";
-        break;
-      case 1:
-        color = "green";
-        break;
-      case 2:
-        color = "geekblue";
-        break;
-      default:
-        break;
-    }
-    return color;
-  };
-
-  /**
-   * gen text cho trường state
-   * @param {*} state
-   */
-  const genTextState = (state) => {
-    let text = "Hỏng";
-    switch (text) {
-      case 0:
-        text = "Hỏng";
-        break;
-      case 1:
-        text = "Tốt";
-        break;
-      case 2:
-        text = "Bảo trì";
-        break;
-      default:
-        break;
-    }
-    return text;
   };
 
   /**

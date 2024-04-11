@@ -2,7 +2,7 @@
   <div class="contailer">
     <div class="toolbars flex justify-between py-4 rounded">
       <div class="toolbars-left">
-        <router-link :to="{ name: 'ComputerRoomList' }">
+        <router-link :to="{ name: 'UserList' }">
           <a-button shape="circle">
             <template #icon>
               <ArrowLeftOutlined />
@@ -12,7 +12,7 @@
       </div>
       <div class="toolbars-right flex gap-2">
         <router-link
-          :to="{ name: 'ComputerRoomEdit', params: { id: route.params.id } }"
+          :to="{ name: 'UserEdit', params: { id: route.params.id } }"
         >
           <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
         </router-link>
@@ -31,24 +31,24 @@
             </a-col>
 
             <a-col
+              v-else-if="field.key == 'roleID'"
+              class="gutter-row"
+              :span="18"
+            >
+              <div class="gutter-box">
+                <a-tag :color="data.colorUserRole">
+                  {{ data.textUserRole }}
+                </a-tag>
+              </div>
+            </a-col>
+            <a-col
               v-else-if="field.key == 'state'"
               class="gutter-row"
               :span="18"
             >
               <div class="gutter-box">
-                <a-tag :color="data.colorState">
-                  {{ data.textState }}
-                </a-tag>
-              </div>
-            </a-col>
-            <a-col
-              v-else-if="field.key == 'pending'"
-              class="gutter-row"
-              :span="18"
-            >
-              <div class="gutter-box">
-                <a-tag :color="data.colorPending">
-                  {{ data.textPending }}
+                <a-tag :color="data.colorUserState">
+                  {{ data.textUserState }}
                 </a-tag>
               </div>
             </a-col>
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script setup>
-  import { computerRoomService } from "@/api";
+  import { userService } from "@/api";
   import { ref, reactive, onBeforeMount } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import _ from "lodash";
@@ -74,24 +74,24 @@
   const router = useRouter();
   const fields = reactive([
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
     },
     {
-      title: "Capacity",
-      dataIndex: "capacity",
-      key: "capacity",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Role",
+      dataIndex: "roleID",
+      key: "roleID",
     },
     {
       title: "State",
       dataIndex: "state",
       key: "state",
-    },
-    {
-      title: "Pending",
-      dataIndex: "pending",
-      key: "pending",
     },
   ]);
   let data = ref({});
@@ -101,38 +101,31 @@
   onBeforeMount(async () => {
     try {
       loading.isLoadingBeforeMount = true;
-      let computerRoom = await computerRoomService.getById(route.params.id);
-      if (computerRoom?.success && computerRoom?.data) {
-        computerRoom.data.colorState = util.genColorState(
-          "state",
-          computerRoom.data.state
+      let user = await userService.getById(route.params.id);
+      if (user?.success && user?.data) {
+        const { colorUserState, textUserState } = util.getViewUserState(
+          user.data.state
         );
-        computerRoom.data.textState = util.genTextState(
-          "state",
-          computerRoom.data.state
+        user.data.colorUserState = colorUserState;
+        user.data.textUserState = textUserState;
+        const { colorUserRole, textUserRole } = util.getViewUserRole(
+          user.data.roleID
         );
-        computerRoom.data.capacity = `${
-          computerRoom.data.currentCapacity || 0
-        }/${computerRoom.data.maxCapacity || 0}`;
-        computerRoom.data.colorPending = computerRoom.data.pending
-          ? "orange"
-          : "green";
-        computerRoom.data.textPending = computerRoom.data.pending
-          ? "chật"
-          : "trống";
-        data.value = _.cloneDeep(computerRoom.data);
+        user.data.colorUserRole = colorUserRole;
+        user.data.textUserRole = textUserRole;
+        data.value = _.cloneDeep(user.data);
       }
     } catch (error) {
       console.log(error);
       switch (error.code) {
-        case ResponseCode.NotFoundComputerRoom:
-          message.error($t("ComputerRoom.Validate.NotFound"));
+        case ResponseCode.NotFoundUser:
+          message.error($t("User.NotFoundUser"));
           break;
         default:
           message.error($t("UnKnowError"));
           break;
       }
-      router.push({ name: "ComputerRoomList" });
+      router.push({ name: "UserList" });
     } finally {
       loading.isLoadingBeforeMount = false;
     }

@@ -52,13 +52,11 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
-        [HttpPut("")]
-        public virtual async Task<IActionResult> Update([FromBody] TDto dto)
+        [HttpPut("{id}")]
+        public virtual async Task<IActionResult> Update([FromBody] TDto dto, [FromRoute] Guid id)
         {
-            var rs = new ServiceResponse
-            {
-                Data = await _baseService.UpdateAsync(dto)
-            };
+            var rs = new ServiceResponse();
+            rs.Data = await _baseService.UpdateAsync(dto,id);
             return Ok(rs);
         }
     }

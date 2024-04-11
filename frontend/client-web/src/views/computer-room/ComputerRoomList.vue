@@ -52,6 +52,7 @@
   import { computed, onBeforeMount, reactive, ref } from "vue";
   import { useRouter } from "vue-router";
   import { computerRoomService } from "../../api";
+  import util from "@/utils/util";
   // ========== start state ==========
   const router = useRouter();
   const loading = reactive({
@@ -117,8 +118,8 @@
       let rs = await computerRoomService.getList(pagingParam);
       if (rs.success && rs.data) {
         dataSource.value = rs.data.list?.map((item) => {
-          item.colorState = genColorState(item.State);
-          item.textState = genTextState(item.State);
+          item.colorState = util.genColorState("state", item.state);
+          item.textState = util.genTextState("state", item.state);
           return item;
         });
 
@@ -155,50 +156,6 @@
     //    sortOrder: sorter.order,
     //    ...filters,
     //  });
-  };
-
-  /**
-   * gen ra màu cho trường state
-   * @param {*} state
-   */
-  const genColorState = (state) => {
-    let color = "volcano";
-    switch (color) {
-      case 0:
-        color = "volcano";
-        break;
-      case 1:
-        color = "green";
-        break;
-      case 2:
-        color = "geekblue";
-        break;
-      default:
-        break;
-    }
-    return color;
-  };
-
-  /**
-   * gen text cho trường state
-   * @param {*} state
-   */
-  const genTextState = (state) => {
-    let text = "Hỏng";
-    switch (text) {
-      case 0:
-        text = "Hỏng";
-        break;
-      case 1:
-        text = "Tốt";
-        break;
-      case 2:
-        text = "Bảo trì";
-        break;
-      default:
-        break;
-    }
-    return text;
   };
 
   /**

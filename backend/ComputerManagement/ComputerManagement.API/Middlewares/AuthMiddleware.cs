@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO.DTO;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
@@ -59,10 +60,16 @@ namespace ComputerManagement.Api.Middlewares
                     var username = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Username")?.Value;
                     var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Email")?.Value;
                     var userId = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
-                    var fullname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Name")?.Value;
+                    var fullname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Fullname")?.Value;
+                    var roleID = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "RoleID")?.Value;
                     if (Guid.TryParse(userId, out Guid uID))
                     {
                         contextData.UserID = uID;
+                    }
+                    if(Enum.TryParse<UserRole>(roleID, out UserRole role))
+                    {
+                        contextData.RoleID = role;
+
                     }
                     contextData.Username = username;
                     contextData.Fullname = fullname;
