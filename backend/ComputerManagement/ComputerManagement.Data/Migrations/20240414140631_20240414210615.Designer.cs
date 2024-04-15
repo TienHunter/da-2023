@@ -4,6 +4,7 @@ using ComputerManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerManagement.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240414140631_20240414210615")]
+    partial class _20240414210615
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,32 +77,6 @@ namespace ComputerManagement.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("computer");
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerHistory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ComputerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LogTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ComputerId");
-
-                    b.ToTable("computer_history");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerRoom", b =>
@@ -310,17 +287,6 @@ namespace ComputerManagement.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ComputerRoom");
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerHistory", b =>
-                {
-                    b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
-                        .WithMany()
-                        .HasForeignKey("ComputerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Computer");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerSoftware", b =>

@@ -10,10 +10,15 @@ namespace ComputerManagement.Service.Interface
     public interface IBaseService<TDto, TModel>
     {
         Task<TDto> GetAsync(Guid id);
-        Task<TDto> AddAsync(TDto dto);
-        Task<TDto> UpdateAsync(TDto dto, Guid id);
+        /// <summary>
+        /// thêm đói tượng
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Guid> AddAsync(TDto dto);
+        Task<bool> UpdateAsync(TDto dto, Guid id);
         Task<bool> DeleteAsync(Guid id);
-        Task BeforeAddAsync(TModel model);
+        Task<Guid> BeforeAddAsync(TModel model);
         Task AfterAddAsync(TModel model);
         Task BeforeUpdateAsync(TModel model);
         Task AfterUpdateAsync(TModel model);

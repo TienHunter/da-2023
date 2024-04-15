@@ -22,5 +22,6 @@ namespace ComputerManagement.Data
         public DbSet<Computer> Computers { get; set; }
         public DbSet<User> ScheduleBookRoom { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<ComputerHistory> ComputerHistory { get; set; }
     }
 }

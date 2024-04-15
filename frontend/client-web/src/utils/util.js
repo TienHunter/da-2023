@@ -1,4 +1,4 @@
-import { UserRole, UserState } from "@/constants";
+import { ComputerKey, UserRole, UserState } from "@/constants";
 
 const util = {
 
@@ -50,6 +50,12 @@ const util = {
 
       return text;
    },
+
+   /**
+    * get text va color cho trường role của user
+    * @param {*} role 
+    * @returns 
+    */
    getViewUserRole(role) {
       let colorUserRole = '';
       let textUserRole = '';
@@ -67,6 +73,11 @@ const util = {
       return { colorUserRole, textUserRole };
    },
 
+   /**
+    * get text và color cho trường state của user
+    * @param {*} state 
+    * @returns 
+    */
    getViewUserState(state) {
       let colorUserState = '';
       let textUserState = '';
@@ -86,7 +97,61 @@ const util = {
             break;
       }
       return { colorUserState, textUserState };
-   }
+   },
+
+   /**
+    * get text và color cho trường state của computer
+    * @param {*} state 
+    * @returns 
+    */
+   getViewComputerState(state) {
+      let colorComputerState = '';
+      let textComputerState = '';
+      switch (state) {
+         case ComputerKey.State.On:
+            colorComputerState = 'green';
+            textComputerState = "Bật";
+            break;
+         case ComputerKey.State.Off:
+            colorComputerState = 'orange';
+            textComputerState = "Tắt";
+            break;
+         default:
+            break;
+      }
+      return { colorComputerState, textComputerState };
+   },
+
+   /**
+    * get text và color cho trường state của computer
+    * @param {*} state 
+    * @returns 
+    */
+   getViewComputerCondition(condition) {
+      let colorComputerCondition = '';
+      let textComputerCondition = '';
+      switch (condition) {
+         case ComputerKey.Condition.Perfect:
+            colorComputerCondition = 'green';
+            textComputerCondition = "Hoàn hảo";
+            break;
+         case ComputerKey.Condition.Good:
+            colorComputerCondition = 'blue';
+            textComputerCondition = "Tốt";
+            break;
+         case ComputerKey.Condition.Normal:
+            colorComputerCondition = 'cyan';
+            textComputerCondition = "Bình thường";
+            break;
+         case ComputerKey.Condition.Bad:
+            colorComputerCondition = 'red';
+            textComputerCondition = "Hỏng";
+            break;
+         default:
+            break;
+      }
+      return { colorComputerCondition, textComputerCondition };
+   },
 }
 
 export default util

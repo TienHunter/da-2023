@@ -65,5 +65,16 @@ export default {
       UserPending: "Chờ duyệt",
       UserActive: "Hoạt động",
       UserRevoked: "Đã thu hồi",
+   },
+   Computer: {
+      Name: "Têm máy",
+      MacAddress: "Địa chỉ mac",
+      Condition: "Tình trạng máy",
+      ConditionKey: {
+         Perfect: "Hoàn hảo",
+         Good: "Tốt",
+         Normal: "Bình thường",
+         Bad: "Hỏng"
+      }
    }
 }

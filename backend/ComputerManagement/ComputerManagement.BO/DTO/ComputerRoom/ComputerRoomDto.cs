@@ -24,11 +24,9 @@ namespace ComputerManagement.BO.DTO
         /// có đang được sử dụng không
         /// </summary>
         public bool Pending { get; set; }
-        public List<ComputerDto> Computers { get; set; } = new List<ComputerDto>();
         public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public CmEntityState CmEntityState { get; set; }
     }
 }

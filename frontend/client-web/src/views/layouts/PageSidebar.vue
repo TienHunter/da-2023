@@ -18,6 +18,12 @@
           <span>ComputerRoom</span>
         </router-link>
       </a-menu-item>
+      <a-menu-item key="Computer">
+        <router-link :to="{ name: 'ComputerList' }">
+          <desktop-outlined />
+          <span>Computer</span>
+        </router-link>
+      </a-menu-item>
       <a-menu-item key="User">
         <router-link :to="{ name: 'UserList' }">
           <user-outlined />

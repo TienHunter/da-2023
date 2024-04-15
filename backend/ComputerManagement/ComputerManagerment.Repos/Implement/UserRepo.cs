@@ -19,7 +19,7 @@ namespace ComputerManagerment.Repos.Implement
             
         }
 
-        public override async Task<(List<User> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<User>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<User>();

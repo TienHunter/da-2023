@@ -18,13 +18,11 @@ namespace ComputerManagement.Controllers.Web
             _baseService = baseService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("detail/{id}")]
         public virtual async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var rs = new ServiceResponse
-            {
-                Data = await _baseService.GetAsync(id)
-            };
+            var rs = new ServiceResponse();
+            rs.Data = await _baseService.GetAsync(id);
             return Ok(rs);
         }
 
@@ -52,7 +50,7 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public virtual async Task<IActionResult> Update([FromBody] TDto dto, [FromRoute] Guid id)
         {
             var rs = new ServiceResponse();

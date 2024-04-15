@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import routerAuth from "@/views/auth/routerAuth.js";
 import routerDashboard from "../views/dashboard/router.js";
 import routesComputerRoom from "../views/computer-room/route.js";
+import routesComputer from "../views/computer/route.js";
 import routeUser from "../views/user/route.js";
 import HelloWorld from "../components/HelloWorld.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
@@ -12,6 +13,7 @@ const routes = [
    ...routerDashboard,
    ...routesComputerRoom,
    ...routeUser,
+   ...routesComputer,
    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",

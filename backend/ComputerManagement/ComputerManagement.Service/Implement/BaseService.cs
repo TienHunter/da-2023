@@ -37,16 +37,16 @@ namespace ComputerManagement.Service.Implement
             _contextData = serviceProvider.GetService(typeof(ContextData)) as ContextData;
         }
 
-        public async Task<TDto> AddAsync(TDto dto)
+        public virtual async Task<Guid> AddAsync(TDto dto)
         {
             TModel? model = _mapper.Map<TModel>(dto);
-            await BeforeAddAsync(model);
+            var newId = await BeforeAddAsync(model);
             await this.ValidateBeforeAddAsync(model);
             var rs = await _baseRepo.AddAsync(model);
             if (rs)
             {
                 await AfterAddAsync(model);
-                return _mapper.Map<TDto>(model);
+                return newId;
             }
             else
             {
@@ -70,22 +70,24 @@ namespace ComputerManagement.Service.Implement
 
         }
 
-        public async Task BeforeAddAsync(TModel model)
+        public virtual async Task<Guid> BeforeAddAsync(TModel model)
         {
+            var newId = Guid.NewGuid();
             if (model is BaseModel)
             {
                 var baseModel = model as BaseModel;
 
-                baseModel.Id = Guid.NewGuid();
+                baseModel.Id = newId;
                 baseModel.CreatedBy = _contextData.Fullname;
                 baseModel.CreatedAt = DateTime.Now;
                 baseModel.UpdatedBy = _contextData.Fullname;
                 baseModel.UpdatedAt = DateTime.Now;
 
             }
+            return newId;
 
         }
-        public async Task BeforeUpdateAsync(TModel model)
+        public virtual async Task BeforeUpdateAsync(TModel model)
         {
             if (model is BaseModel)
             {
@@ -96,44 +98,27 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(Guid id)
         {
             var entityExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(entityExist);
             return await _baseRepo.DeleteAsync(entityExist);
         }
 
-        public async Task<TDto> GetAsync(Guid id)
+        public virtual async Task<TDto> GetAsync(Guid id)
         {
             var model = await _baseRepo.GetAsync(id);
-            if (model == null)
-            {
-                var nameCode = "NotFound" + nameof(TModel);
-                if (Enum.TryParse(typeof(ServiceResponseCode), nameCode, out object enumValue))
-                {
-                    ServiceResponseCode code = (ServiceResponseCode)enumValue;
-                    throw new BaseException
-                    {
-                        StatusCode = HttpStatusCode.NotFound,
-                        Code = code
-                    };
-                }
-                throw new BaseException
-                {
-                    StatusCode = HttpStatusCode.NotFound,
-                    Code = ServiceResponseCode.Error
-                };
-            }
+            this.CheckNullModel(model);
             return _mapper.Map<TDto>(model);
         }
-        public async Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam)
+        public virtual async Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam)
         {
             var (entities, totalCount) = await _baseRepo.GetListAsync(pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
             var dtos = _mapper.Map<List<TDto>>(entities);
             return (dtos, totalCount);
         }
 
-        public async Task<TDto> UpdateAsync(TDto dto, Guid id)
+        public virtual async Task<bool> UpdateAsync(TDto dto, Guid id)
         {
             var modelExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(modelExist);
@@ -144,7 +129,7 @@ namespace ComputerManagement.Service.Implement
             if (rs)
             {
                 await AfterUpdateAsync(modelExist);
-                return _mapper.Map<TDto>(modelExist);
+                return rs;
             }
             else
             {

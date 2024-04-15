@@ -24,7 +24,7 @@ class BaseService {
     * @returns 
     */
    async update(record, id) {
-      return await instance.put(`${this.getEndpoint()}/${id}`, record);
+      return await instance.put(`${this.getEndpoint()}/update/${id}`, record);
    }
 
    /**
@@ -36,7 +36,7 @@ class BaseService {
    }
 
    async getById(id) {
-      return await instance.get(`${this.getEndpoint()}/${id}`);
+      return await instance.get(`${this.getEndpoint()}/detail/${id}`);
    }
    async getList(params) {
       return await instance.post(`${this.getEndpoint()}/GetList`, params);

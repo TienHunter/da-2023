@@ -24,6 +24,10 @@ namespace ComputerManagement.Common.Enums
         UserPending=12,
         UserRevoked=13,
         Forbidden = 14,
+        ConflicMacAddress = 15,
+        MaxCapacityComputerRoom=16,
+        ConflicNameComputer = 17,
+
 
     }
 }

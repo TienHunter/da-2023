@@ -17,7 +17,12 @@ namespace ComputerManagerment.Repos.Implement
 
         }
 
-        public override async Task<(List<Computer> entities, int totalCount)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<Computer?> GetAsync(Guid id)
+        {
+            return await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
+        }
+
+        public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<Computer>();
@@ -48,13 +53,14 @@ namespace ComputerManagerment.Repos.Implement
             if (pageNumber > 0 && pageSize > 0)
             {
                 entities = await query
+                .Include(c => c.ComputerRoom)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.ToListAsync();
+                entities = await query.Include(c => c.ComputerRoom).ToListAsync();
             }
 
 

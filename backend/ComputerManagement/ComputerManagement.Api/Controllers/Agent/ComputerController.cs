@@ -10,20 +10,5 @@ namespace ComputerManagement.Api.Controllers.Agent
     public partial class ComputerController(IComputerService computerService) : BaseController<ComputerDto, Computer>(computerService)
     {
         private readonly IComputerService _computerService = computerService;
-
-        [HttpPut("update-state/{macAddress}")]
-        public async Task<IActionResult> UpdateStateByMacAddress([FromRoute] string macAddress)
-        {
-            var rs = new ServiceResponse();
-            rs.Data = await _computerService.UpdateStateByMacAddressAsync(macAddress);
-            return Ok(rs);
-        }
-        [HttpGet("{macAddress}")]
-        public async Task<IActionResult> GetCommputerByMacAddress([FromRoute] string macAddress)
-        {
-            var rs = new ServiceResponse();
-            rs.Data = await _computerService.GetComputerByMacAddress(macAddress);
-            return Ok(rs);
-        }
     }
 }
