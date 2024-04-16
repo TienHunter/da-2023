@@ -17,6 +17,7 @@ namespace ComputerManagement.Service.Implement
     public class ComputerRoomService : BaseService<ComputerRoomDto, ComputerRoom>, IComputerRoomService
     {
         private readonly IComputerRoomRepo _computerRoomRepo;
+        private readonly IComputerRepo _computerRepo;
         public ComputerRoomService(IServiceProvider serviceProvider, IComputerRoomRepo computerRoomRepo) : base(serviceProvider, computerRoomRepo)
         {
             _computerRoomRepo = computerRoomRepo;
@@ -33,6 +34,24 @@ namespace ComputerManagement.Service.Implement
                     StatusCode = HttpStatusCode.Conflict,
                     Code = ServiceResponseCode.ComputerRoomNameConflic
                 };
+            }
+        }
+
+        public virtual async Task BeforeMapUpdateAsync(ComputerRoomDto dto, ComputerRoom model)
+        {
+            if(dto.Row < model.Row || dto.Col < model.Col)
+            {
+                // check xem có bị miss máy không
+                var computer = await _computerRepo.GetQueryable().Where(c => c.ComputerRoomId == model.Id && (c.Row > dto.Row || c.Col > dto.Col)).FirstOrDefaultAsync();
+                if(computer != null)
+                {
+                    throw new BaseException
+                    {
+                        StatusCode = HttpStatusCode.Conflict,
+                        Code = ServiceResponseCode.ConflicRowColComputerRooom
+                    };
+                }
+               
             }
         }
     }

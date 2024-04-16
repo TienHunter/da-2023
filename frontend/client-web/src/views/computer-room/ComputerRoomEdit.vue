@@ -36,6 +36,12 @@
           <a-form-item :label="$t('ComputerRoom.Name')" name="name">
             <a-input v-model:value="formState.name" />
           </a-form-item>
+          <a-form-item :label="$t('ComputerRoom.Row')" name="row">
+            <a-input-number v-model:value="formState.row" :min="1" :max="10" />
+          </a-form-item>
+          <a-form-item :label="$t('ComputerRoom.Col')" name="col">
+            <a-input-number v-model:value="formState.col" :min="1" :max="10" />
+          </a-form-item>
           <a-form-item
             :label="$t('ComputerRoom.MaxCapacity')"
             name="maxCapacity"
@@ -83,8 +89,10 @@
   };
   let formState = reactive({
     name: "",
+    row: 4,
+    col: 10,
     maxCapacity: 0,
-    state: null,
+    state: 1,
   });
   const loading = reactive({
     isLoadingSave: false,
@@ -107,6 +115,18 @@
       {
         required: true,
         validator: validateName,
+        trigger: "change",
+      },
+    ],
+    row: [
+      {
+        required: true,
+        trigger: "change",
+      },
+    ],
+    col: [
+      {
+        required: true,
         trigger: "change",
       },
     ],

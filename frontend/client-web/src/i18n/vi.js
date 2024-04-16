@@ -40,6 +40,8 @@ export default {
    },
    ComputerRoom: {
       Name: "Tên phòng máy",
+      Row: "Số dãy",
+      Col: "Số máy trên dãy",
       MaxCapacity: "Số lượng máy tối đa",
       State: "Tình trang",
       StateHint: "Vui lòng chọn tình trạng phòng máy",

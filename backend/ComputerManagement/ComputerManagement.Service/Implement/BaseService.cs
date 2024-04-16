@@ -122,6 +122,7 @@ namespace ComputerManagement.Service.Implement
         {
             var modelExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(modelExist);
+            await BeforeMapUpdateAsync(dto, modelExist);
             _mapper.Map(dto, modelExist);
             await BeforeUpdateAsync(modelExist);
             await this.ValidateBeforeUpdateAsync(modelExist);
@@ -148,6 +149,9 @@ namespace ComputerManagement.Service.Implement
         }
 
         public virtual async Task ValidateBeforeUpdateAsync(TModel model)
+        {
+        }
+        public virtual async Task BeforeMapUpdateAsync(TDto dto,TModel model)
         {
         }
 

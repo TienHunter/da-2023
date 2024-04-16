@@ -28,22 +28,6 @@
         :loading="loading.loadingTable"
         @change="handleTableChange"
       >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
-            <router-link
-              :to="{ name: 'ComputerRoomView', params: { id: record.id } }"
-            >
-              {{ record.name }}
-            </router-link>
-          </template>
-          <template v-else-if="column.key === 'state'">
-            <span>
-              <a-tag :color="record.colorState">
-                {{ record.textState }}
-              </a-tag>
-            </span>
-          </template>
-        </template>
       </a-table>
     </div>
   </div>
@@ -67,15 +51,21 @@
       width: "200px",
     },
     {
-      title: "CurrentCapacity",
-      dataIndex: "currentCapacity",
-      key: "currentCapacity",
-      width: "150px",
+      title: "Số dãy",
+      dataIndex: "row",
+      key: "row",
+      width: "100px",
     },
     {
-      title: "MaxCapacity",
-      dataIndex: "maxCapacity",
-      key: "maxCapacity",
+      title: "Số lượng máy trên 1 dãy",
+      dataIndex: "col",
+      key: "col",
+      width: "200px",
+    },
+    {
+      title: "Số máy",
+      dataIndex: "capacity",
+      key: "capacity",
       width: "150px",
     },
     {
@@ -85,10 +75,10 @@
       width: "150px",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: "150px",
+      title: "Action",
+      dataIndex: "operation",
+      key: "operation",
+      width: "100px",
     },
   ];
   const pagingParam = reactive({
@@ -120,6 +110,9 @@
         dataSource.value = rs.data.list?.map((item) => {
           item.colorState = util.genColorState("state", item.state);
           item.textState = util.genTextState("state", item.state);
+          item.capacity = `${item.currentCapacity || 0}/${
+            item.maxCapacity || 0
+          }`;
           return item;
         });
 
@@ -184,6 +177,9 @@
   // ========== end methods ==========
 </script>
 <style scoped>
+  .container {
+    overflow: hidden;
+  }
   .table-operations {
     margin-bottom: 16px;
   }

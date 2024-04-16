@@ -27,6 +27,8 @@ namespace ComputerManagement.Common.Enums
         ConflicMacAddress = 15,
         MaxCapacityComputerRoom=16,
         ConflicNameComputer = 17,
+        ConflicRowColComputerRooom = 18,
+        ConflicRowColComputer = 19,
 
 
     }

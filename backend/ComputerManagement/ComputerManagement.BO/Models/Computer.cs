@@ -24,14 +24,14 @@ namespace ComputerManagement.BO.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// tọa độ x
+        /// vị trí dãy
         /// </summary>
-        public int PositionX { get; set; }
+        public int Row { get; set; }
 
         /// <summary>
-        /// tọa độ y
+        /// vị trí trong dãy
         /// </summary>
-        public int PositionY { get; set; }
+        public int Col { get; set; }
 
         /// <summary>
         /// trạng thái máy

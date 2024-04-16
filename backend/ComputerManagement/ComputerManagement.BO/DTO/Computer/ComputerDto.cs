@@ -17,8 +17,10 @@ namespace ComputerManagement.BO.DTO
         public string MacAddress { get; set; }
         [Required]
         public string Name { get; set; }
-        public int PositionX { get; set; }
-        public int PositionY { get; set; }
+        [Required]
+        public int Row { get; set; }
+        [Required]
+        public int Col { get; set; }
         public ComputerState State { get; set; }
         public DateTime StateTime { get; set; }
         public ComputerCondition Condition { get; set; }

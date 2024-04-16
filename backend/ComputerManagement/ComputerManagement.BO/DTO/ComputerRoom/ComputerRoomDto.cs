@@ -13,6 +13,16 @@ namespace ComputerManagement.BO.DTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+        /// <summary>
+        /// số dãy
+        /// </summary>
+        public int Row { get; set; }
+
+        /// <summary>
+        /// số máy trên 1 dãy
+        /// </summary>
+        public int Col { get; set; }
         public int MaxCapacity { get; set; }
         public int CurrentCapacity { get; set; }
         /// <summary>

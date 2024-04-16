@@ -110,6 +110,16 @@ namespace ComputerManagement.Service.Implement
             {
                 throw new BaseException { StatusCode = HttpStatusCode.Conflict, Code = ServiceResponseCode.ConflicNameComputer };
             }
+            // check postion computer
+            var computerByRowCol = await _computerRepo.GetQueryable().Where(c => c.Row == computer.Row && c.Col == computer.Col).FirstOrDefaultAsync();
+            if(computerByRowCol != null)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.Conflict,
+                    Code = ServiceResponseCode.ConflicRowColComputer
+                };
+            }
         }
     }
 }

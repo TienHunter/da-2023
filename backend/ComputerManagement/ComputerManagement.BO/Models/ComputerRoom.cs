@@ -10,8 +10,29 @@ namespace ComputerManagement.BO.Models
     [Table("computer_room")]
     public class ComputerRoom : BaseModel
     {
+        /// <summary>
+        /// tên phòng máy
+        /// </summary>
         public string Name { get; set; }
+        
+        /// <summary>
+        /// số dãy
+        /// </summary>
+        public int Row { get;set; }
+        
+        /// <summary>
+        /// số máy trên 1 dãy
+        /// </summary>
+        public int Col { get;set; }
+
+        /// <summary>
+        /// số máy tối đa
+        /// </summary>
         public int MaxCapacity { get; set; }
+
+        /// <summary>
+        /// số máy hiện tại
+        /// </summary>
         public int CurrentCapacity { get; set; }
         /// <summary>
         /// tình trạng

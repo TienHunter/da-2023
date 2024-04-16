@@ -25,6 +25,7 @@ namespace ComputerManagement.Service.Interface
         Task ValidateBeforeAddAsync(TModel model);
         Task ValidateBeforeUpdateAsync(TModel model);
         Task ValidateBeforeDeleteAsync(TModel model);
+        Task BeforeMapUpdateAsync(TDto dto, TModel model);
         Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam);
     }
 }
