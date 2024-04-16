@@ -3,7 +3,7 @@
     <PageSidebar />
     <a-layout>
       <PageHeader />
-      <a-layout-content style="margin: 16px">
+      <a-layout-content style="padding: 16px; height: calc(100vh - 48px)">
         <slot></slot>
       </a-layout-content>
     </a-layout>

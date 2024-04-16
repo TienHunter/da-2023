@@ -25,9 +25,40 @@
         }"
         :data-source="dataSource"
         :pagination="pagination"
+        :scroll="scrollConfig"
         :loading="loading.loadingTable"
         @change="handleTableChange"
       >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'name'">
+            <router-link
+              :to="{ name: 'ComputerRoomView', params: { id: record.id } }"
+            >
+              {{ record.name }}
+            </router-link>
+          </template>
+          <template v-else-if="column.key === 'state'">
+            <span>
+              <a-tag :color="record.colorState">
+                {{ record.textState }}
+              </a-tag>
+            </span>
+          </template>
+          <template v-else-if="column.key === 'operation'">
+            <div class="flex gap-2">
+              <a-button round>
+                <template #icon>
+                  <EditOutlined />
+                </template>
+              </a-button>
+              <a-button round class="bg-red-200">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+              </a-button>
+            </div>
+          </template>
+        </template>
       </a-table>
     </div>
   </div>
@@ -37,6 +68,7 @@
   import { useRouter } from "vue-router";
   import { computerRoomService } from "../../api";
   import util from "@/utils/util";
+  import _ from "lodash";
   // ========== start state ==========
   const router = useRouter();
   const loading = reactive({
@@ -79,6 +111,7 @@
       dataIndex: "operation",
       key: "operation",
       width: "100px",
+      fixed: "right",
     },
   ];
   const pagingParam = reactive({
@@ -95,7 +128,8 @@
     pageSize: pagingParam.pageSize,
     showTotal: (total) => `Total ${total} items`,
   }));
-  let dataSource = ref([]);
+  const dataSource = ref([]);
+  const scrollConfig = ref({ x: 800, y: 300 });
   const selectRows = reactive({
     selectedRowKeys: [],
   });
@@ -107,7 +141,7 @@
       loading.loadingTable = true;
       let rs = await computerRoomService.getList(pagingParam);
       if (rs.success && rs.data) {
-        dataSource.value = rs.data.list?.map((item) => {
+        let temp = rs.data.list?.map((item) => {
           item.colorState = util.genColorState("state", item.state);
           item.textState = util.genTextState("state", item.state);
           item.capacity = `${item.currentCapacity || 0}/${
@@ -115,7 +149,7 @@
           }`;
           return item;
         });
-
+        dataSource.value = _.cloneDeep(temp);
         pagingParam.total = rs.data.total || 0;
       }
     } catch (error) {
@@ -176,15 +210,16 @@
   // };
   // ========== end methods ==========
 </script>
-<style scoped>
+<style lang="scss" scoped>
   .container {
     overflow: hidden;
-  }
-  .table-operations {
-    margin-bottom: 16px;
-  }
+    height: 100%;
+    .table-operations {
+      margin-bottom: 16px;
+    }
 
-  .table-operations > button {
-    margin-right: 8px;
+    .table-operations > button {
+      margin-right: 8px;
+    }
   }
 </style>
