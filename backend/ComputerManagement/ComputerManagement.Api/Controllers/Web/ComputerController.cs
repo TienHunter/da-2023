@@ -13,13 +13,5 @@ namespace ComputerManagement.Controllers.Web
         {
             _computerService = computerService;
         }
-
-        [HttpGet("{macAddress}")]
-        public async Task<IActionResult> GetCommputerByMacAddress([FromRoute] string macAddress)
-        {
-            var rs = new ServiceResponse();
-            rs.Data = await _computerService.GetComputerByMacAddress(macAddress);
-            return Ok();
-        }
     }
 }

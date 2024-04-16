@@ -29,6 +29,5 @@ namespace ComputerManagement.BO.DTO
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public CmEntityState CmEntityState { get; set; }
     }
 }

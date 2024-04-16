@@ -12,6 +12,5 @@ namespace ComputerManagement.API.Controllers.Agent
     public abstract partial class BaseController<TDto, TModel>(IBaseService<TDto, TModel> baseService) : ControllerBase
     {
         protected IBaseService<TDto, TModel> _baseService = baseService;
-
     }
 }

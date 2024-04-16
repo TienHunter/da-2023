@@ -19,7 +19,5 @@ namespace ComputerManagement.BO.Models
         public string? UpdatedBy { get; set;}
         public DateTime UpdatedAt { get; set;}
 
-        [NotMapped]
-        public CmEntityState CmEntityState { get; set; } =  CmEntityState.Add;
     }
 }
