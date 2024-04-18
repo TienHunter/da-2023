@@ -1,18 +1,10 @@
 <template>
   <div class="contailer">
     <div class="toolbars flex justify-between py-4 rounded">
-      <div class="toolbars-left">
-        <router-link :to="{ name: 'UserList' }">
-          <a-button shape="circle">
-            <template #icon>
-              <ArrowLeftOutlined />
-            </template>
-          </a-button>
-        </router-link>
-      </div>
+      <div class="toolbars-left"></div>
       <div class="toolbars-right flex gap-2">
         <router-link
-          :to="{ name: 'UserEdit', params: { id: route.params.id } }"
+          :to="{ name: 'ComputerRoomEdit', params: { id: route.params.id } }"
         >
           <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
         </router-link>
@@ -31,24 +23,24 @@
             </a-col>
 
             <a-col
-              v-else-if="field.key == 'roleID'"
-              class="gutter-row"
-              :span="18"
-            >
-              <div class="gutter-box">
-                <a-tag :color="data.colorUserRole">
-                  {{ data.textUserRole }}
-                </a-tag>
-              </div>
-            </a-col>
-            <a-col
               v-else-if="field.key == 'state'"
               class="gutter-row"
               :span="18"
             >
               <div class="gutter-box">
-                <a-tag :color="data.colorUserState">
-                  {{ data.textUserState }}
+                <a-tag :color="data.colorState">
+                  {{ data.textState }}
+                </a-tag>
+              </div>
+            </a-col>
+            <a-col
+              v-else-if="field.key == 'pending'"
+              class="gutter-row"
+              :span="18"
+            >
+              <div class="gutter-box">
+                <a-tag :color="data.colorPending">
+                  {{ data.textPending }}
                 </a-tag>
               </div>
             </a-col>
@@ -63,7 +55,7 @@
   </div>
 </template>
 <script setup>
-  import { userService } from "@/api";
+  import { computerRoomService } from "@/api";
   import { ref, reactive, onBeforeMount } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import _ from "lodash";
@@ -74,24 +66,29 @@
   const router = useRouter();
   const fields = reactive([
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Layout",
+      dataIndex: "layout",
+      key: "layout",
     },
     {
-      title: "Role",
-      dataIndex: "roleID",
-      key: "roleID",
+      title: "Capacity",
+      dataIndex: "capacity",
+      key: "capacity",
     },
     {
       title: "State",
       dataIndex: "state",
       key: "state",
+    },
+    {
+      title: "Pending",
+      dataIndex: "pending",
+      key: "pending",
     },
   ]);
   let data = ref({});
@@ -101,31 +98,41 @@
   onBeforeMount(async () => {
     try {
       loading.isLoadingBeforeMount = true;
-      let user = await userService.getById(route.params.id);
-      if (user?.success && user?.data) {
-        const { colorUserState, textUserState } = util.getViewUserState(
-          user.data.state
+      let computerRoom = await computerRoomService.getById(route.params.id);
+      if (computerRoom?.success && computerRoom?.data) {
+        computerRoom.data.colorState = util.genColorState(
+          "state",
+          computerRoom.data.state
         );
-        user.data.colorUserState = colorUserState;
-        user.data.textUserState = textUserState;
-        const { colorUserRole, textUserRole } = util.getViewUserRole(
-          user.data.roleID
+        computerRoom.data.textState = util.genTextState(
+          "state",
+          computerRoom.data.state
         );
-        user.data.colorUserRole = colorUserRole;
-        user.data.textUserRole = textUserRole;
-        data.value = _.cloneDeep(user.data);
+        computerRoom.data.capacity = `${
+          computerRoom.data.currentCapacity || 0
+        }/${computerRoom.data.maxCapacity || 0}`;
+        computerRoom.data.colorPending = computerRoom.data.pending
+          ? "orange"
+          : "green";
+        computerRoom.data.textPending = computerRoom.data.pending
+          ? "chật"
+          : "trống";
+        computerRoom.data.layout = `${computerRoom.data.row || 0} x ${
+          computerRoom.data.col || 0
+        }`;
+        data.value = _.cloneDeep(computerRoom.data);
       }
     } catch (error) {
       console.log(error);
       switch (error.code) {
-        case ResponseCode.NotFoundUser:
-          message.error($t("User.NotFoundUser"));
+        case ResponseCode.NotFoundComputerRoom:
+          message.error($t("ComputerRoom.Validate.NotFound"));
           break;
         default:
           message.error($t("UnKnowError"));
           break;
       }
-      router.push({ name: "UserList" });
+      router.push({ name: "ComputerRoomList" });
     } finally {
       loading.isLoadingBeforeMount = false;
     }

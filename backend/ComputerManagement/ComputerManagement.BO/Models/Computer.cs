@@ -46,7 +46,7 @@ namespace ComputerManagement.BO.Models
         /// <summary>
         /// tình trạng máy
         /// </summary>
-        public ComputerCondition Condition { get; set; }
+        public string ListErrorId { get; set; } = "";
 
         [ForeignKey("ComputerRoom")]
         public Guid ComputerRoomId { get; set; }

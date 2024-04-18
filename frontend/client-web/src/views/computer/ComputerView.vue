@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="contailer">
     <div class="content">
       <a-tabs v-model:activeKey="activeKey">

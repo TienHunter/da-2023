@@ -48,7 +48,7 @@ namespace ComputerManagement.Service.Implement
         public override async Task<Guid> AddAsync(ComputerDto computerDto)
         {
             var computer = _mapper.Map<Computer>(computerDto);
-            var newId  = await base.BeforeAddAsync(computer);
+            var newId = await base.BeforeAddAsync(computer);
             var isSaveSuccess = false;
             // validate before add
             await this.ValidateBeforeAddAsync(computer);
@@ -59,7 +59,7 @@ namespace ComputerManagement.Service.Implement
                                                 StatusCode = HttpStatusCode.NotFound,
                                                 Code = ServiceResponseCode.NotFoundComputerRoom
                                             };
-            if(computerRoom.CurrentCapacity + 1 > computerRoom.MaxCapacity)
+            if (computerRoom.CurrentCapacity + 1 > computerRoom.MaxCapacity)
             {
                 throw new BaseException
                 {
@@ -81,13 +81,13 @@ namespace ComputerManagement.Service.Implement
                     await base.AfterSaveAsync(computer);
                 }
             }
-            catch 
+            catch
             {
                 await _uow.RollbackAsync();
                 throw new BaseException
                 {
-                   StatusCode = HttpStatusCode.InternalServerError,
-                   Code = ServiceResponseCode.Error
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Code = ServiceResponseCode.Error
                 };
             }
 
@@ -112,7 +112,7 @@ namespace ComputerManagement.Service.Implement
             }
             // check postion computer
             var computerByRowCol = await _computerRepo.GetQueryable().Where(c => c.Row == computer.Row && c.Col == computer.Col).FirstOrDefaultAsync();
-            if(computerByRowCol != null)
+            if (computerByRowCol != null)
             {
                 throw new BaseException
                 {
@@ -120,6 +120,13 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.ConflicRowColComputer
                 };
             }
+        }
+
+        public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
+        {
+            var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
+
+            return _mapper.Map<List<ComputerDto>>(computers);
         }
     }
 }

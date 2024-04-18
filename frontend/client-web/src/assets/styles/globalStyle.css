@@ -1,116 +1,103 @@
 @import url(./tailwind/tailwind-utilities.css);
 @import url(./tailwind/tailwind-custom.css);
+
 * {
-   box-sizing: border-box;
-   padding: 0;
-   margin: 0;
- }
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 
- :root {
-   font-size: 16px;
-   --font-family: "notosans";
-   --primary-color: #50b83c;
-   --sidebar-background-color: #020a01;
-   /* --main-background-color: #eceef1; */
-   --main-background-color: #e4e9e7;
-   --height-header: 48px;
-   --border-radius: 2px;
-   --width-sidebar: 178px;
-   --width-sidebar--shrink: 52px;
-   --overview-height: 50px;
-   --overview-label-size: 12px;
+:root {
+  font-size: 16px;
+  --font-family: "notosans";
+  --primary-color: #50b83c;
+  --sidebar-background-color: #020a01;
+  /* --main-background-color: #eceef1; */
+  --main-background-color: #e4e9e7;
+  --height-header: 48px;
+  --border-radius: 2px;
+  --width-sidebar: 178px;
+  --width-sidebar--shrink: 52px;
+  --overview-height: 50px;
+  --overview-label-size: 12px;
 
- }
- body {
+}
+
+body {
   height: 100vh;
- }
+}
 
- .toast-message {
-   right: 100px;
- }
+.toast-message {
+  right: 100px;
+}
 
- /* Define scrollbar styles */
- ::-webkit-scrollbar {
-   width: 12px;
-   height: 12px;
-   /* Set the width of the scrollbar */
- }
+/* Define scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  /* Set the width of the scrollbar */
+}
 
- /* Handle on hover */
- ::-webkit-scrollbar-thumb:hover {
-   background: #666;
- }
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
 
- /* Set background of scrollbar track */
- ::-webkit-scrollbar-track {
-   background: #f1f1f1;
- }
+/* Set background of scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
 
- /* Set the color of the scrollbar handle */
- ::-webkit-scrollbar-thumb {
-   background: #ccc;
- }
+/* Set the color of the scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
 
- /* Set the color of the scrollbar track */
- ::-webkit-scrollbar-track-piece {
-   background: #f1f1f1;
- }
+/* Set the color of the scrollbar track */
+::-webkit-scrollbar-track-piece {
+  background: #f1f1f1;
+}
 
- /* Set the color of the scrollbar corner */
- ::-webkit-scrollbar-corner {
-   background: #f1f1f1;
- }
+/* Set the color of the scrollbar corner */
+::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
 
- /* Handle on active state */
- ::-webkit-scrollbar-thumb:active {
-   background: #333;
- }
+/* Handle on active state */
+::-webkit-scrollbar-thumb:active {
+  background: #333;
+}
 
- .group:hover .group-hover\:block {
+.group:hover .group-hover\:block {
   display: block;
- }
-
-
- /* .drag-card>div {
-background-color: red;
-  opacity: 1;
- } */
- .chosen-card {
-  opacity: 1 !important;
- }
- /* .chosen-card>div {
-  background-color: green;
-  opacity: 1 !important;
- } */ 
- .sortable-ghost{
-  opacity: 0.5;
-  background: lightgray;
-  border-radius: 6px;
 }
-.sortable-ghost > div {
-  visibility: hidden;
-  opacity: 0;
-}
+
 .center-y {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .center-x {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .top-1 {
   top: 0.25rem;
 }
+
 .right-1 {
-  right:0.25rem
+  right: 0.25rem
 }
+
 .left-\[1000rem\] {
-  left:1000rem
+  left: 1000rem
 }
+
 .min-w-5 {
   min-width: 5rem;
 }
+
 .mask {
   position: fixed;
   top: 0;
@@ -120,24 +107,31 @@ background-color: red;
   background-color: #88888888;
   z-index: 99;
 }
+
 .top-4 {
-  top:1rem;
+  top: 1rem;
 }
-.left-4{
+
+.left-4 {
   left: 1rem;
 }
+
 .scale-1\.5 {
   transform: scale(1.5);
 }
+
 .font-5 {
   font-size: 1.25rem;
 }
+
 .font-6 {
   font-size: 1.5rem;
 }
+
 .top-n8 {
   top: -2rem;
 }
+
 .top-n12 {
   top: -3rem;
 }

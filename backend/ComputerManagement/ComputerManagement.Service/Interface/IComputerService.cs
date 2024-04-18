@@ -23,5 +23,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="macAddress"></param>
         /// <returns></returns>
         Task<bool> UpdateStateByMacAddressAsync(string macAddress);
+
+        /// <summary>
+        /// Lấy danh sách computer theo computerRoomId
+        /// </summary>
+        /// <param name="computerRoomId"></param>
+        /// <returns></returns>
+        Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam);
     }
 }

@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="container">
     <div class="table-operations flex justify-between">
       <div class="operations-left"></div>

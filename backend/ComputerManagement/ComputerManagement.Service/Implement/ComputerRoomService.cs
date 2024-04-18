@@ -37,7 +37,7 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
-        public virtual async Task BeforeMapUpdateAsync(ComputerRoomDto dto, ComputerRoom model)
+        public virtual async Task ValidateBeforeMapUpdateAsync(ComputerRoomDto dto, ComputerRoom model)
         {
             if(dto.Row < model.Row || dto.Col < model.Col)
             {

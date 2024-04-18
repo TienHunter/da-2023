@@ -6,6 +6,7 @@ export default {
    Cancel: "Hủy",
    Edit: "Sửa",
    NotFound: "Không tìm thấy tài nguyên",
+   SaveSuccess: "Lưu thành công",
    auth: {
       Login: "Đăng nhập",
       UsernameHint: "Tài khoản hoặc email",
@@ -49,10 +50,19 @@ export default {
          NameRequired: "Vui lòng nhập tên phòng máy",
          NameConflic: "Tên phòng máy đã tồn tại",
          MaxCapacityRequired: "Vui lòng nhập sô lượng máy tối đa",
-         MaxCapacityRange: "Só lượng máy tối đa phải trong khoảng 1 - 1000",
+         MaxCapacityRange: "Só lượng máy tối đa phải trong khoảng 1 - 100",
          StateRequired: "Vui lòng chọn tình trạng phòng máy",
          NotFound: "Không tìm thấy phòng máy",
-      }
+         RowRequired: "Vui lòng nhập số dãy",
+         ColRequired: "Vui lòng nhập sô máy trên 1 dãy",
+         RowRange: "Số dãy trong khoảng {0} - {1}",
+         ColRange: "Số máy trên 1 dãy trong khoảng {0} - {1}",
+         IntegerType: "{0} là kiểu số nguyên",
+         Required: "Vui lòng nhập {0}",
+         Range: "{0} trong khoảng {1} - {2}"
+
+      },
+      DeleteSuccess: "Xóa phòng máy {0} thành công"
    },
    User: {
       Username: "Tài khoản",

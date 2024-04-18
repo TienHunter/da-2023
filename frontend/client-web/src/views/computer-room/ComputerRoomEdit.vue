@@ -15,11 +15,11 @@
           <a-button
             type="primary"
             ghost
-            @click="onSubmit"
+            @click="onSubmit(1)"
             :loading="loading.isLoadingSave"
             >{{ $t("Save") }}</a-button
           >
-          <a-button type="primary" @click="onSubmit">{{
+          <a-button type="primary" @click="onSubmit(2)">{{
             $t("SaveAndAdd")
           }}</a-button>
           <a-button @click="resetForm">{{ $t("Cancel") }}</a-button>
@@ -37,20 +37,16 @@
             <a-input v-model:value="formState.name" />
           </a-form-item>
           <a-form-item :label="$t('ComputerRoom.Row')" name="row">
-            <a-input-number v-model:value="formState.row" :min="1" :max="10" />
+            <a-input-number v-model:value="formState.row" />
           </a-form-item>
           <a-form-item :label="$t('ComputerRoom.Col')" name="col">
-            <a-input-number v-model:value="formState.col" :min="1" :max="10" />
+            <a-input-number v-model:value="formState.col" />
           </a-form-item>
           <a-form-item
             :label="$t('ComputerRoom.MaxCapacity')"
             name="maxCapacity"
           >
-            <a-input-number
-              v-model:value="formState.maxCapacity"
-              :min="1"
-              :max="1000"
-            />
+            <a-input-number v-model:value="formState.maxCapacity" />
           </a-form-item>
           <a-form-item :label="$t('ComputerRoom.State')" name="state">
             <a-select
@@ -68,7 +64,7 @@
   </a-spin>
 </template>
 <script setup>
-  import { reactive, ref, toRaw, onBeforeMount } from "vue";
+  import { reactive, ref, onBeforeMount } from "vue";
   import {
     useRoute,
     onBeforeRouteUpdate,
@@ -91,7 +87,7 @@
     name: "",
     row: 4,
     col: 10,
-    maxCapacity: 0,
+    maxCapacity: 40,
     state: 1,
   });
   const loading = reactive({
@@ -109,7 +105,72 @@
       return Promise.resolve();
     }
   };
-
+  const checkRow = async (_rule, value) => {
+    if (!value) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.Row")])
+      );
+    }
+    if (!Number.isInteger(value)) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.IntegerType", [$t("ComputerRoom.Row")])
+      );
+    } else {
+      if (value < 1 || value > 10) {
+        return Promise.reject(
+          $t("ComputerRoom.Validate.Range", [$t("ComputerRoom.Row"), 1, 10])
+        );
+      } else {
+        return Promise.resolve();
+      }
+    }
+  };
+  const checkCol = async (_rule, value) => {
+    if (!value) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.Col")])
+      );
+    }
+    if (!Number.isInteger(value)) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.IntegerType", [$t("ComputerRoom.Col")])
+      );
+    } else {
+      if (value < 1 || value > 10) {
+        return Promise.reject(
+          $t("ComputerRoom.Validate.Range", [$t("ComputerRoom.Col"), 1, 10])
+        );
+      } else {
+        return Promise.resolve();
+      }
+    }
+  };
+  const checkMaxCapacity = async (_rule, value) => {
+    if (!value) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.MaxCapacity")])
+      );
+    }
+    if (!Number.isInteger(value)) {
+      return Promise.reject(
+        $t("ComputerRoom.Validate.IntegerType", [
+          $t("ComputerRoom.MaxCapacity"),
+        ])
+      );
+    } else {
+      if (value < 1 || value > 100) {
+        return Promise.reject(
+          $t("ComputerRoom.Validate.Range", [
+            $t("ComputerRoom.MaxCapacity"),
+            1,
+            100,
+          ])
+        );
+      } else {
+        return Promise.resolve();
+      }
+    }
+  };
   const rules = {
     name: [
       {
@@ -120,20 +181,19 @@
     ],
     row: [
       {
-        required: true,
+        validator: checkRow,
         trigger: "change",
       },
     ],
     col: [
       {
-        required: true,
+        validator: checkCol,
         trigger: "change",
       },
     ],
     maxCapacity: [
       {
-        required: true,
-        message: $t("ComputerRoom.Validate.MaxCapacityRequired"),
+        validator: checkMaxCapacity,
         trigger: "change",
       },
     ],
@@ -170,22 +230,27 @@
     }
   });
 
-  const onSubmit = async () => {
+  const onSubmit = async (key) => {
     let passValidate = false;
     try {
       loading.isLoadingSave = true;
       await formRef.value.validate();
       passValidate = true;
       try {
-        let computer =
+        let rs =
           route.meta.formMode === FormMode.Update
             ? await computerRoomService.update(formState, route.params.id)
             : await computerRoomService.add(formState);
-        if (computer?.success && computer?.data) {
-          router.push({
-            name: "ComputerRoomView",
-            params: { id: computer.id },
-          });
+        if (rs?.success && rs?.data) {
+          message.success($t("SaveSuccess"));
+          if (key == 1) {
+            router.push({
+              name: "ComputerRoomView",
+              params: { id: rs.data },
+            });
+          } else {
+            resetForm();
+          }
         }
       } catch (error) {
         console.log(error);

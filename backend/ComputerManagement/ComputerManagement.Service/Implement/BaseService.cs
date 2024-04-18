@@ -55,21 +55,6 @@ namespace ComputerManagement.Service.Implement
 
         }
 
-        public async Task AfterAddAsync(TModel entity)
-        {
-
-        }
-
-        public virtual async Task AfterSaveAsync(TModel entity)
-        {
-
-        }
-
-        public virtual async Task AfterUpdateAsync(TModel entity)
-        {
-
-        }
-
         public virtual async Task<Guid> BeforeAddAsync(TModel model)
         {
             var newId = Guid.NewGuid();
@@ -122,7 +107,7 @@ namespace ComputerManagement.Service.Implement
         {
             var modelExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(modelExist);
-            await BeforeMapUpdateAsync(dto, modelExist);
+            await ValidateBeforeMapUpdateAsync(dto, modelExist);
             _mapper.Map(dto, modelExist);
             await BeforeUpdateAsync(modelExist);
             await this.ValidateBeforeUpdateAsync(modelExist);
@@ -138,22 +123,6 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
-        public virtual async Task ValidateBeforeAddAsync(TModel model)
-        {
-
-        }
-
-        public virtual async Task ValidateBeforeDeleteAsync(TModel model)
-        {
-
-        }
-
-        public virtual async Task ValidateBeforeUpdateAsync(TModel model)
-        {
-        }
-        public virtual async Task BeforeMapUpdateAsync(TDto dto,TModel model)
-        {
-        }
 
         protected void CheckNullModel(TModel? model)
         {
@@ -177,5 +146,50 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
+        public async Task AfterAddAsync(TModel entity)
+        {
+
+        }
+
+        public virtual async Task AfterSaveAsync(TModel entity)
+        {
+
+        }
+
+        public virtual async Task AfterUpdateAsync(TModel entity)
+        {
+
+        }
+
+        public virtual async Task ValidateBeforeAddAsync(TModel model)
+        {
+
+        }
+
+        public virtual async Task ValidateBeforeDeleteAsync(TModel model)
+        {
+
+        }
+
+        public virtual async Task ValidateBeforeUpdateAsync(TModel model)
+        {
+        }
+        public virtual async Task ValidateBeforeMapUpdateAsync(TDto dto, TModel model)
+        {
+        }
+
+        public virtual async Task ValidateBeforeDeleteRangeAsync(List<TModel> models)
+        {
+            
+        }
+
+        public async Task<bool> DeleteRangeAsync(List<Guid> ids)
+        {
+            var models = await _baseRepo.GetListByIdsAsync(ids);
+
+            await this.ValidateBeforeDeleteRangeAsync(models);
+
+            return await _baseRepo.DeleteRangeAsync(models);
+        }
     }
 }

@@ -1,19 +1,9 @@
 <template>
   <div class="container">
     <div class="table-operations flex justify-between">
-      <div class="operations-left"></div>
-      <div class="operations-right flex gap-2">
-        <a-input-search
-          v-model:value="pagingParam.keySearch"
-          placeholder="input search text"
-          style="width: 200px"
-          :loading="loading.loadingInputSearch"
-          @search="onSearch"
-        />
-        <router-link :to="{ name: 'ComputerRoomAdd' }">
-          <a-button type="primary">{{ $t("Add") }}</a-button>
-        </router-link>
+      <div class="operations-left">
       </div>
+      <div class="operations-right"></div>
     </div>
     <div class="content">
       <a-table
@@ -24,24 +14,36 @@
           onChange: onSelectChange,
         }"
         :data-source="dataSource"
-        :pagination="pagination"
+        :pagination="false"
         :scroll="scrollConfig"
         :loading="loading.loadingTable"
         @change="handleTableChange"
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
+          <template v-if="column.key === 'macAddress'">
             <router-link
-              :to="{ name: 'ComputerRoomView', params: { id: record.id } }"
+              :to="{ name: 'ComputerView', params: { id: record.id } }"
             >
-              {{ record.name }}
+              {{ record.macAddress }}
             </router-link>
           </template>
           <template v-else-if="column.key === 'state'">
             <span>
-              <a-tag :color="record.colorState">
-                {{ record.textState }}
+              <a-tag :color="record.colorComputerState">
+                {{ record.textComputerState }}
               </a-tag>
+            </span>
+          </template>
+          <template v-else-if="column.key === 'condition'">
+            <span>
+              <a-tag :color="record.colorComputerCondition">
+                {{ record.textComputerCondition }}
+              </a-tag>
+            </span>
+          </template>
+          <template v-else-if="column.key === 'computerRoomName'">
+            <span>
+              {{ record?.computerRoom?.name }}
             </span>
           </template>
           <template v-else-if="column.key === 'operation'">
@@ -51,7 +53,7 @@
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200" @click="onDelete(record)">
+              <a-button round class="bg-red-200">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -59,6 +61,7 @@
             </div>
           </template>
         </template>
+        <template #footer> {{ showTotal }} </template>
       </a-table>
     </div>
   </div>
@@ -66,14 +69,18 @@
 </template>
 <script setup>
   import { computed, h, onBeforeMount, reactive, ref } from "vue";
-  import { useRouter } from "vue-router";
-  import { computerRoomService } from "../../api";
+  import { useRoute, useRouter } from "vue-router";
+  import { computerService } from "../../api";
   import util from "@/utils/util";
   import _ from "lodash";
   import { Modal, message } from "ant-design-vue";
   import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+  import moment from "moment";
+  import { FormatDateKey } from "@/constants";
   // ========== start state ==========
   const router = useRouter();
+  const route = useRoute();
+
   const [modal, contextHolder] = Modal.useModal();
   const loading = reactive({
     loadingTable: false,
@@ -84,71 +91,59 @@
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: "200px",
-      sorter: true,
-      fixed: "left",
-    },
-    {
-      title: "Số dãy",
-      dataIndex: "row",
-      key: "row",
       width: "100px",
-      filters: [
-        {
-          text: "Male",
-          value: "male",
-        },
-        {
-          text: "Female",
-          value: "female",
-        },
-      ],
     },
     {
-      title: "Số lượng máy trên 1 dãy",
-      dataIndex: "col",
-      key: "col",
-      width: "160px",
+      title: "MacAddress",
+      dataIndex: "macAddress",
+      key: "macAddress",
+      width: "150px",
       ellipsis: true,
     },
     {
-      title: "Số máy",
-      dataIndex: "capacity",
-      key: "capacity",
-      width: "150px",
+      title: "ComputerRoomName",
+      dataIndex: "computerRoomName",
+      key: "computerRoomName",
+      width: "100px",
+      ellipsis: true,
     },
     {
       title: "State",
       dataIndex: "state",
       key: "state",
+      width: "100px",
+    },
+    {
+      title: "StateTime",
+      dataIndex: "stateTime",
+      key: "stateTime",
       width: "150px",
     },
     {
-      title: "Action",
-      dataIndex: "operation",
-      key: "operation",
+      title: "Errors",
+      dataIndex: "errors",
+      key: "errors",
       width: "100px",
+    },
+    {
+      title: "Action",
+      key: "operation",
       fixed: "right",
+      width: 100,
     },
   ];
+  const dataSource = ref([]);
+  const showTotal = computed(
+    () => `Total ${dataSource.value?.length || 0} items`
+  );
+  const scrollConfig = ref({ x: 1200, y: 360 });
+  const selectRows = reactive({
+    selectedRowKeys: [],
+  });
   const pagingParam = reactive({
-    pageSize: 10,
-    pageNumber: 1,
     keySearch: "",
     fieldSort: "UpdatedAt",
     sortAsc: false,
-    total: 0,
-  });
-  const pagination = computed(() => ({
-    total: pagingParam.total,
-    current: pagingParam.pageNumber,
-    pageSize: pagingParam.pageSize,
-    showTotal: (total) => `Total ${total} items`,
-  }));
-  const dataSource = ref([]);
-  const scrollConfig = ref({ x: 1200, y: 400 });
-  const selectRows = reactive({
-    selectedRowKeys: [],
   });
   // ========== end state ==========
 
@@ -162,18 +157,22 @@
   const loadData = async () => {
     try {
       loading.loadingTable = true;
-      let rs = await computerRoomService.getList(pagingParam);
+      let rs = await computerService.getListByComputerRoomId(
+        route.params.id,
+        pagingParam
+      );
       if (rs.success && rs.data) {
-        let temp = rs.data.list?.map((item) => {
-          item.colorState = util.genColorState("state", item.state);
-          item.textState = util.genTextState("state", item.state);
-          item.capacity = `${item.currentCapacity || 0}/${
-            item.maxCapacity || 0
-          }`;
+        let datas = rs.data.map((item) => {
+          const { colorComputerState, textComputerState } =
+            util.getViewComputerState(item.state);
+          item.colorComputerState = colorComputerState;
+          item.textComputerState = textComputerState;
+          item.stateTime = item.stateTime
+            ? moment(item.stateTime).format(FormatDateKey.Default)
+            : "";
           return item;
         });
-        dataSource.value = _.cloneDeep(temp);
-        pagingParam.total = rs.data.total || 0;
+        dataSource.value = _.cloneDeep(datas);
       }
     } catch (error) {
       console.log(error);
@@ -196,11 +195,6 @@
       filters
     );
 
-    pagingParam.pageNumber = pag?.current || 1;
-    pagingParam.pageSize = pag.pageSize;
-    pagingParam.fieldSort = sorter.field;
-    pagingParam.sortAsc = sorter.order == "ascend" ? true : false;
-
     await loadData();
   };
 
@@ -214,32 +208,18 @@
   };
 
   /**
-   * sự kiện tìm kiếm ở ô input search
-   * @param {*} searchValue
-   */
-  const onSearch = (searchValue) => {
-    console.log("use value", searchValue);
-  };
-
-  /**
    * xóa bản ghi
    */
   const onDelete = (record) => {
     modal.confirm({
       title: "Cảnh báo",
       icon: h(ExclamationCircleOutlined),
-      content: h("div", [
-        `Bạn có chắc chắn muốn xóa phòng máy ${record.name}.`,
-        h("br"),
-        `Khi xóa phòng
-          máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
-          xóa đi.`,
-      ]),
+      content: h("div", [`Bạn có chắc chắn muốn xóa máy ${record.name}.`]),
       okText: "Yes",
       okType: "danger",
       async onOk() {
         try {
-          let rs = await computerRoomService.delete(record.id);
+          let rs = await computerService.delete(record.id);
           if (rs?.success && rs?.data) {
             message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
             if (dataSource.value.length > 1) {
@@ -265,7 +245,7 @@
   };
   // ========== end methods ==========
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .container {
     .table-operations {
       margin-bottom: 16px;
@@ -274,12 +254,5 @@
     .table-operations > button {
       margin-right: 8px;
     }
-    // .content {
-    //   .ant-table-body {
-    //     min-height: calc(100vh - 248px) !important;
-    //     max-height: calc(100vh - 248px) !important;
-    //     height: calc(100vh - 248px) !important;
-    //   }
-    // }
   }
 </style>

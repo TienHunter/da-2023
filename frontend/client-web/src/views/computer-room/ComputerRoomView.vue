@@ -1,141 +1,45 @@
-<template lang="">
+<template>
   <div class="contailer">
-    <div class="toolbars flex justify-between py-4 rounded">
-      <div class="toolbars-left">
-        <router-link :to="{ name: 'ComputerRoomList' }">
-          <a-button shape="circle">
-            <template #icon>
-              <ArrowLeftOutlined />
-            </template>
-          </a-button>
-        </router-link>
-      </div>
-      <div class="toolbars-right flex gap-2">
-        <router-link
-          :to="{ name: 'ComputerRoomEdit', params: { id: route.params.id } }"
-        >
-          <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
-        </router-link>
-      </div>
-    </div>
     <div class="content">
-      <div class="master">
-        <a-row :gutter="[16, 24]">
-          <template v-for="field in fields" :key="field.dataIndex">
-            <a-col class="gutter-row" :span="6">
-              <label class="font-bold">{{ field.title }}</label>
-            </a-col>
-
-            <a-col v-if="field.key == 'capacity'" class="gutter-row" :span="18">
-              <div class="gutter-box">{{ data[field.key] }}</div>
-            </a-col>
-
-            <a-col
-              v-else-if="field.key == 'state'"
-              class="gutter-row"
-              :span="18"
-            >
-              <div class="gutter-box">
-                <a-tag :color="data.colorState">
-                  {{ data.textState }}
-                </a-tag>
-              </div>
-            </a-col>
-            <a-col
-              v-else-if="field.key == 'pending'"
-              class="gutter-row"
-              :span="18"
-            >
-              <div class="gutter-box">
-                <a-tag :color="data.colorPending">
-                  {{ data.textPending }}
-                </a-tag>
-              </div>
-            </a-col>
-            <a-col v-else class="gutter-row" :span="18">
-              <div class="gutter-box">{{ data[field.key] }}</div>
-            </a-col>
+      <a-tabs v-model:activeKey="activeKey">
+        <template #leftExtra>
+          <router-link :to="{ name: 'ComputerRoomList' }">
+            <a-button shape="circle" size="small" class="mr-2">
+              <template #icon>
+                <ArrowLeftOutlined />
+              </template>
+            </a-button>
+          </router-link>
+        </template>
+        <a-tab-pane key="ComputerRoomInfoView">
+          <template #tab>
+            <span>
+              <apple-outlined />
+              Thông tin chi tiết
+            </span>
           </template>
-        </a-row>
-        {{ data }}
-      </div>
+          <ComputerRoomInfoView />
+        </a-tab-pane>
+        <a-tab-pane key="ComputerRoomComputerList">
+          <template #tab>
+            <span>
+              <android-outlined />
+              Danh sach máy
+            </span>
+          </template>
+          <ComputerRoomComputerList />
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </div>
 </template>
 <script setup>
-  import { computerRoomService } from "@/api";
-  import { ref, reactive, onBeforeMount } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import _ from "lodash";
-  import { message } from "ant-design-vue";
-  import { ResponseCode } from "@/constants";
-  import { util } from "@/utils";
-  const route = useRoute();
+  import { ref } from "vue";
+  import { useRouter } from "vue-router";
+  import ComputerRoomInfoView from "./ComputerRoomInfoView.vue";
+  import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
+
   const router = useRouter();
-  const fields = reactive([
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Capacity",
-      dataIndex: "capacity",
-      key: "capacity",
-    },
-    {
-      title: "State",
-      dataIndex: "state",
-      key: "state",
-    },
-    {
-      title: "Pending",
-      dataIndex: "pending",
-      key: "pending",
-    },
-  ]);
-  let data = ref({});
-  const loading = reactive({
-    isLoadingBeforeMount: false,
-  });
-  onBeforeMount(async () => {
-    try {
-      loading.isLoadingBeforeMount = true;
-      let computerRoom = await computerRoomService.getById(route.params.id);
-      if (computerRoom?.success && computerRoom?.data) {
-        computerRoom.data.colorState = util.genColorState(
-          "state",
-          computerRoom.data.state
-        );
-        computerRoom.data.textState = util.genTextState(
-          "state",
-          computerRoom.data.state
-        );
-        computerRoom.data.capacity = `${
-          computerRoom.data.currentCapacity || 0
-        }/${computerRoom.data.maxCapacity || 0}`;
-        computerRoom.data.colorPending = computerRoom.data.pending
-          ? "orange"
-          : "green";
-        computerRoom.data.textPending = computerRoom.data.pending
-          ? "chật"
-          : "trống";
-        data.value = _.cloneDeep(computerRoom.data);
-      }
-    } catch (error) {
-      console.log(error);
-      switch (error.code) {
-        case ResponseCode.NotFoundComputerRoom:
-          message.error($t("ComputerRoom.Validate.NotFound"));
-          break;
-        default:
-          message.error($t("UnKnowError"));
-          break;
-      }
-      router.push({ name: "ComputerRoomList" });
-    } finally {
-      loading.isLoadingBeforeMount = false;
-    }
-  });
+  const activeKey = ref("ComputerRoomInfoView");
 </script>
 <style lang=""></style>

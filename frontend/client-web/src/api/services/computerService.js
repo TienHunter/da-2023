@@ -6,5 +6,13 @@ class ComputerService extends baseService {
       super(); // Gọi constructor của lớp cha
       // Các định nghĩa riêng của lớp con...
    }
+   /**
+ * lấy theo computerRoomId
+ * @param {*} params 
+ * @returns 
+ */
+   async getListByComputerRoomId(computerId, params) {
+      return await instance.post(`${this.getEndpoint()}/GetListByComputerRoomId/${computerId}`, params);
+   }
 }
 export default new ComputerService();

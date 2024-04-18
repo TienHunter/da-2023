@@ -9,23 +9,110 @@ namespace ComputerManagement.Service.Interface
 {
     public interface IBaseService<TDto, TModel>
     {
+        /// <summary>
+        /// lấy bản ghi theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<TDto> GetAsync(Guid id);
         /// <summary>
-        /// thêm đói tượng
+        /// thêm đối tượng
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<Guid> AddAsync(TDto dto);
+
+        /// <summary>
+        /// cập nhật bản ghi
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<bool> UpdateAsync(TDto dto, Guid id);
+
+        /// <summary>
+        /// xóa bản ghi
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<bool> DeleteAsync(Guid id);
+
+        /// <summary>
+        /// xử lý đối tượng trước khi thêm
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task<Guid> BeforeAddAsync(TModel model);
+
+        /// <summary>
+        /// sau khi thêm thành công
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task AfterAddAsync(TModel model);
+
+        /// <summary>
+        /// trước khi cập nhật
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task BeforeUpdateAsync(TModel model);
+
+        /// <summary>
+        /// sau khi cập nhật thành công
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task AfterUpdateAsync(TModel model);
+
+        /// <summary>
+        /// validate trước khi thên
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task ValidateBeforeAddAsync(TModel model);
+
+        /// <summary>
+        /// validate trước khi cập nhật
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task ValidateBeforeUpdateAsync(TModel model);
+
+        /// <summary>
+        /// validate trước khi xóa
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task ValidateBeforeDeleteAsync(TModel model);
-        Task BeforeMapUpdateAsync(TDto dto, TModel model);
+
+        /// <summary>
+        /// mapping đối tượng trước khi xóa
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task ValidateBeforeMapUpdateAsync(TDto dto, TModel model);
+
+        /// <summary>
+        /// lấy danh sách bản ghi
+        /// </summary>
+        /// <param name="pagingParam"></param>
+        /// <returns></returns>
         Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam);
+
+        /// <summary>
+        /// validate trước khi xóa nhiều
+        /// </summary>
+        /// <param name="models"></param>
+        /// <returns></returns>
+        Task ValidateBeforeDeleteRangeAsync(List<TModel> models);
+
+        /// <summary>
+        /// xóa nhiều bản ghi
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        Task<bool> DeleteRangeAsync(List<Guid> ids);
     }
 }

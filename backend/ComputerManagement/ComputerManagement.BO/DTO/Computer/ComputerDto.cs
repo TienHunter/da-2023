@@ -23,7 +23,10 @@ namespace ComputerManagement.BO.DTO
         public int Col { get; set; }
         public ComputerState State { get; set; }
         public DateTime StateTime { get; set; }
-        public ComputerCondition Condition { get; set; }
+        /// <summary>
+        /// tình trạng máy
+        /// </summary>
+        public List<string> ListErrorId { get; set; } = new List<string>();
         [Required]
         public Guid ComputerRoomId { get; set; }
         public ComputerRoom? ComputerRoom { get; set; } = null;

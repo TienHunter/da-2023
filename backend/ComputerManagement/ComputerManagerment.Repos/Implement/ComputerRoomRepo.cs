@@ -30,16 +30,15 @@ namespace ComputerManagerment.Repos.Implement
             switch (fieldSort?.ToLower())
             {
                 
-                case "Name":
+                case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
-                case "UpdatedAt":
+                case "updatedat":
                     query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
                     break;
-                case "CreatedAt":
+                case "createdat":
                     query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
                     break;
-
                 default:
                     query = query.OrderByDescending(e => e.UpdatedAt);
                     break;

@@ -13,7 +13,11 @@ namespace ComputerManagement.Service.Mapper
     {
         public ComputerMapper()
         {
-            CreateMap<ComputerDto, Computer>().ReverseMap();
+            CreateMap<ComputerDto, Computer>()
+                .ForMember(dest => dest.ListErrorId, opt => opt.MapFrom(src => string.Join(";", src.ListErrorId)));
+            CreateMap<Computer, ComputerDto>()
+               .ForMember(dest => dest.ListErrorId, opt => opt.MapFrom(src => src.ListErrorId.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList()));
+
         }
     }
 }

@@ -27,7 +27,7 @@ namespace ComputerManagement.Controllers.Web
         }
 
         [HttpPost("GetList")]
-        public virtual async Task<IActionResult> GetList([FromQuery] PagingParam pagingParam)
+        public virtual async Task<IActionResult> GetList([FromBody] PagingParam pagingParam)
         {
             var rs = new ServiceResponse();
             var (enitties, totalCount) = await _baseService.GetListAsync(pagingParam);
@@ -55,6 +55,22 @@ namespace ComputerManagement.Controllers.Web
         {
             var rs = new ServiceResponse();
             rs.Data = await _baseService.UpdateAsync(dto,id);
+            return Ok(rs);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public virtual async Task<IActionResult> Delete( [FromRoute] Guid id)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _baseService.DeleteAsync(id);
+            return Ok(rs);
+        }
+
+        [HttpDelete("deletes")]
+        public virtual async Task<IActionResult> DeleteRange([FromBody] List<Guid> ids)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _baseService.DeleteRangeAsync(ids);
             return Ok(rs);
         }
     }
