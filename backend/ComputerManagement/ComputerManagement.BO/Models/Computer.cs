@@ -24,12 +24,12 @@ namespace ComputerManagement.BO.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// vị trí dãy
+        /// vị trí hàng
         /// </summary>
         public int Row { get; set; }
 
         /// <summary>
-        /// vị trí trong dãy
+        /// vị trí dãy
         /// </summary>
         public int Col { get; set; }
 

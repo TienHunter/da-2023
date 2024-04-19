@@ -1,7 +1,7 @@
 <template>
   <div class="contailer">
     <div class="content">
-      <a-tabs v-model:activeKey="activeKey">
+      <a-tabs v-model:activeKey="activeKey" :destroyInactiveTabPane="true">
         <template #leftExtra>
           <router-link :to="{ name: 'ComputerRoomList' }">
             <a-button shape="circle" size="small" class="mr-2">
@@ -34,12 +34,12 @@
   </div>
 </template>
 <script setup>
-  import { ref } from "vue";
-  import { useRouter } from "vue-router";
-  import ComputerRoomInfoView from "./ComputerRoomInfoView.vue";
-  import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import ComputerRoomInfoView from "./ComputerRoomInfoView.vue";
+import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
 
-  const router = useRouter();
-  const activeKey = ref("ComputerRoomInfoView");
+const router = useRouter();
+const activeKey = ref("ComputerRoomInfoView");
 </script>
 <style lang=""></style>

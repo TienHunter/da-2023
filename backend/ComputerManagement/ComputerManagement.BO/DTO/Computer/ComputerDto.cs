@@ -17,8 +17,15 @@ namespace ComputerManagement.BO.DTO
         public string MacAddress { get; set; }
         [Required]
         public string Name { get; set; }
+        /// <summary>
+        /// vị trí hàng
+        /// </summary>
         [Required]
         public int Row { get; set; }
+
+        /// <summary>
+        /// vị trí dãy
+        /// </summary>
         [Required]
         public int Col { get; set; }
         public ComputerState State { get; set; }

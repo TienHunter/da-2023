@@ -16,12 +16,12 @@ namespace ComputerManagement.BO.Models
         public string Name { get; set; }
         
         /// <summary>
-        /// số dãy
+        /// số hàng
         /// </summary>
         public int Row { get;set; }
         
         /// <summary>
-        /// số máy trên 1 dãy
+        /// số dãy
         /// </summary>
         public int Col { get;set; }
 

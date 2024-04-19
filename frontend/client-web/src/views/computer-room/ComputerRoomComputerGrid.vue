@@ -6,10 +6,34 @@
       <div class="operations-right"></div>
     </div>
     <div class="content">
-      <a-row :gutter="[24,24]">
-        <template v-for="col in computerRoom.col"  :key="col">
-          <a-col v-for="row in computerRoom.row" :key="row" :span="24 / computerRoom.row">
-            <div>Row: {{ row }}, Col: {{ col }}</div>
+      <a-row :gutter="[24, 24]">
+        <template v-for="row in computerRoom.row" :key="row">
+          <a-col v-for="col in computerRoom.col" :key="col" :span="24 / computerRoom.col">
+            <div class="flex items-center justify-center">
+              <template v-if="dataRender[row] && dataRender[row][col]">
+                <div>
+                  <a-badge :count="dataRender[row][col]['listErrorId']?.length" :overflow-count="10" @click="onBadge">
+                    <a-avatar shape="square" size="large" class="bg-green-500">
+                      <template #icon>
+                        <LaptopOutlined
+                          :class="{ 'bg-blue-500': dataRender[row][col]['state'] == 1, 'bg-gray-500': dataRender[row][col]['state'] == 2 }" />
+                      </template>
+                    </a-avatar>
+                  </a-badge>
+                </div>
+                <div>
+
+                </div>
+              </template>
+              <template v-else>
+                <a-button type="dashed" shape="cycle">
+                  <template #icon>
+                    <PlusOutlined />
+                  </template>
+                </a-button>
+              </template>
+            </div>
+
           </a-col>
         </template>
       </a-row>
@@ -18,7 +42,7 @@
   <contextHolder />
 </template>
 <script setup>
-import { computed, h, onBeforeMount, reactive, ref } from "vue";
+import { computed, h, onBeforeMount, onUnmounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { computerRoomService, computerService } from "../../api";
 import util from "@/utils/util";
@@ -27,6 +51,7 @@ import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 import { FormatDateKey } from "@/constants";
+import { onBeforeUnmount } from "vue";
 // ========== start state ==========
 const router = useRouter();
 const route = useRoute();
@@ -36,6 +61,7 @@ const loading = reactive({
 });
 
 const dataSource = ref([]);
+const dataRender = ref([]);
 const computerRoom = ref({});
 const showTotal = computed(
   () => `Total ${dataSource.value?.length || 0} items`
@@ -44,6 +70,7 @@ const pagingParam = reactive({
   fieldSort: "UpdatedAt",
   sortAsc: false,
 });
+const interval = ref(null);
 // ========== end state ==========
 
 // ========== start life cycle ==========
@@ -53,12 +80,24 @@ onBeforeMount(async () => {
     if (rs && rs.success && rs.data) {
       computerRoom.value = rs.data;
     }
+
     await loadData();
+    handleDataRender();
+
+    // interval.value = setInterval(async () => {
+    //   await loadData();
+    //   handleDataRender();
+    // }, 3000); // Thực hiện mỗi 3 giây
   } catch (error) {
+    console.log(error);
     message.error($t("UnKnowError"))
   }
 
 });
+
+onBeforeUnmount(() => {
+  clearInterval(interval.value); // Xóa interval khi component bị hủy
+})
 // ========== end life cycle ==========
 
 // ========== start methods ==========
@@ -86,6 +125,17 @@ const loadData = async () => {
   }
 };
 
+const handleDataRender = () => {
+  for (let row = 0; row < computerRoom.value.row; row++) {
+    dataRender.value[row] = [];
+    for (let col = 0; col < computerRoom.value.col; col++) {
+      dataRender.value[row][col] = null;
+    }
+  }
+  dataSource.value.forEach(element => {
+    dataRender.value[element.row][element.col] = _.cloneDeep(element);
+  });
+}
 
 /**
  * xóa bản ghi
@@ -123,6 +173,10 @@ const onDelete = (record) => {
     onCancel() { },
   });
 };
+
+const onBadge = () => {
+  console.log("click here");
+}
 // ========== end methods ==========
 </script>
 <style lang="scss" scoped>
