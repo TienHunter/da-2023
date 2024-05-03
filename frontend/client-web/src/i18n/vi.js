@@ -7,6 +7,9 @@ export default {
    Edit: "Sửa",
    NotFound: "Không tìm thấy tài nguyên",
    SaveSuccess: "Lưu thành công",
+   Validate: {
+      Required: "Vui lòng nhập {0}",
+   },
    auth: {
       Login: "Đăng nhập",
       UsernameHint: "Tài khoản hoặc email",
@@ -79,14 +82,47 @@ export default {
       UserRevoked: "Đã thu hồi",
    },
    Computer: {
-      Name: "Têm máy",
+      ComputerRoomName: "Tên phòng máy",
+      Name: "Tên máy",
       MacAddress: "Địa chỉ mac",
+      Condition: "Tình trạng máy",
+      ComputerAddTitle: "Thêm máy tính",
+      ComputerInfoTitle: "Thông tin máy",
+      Row: "Vị trí hàng",
+      Col: "Vị trí cột",
       Condition: "Tình trạng máy",
       ConditionKey: {
          Perfect: "Hoàn hảo",
          Good: "Tốt",
          Normal: "Bình thường",
          Bad: "Hỏng"
+      },
+      ComputerError: {
+         Perfect: "Tốt",
+         Hardware: "Lỗi phần cứng",
+         Software: "Lỗi phần mềm",
+         Network: "Lỗi mạng",
+         OS: "Lỗi hệ điều hành",
+         Unknow: "Không rõ nguyên nhân"
+      },
+      Validate: {
+         ConflicNameComputer: "Tên máy đã tồn tại trong phòng máy",
+         ConflicMacAddressComputer: "Địa chỉ mac address bị trùng",
+         ConflicRowColComputer: "Vị trí không hợp lệ"
       }
+   },
+
+   Software: {
+      Name: "Tên phần mềm",
+      IsUpdate: "Cập nhật",
+      IsInstall: "Cài đặt",
+      CreatedAt: "Ngày tạo",
+      UpdatedAt: "Ngày cập nhật"
+   },
+   File: {
+      SoftwareName: "Tên phần mềm",
+      Version: "Phiên bản",
+      FileSource: "Chọn tệp",
    }
+
 }

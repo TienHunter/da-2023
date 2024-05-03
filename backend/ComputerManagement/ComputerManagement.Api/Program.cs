@@ -43,6 +43,12 @@ builder.Services.Configure<JwtConfig>(options =>
     builder.Configuration.GetSection("Jwt").Bind(options);
 });
 
+// add di fileConfig
+builder.Services.Configure<FileConfig>(options =>
+{
+    builder.Configuration.GetSection("FileConfig").Bind(options);
+});
+
 // add authen
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -81,6 +87,12 @@ builder.Services.AddScoped<IComputerService, ComputerService>();
 
 builder.Services.AddScoped<IComputerHistoryRepo, ComputerHistoryRepo>();
 builder.Services.AddScoped<IComputerHistoryService, ComputerHistoryService>();
+
+builder.Services.AddScoped<ISoftwareService, SoftwareService>();
+builder.Services.AddScoped<ISoftwareRepo, SoftwareRepo>();
+
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IFileRepo, FileRepo>();
 
 // add cors
 builder.Services.AddCors(options =>

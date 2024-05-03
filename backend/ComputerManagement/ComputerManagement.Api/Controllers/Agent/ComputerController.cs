@@ -29,6 +29,20 @@ namespace ComputerManagement.Api.Controllers.Agent
             rs.Data = await _computerService.UpdateStateByMacAddressAsync(macAddress);
             return Ok(rs);
         }
+
+        /// <summary>
+        /// cập nhật cấu hình máy
+        /// </summary>
+        /// <param name="computerId"></param>
+        /// <param name="computerConfig"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateComputerConfig/{computerId}")]
+        public async Task<IActionResult> UpdateComputerConfig([FromRoute] Guid computerId, [FromBody] ComputerConfig computerConfig)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _computerService.UpdateComputerConfigAsync(computerConfig, computerId);
+            return Ok(rs);
+        }
     }
 }
 

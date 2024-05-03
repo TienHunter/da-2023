@@ -5,7 +5,7 @@
       <div class="operations-right flex gap-2">
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
           :loading="loading.loadingInputSearch" @search="onSearch" />
-        <router-link :to="{ name: 'ComputerRoomAdd' }">
+        <router-link :to="{ name: 'FileAdd' }">
           <a-button type="primary">{{ $t("Add") }}</a-button>
         </router-link>
       </div>
@@ -117,7 +117,7 @@ const columns = [
   },
 ];
 const pagingParam = reactive({
-  pageSize: 20,
+  pageSize: 10,
   pageNumber: 1,
   keySearch: "",
   fieldSort: "UpdatedAt",
@@ -128,7 +128,6 @@ const pagination = computed(() => ({
   total: pagingParam.total,
   current: pagingParam.pageNumber,
   pageSize: pagingParam.pageSize,
-  showSizeChanger: true,
   showTotal: (total) => `Total ${total} items`,
 }));
 const dataSource = ref([]);
@@ -217,8 +216,8 @@ const onDelete = (record) => {
       `Bạn có chắc chắn muốn xóa phòng máy ${record.name}.`,
       h("br"),
       `Khi xóa phòng
-          máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
-          xóa đi.`,
+           máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
+           xóa đi.`,
     ]),
     okText: "Yes",
     okType: "danger",

@@ -14,6 +14,12 @@ const ResponseCode = {
    ComputerRoomNameConflic: 10,
    NotFoundComputerRoom: 11,
    UserPending: 12,
-   UserRevoked: 13
+   UserRevoked: 13,
+   Forbidden: 14,
+   ConflicMacAddress: 15,
+   MaxCapacityComputerRoom: 16,
+   ConflicNameComputer: 17,
+   ConflicRowColComputerRooom: 18,
+   ConflicRowColComputer: 19,
 }
 export default ResponseCode;

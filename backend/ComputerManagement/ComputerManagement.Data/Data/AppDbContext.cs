@@ -23,5 +23,8 @@ namespace ComputerManagement.Data
         public DbSet<User> ScheduleBookRoom { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ComputerHistory> ComputerHistory { get; set; }
+        public DbSet<SoftwareModel> SoftwareModel { get; set; }
+        public DbSet<FileModel> FileModel { get; set; }
+
     }
 }

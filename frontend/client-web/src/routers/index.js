@@ -3,6 +3,8 @@ import routerAuth from "@/views/auth/routerAuth.js";
 import routerDashboard from "../views/dashboard/router.js";
 import routesComputerRoom from "../views/computer-room/route.js";
 import routesComputer from "../views/computer/route.js";
+import routeFile from "../views/file-manager/route.js";
+import routeSoftware from "../views/software/route.js";
 import routeUser from "../views/user/route.js";
 import HelloWorld from "../components/HelloWorld.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
@@ -14,6 +16,8 @@ const routes = [
    ...routesComputerRoom,
    ...routeUser,
    ...routesComputer,
+   ...routeFile,
+   ...routeSoftware,
    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",

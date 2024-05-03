@@ -48,7 +48,7 @@ namespace ComputerManagement.Service.Implement
         public override async Task<Guid> AddAsync(ComputerDto computerDto)
         {
             var computer = _mapper.Map<Computer>(computerDto);
-            var newId = await base.BeforeAddAsync(computer);
+            var newId = await this.BeforeAddAsync(computer);
             var isSaveSuccess = false;
             // validate before add
             await this.ValidateBeforeAddAsync(computer);
@@ -125,8 +125,40 @@ namespace ComputerManagement.Service.Implement
         public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
         {
             var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
-
+            foreach (var item in computers)
+            {
+                if(item.StateTime < DateTime.Now.AddMinutes(-3))
+                {
+                    item.State = ComputerState.Off;
+                }
+            }
             return _mapper.Map<List<ComputerDto>>(computers);
+        }
+
+        public override async Task<Guid> BeforeAddAsync(Computer computer)
+        {
+            var newGuid = await base.BeforeAddAsync(computer);
+            computer.State = ComputerState.Off;
+            computer.StateTime = DateTime.Now;
+            return newGuid;
+        }
+
+        public async Task<bool> UpdateComputerConfigAsync(ComputerConfig computerConfig, Guid computerId)
+        {
+            var computerExist = await _computerRepo.GetAsync(computerId) ?? throw new BaseException
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Code = ServiceResponseCode.NotFoundComputer,
+            };
+
+            computerExist.OS = computerConfig.OS;
+            computerExist.CPU = computerConfig.CPU;
+            computerExist.RAM = computerConfig.RAM;
+            computerExist.HardDriver = computerConfig.HardDriver;
+            computerExist.HardDriverUsed = computerConfig.HardDriverUsed;
+
+            var rs = await _computerRepo.UpdateAsync(computerExist);
+            return rs;
         }
     }
 }

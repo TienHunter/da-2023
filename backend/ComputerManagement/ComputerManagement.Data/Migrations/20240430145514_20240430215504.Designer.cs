@@ -4,6 +4,7 @@ using ComputerManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerManagement.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240430145514_20240430215504")]
+    partial class _20240430215504
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,49 +208,6 @@ namespace ComputerManagement.Data.Migrations
                     b.ToTable("computer_software");
                 });
 
-            modelBuilder.Entity("ComputerManagement.BO.Models.FileModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
-
-                    b.Property<Guid>("SoftwareId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SoftwareId");
-
-                    b.ToTable("file_source");
-                });
-
             modelBuilder.Entity("ComputerManagement.BO.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -435,17 +395,6 @@ namespace ComputerManagement.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("computer");
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.FileModel", b =>
-                {
-                    b.HasOne("ComputerManagement.BO.Models.SoftwareModel", "SoftwareModel")
-                        .WithMany()
-                        .HasForeignKey("SoftwareId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SoftwareModel");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ScheduleBookRoom", b =>

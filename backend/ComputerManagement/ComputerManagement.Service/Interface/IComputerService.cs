@@ -30,5 +30,13 @@ namespace ComputerManagement.Service.Interface
         /// <param name="computerRoomId"></param>
         /// <returns></returns>
         Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam);
+
+        /// <summary>
+        /// cập nhật cấu hình cho máy tính
+        /// </summary>
+        /// <param name="computerConfig"></param>
+        /// <param name="computerId"></param>
+        /// <returns></returns>
+        Task<bool> UpdateComputerConfigAsync(ComputerConfig computerConfig, Guid computerId);
     }
 }

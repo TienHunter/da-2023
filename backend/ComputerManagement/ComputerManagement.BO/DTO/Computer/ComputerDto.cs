@@ -33,7 +33,13 @@ namespace ComputerManagement.BO.DTO
         /// <summary>
         /// tình trạng máy
         /// </summary>
-        public List<string> ListErrorId { get; set; } = new List<string>();
+        public List<ComputerErrorId> ListErrorId { get; set; } = new List<ComputerErrorId>();
+
+        public string? OS { get; set; }
+        public string? CPU { get; set; }
+        public string? RAM { get; set; }
+        public string? HardDriver { get; set; }
+        public string? HardDriverUsed { get; set; }
         [Required]
         public Guid ComputerRoomId { get; set; }
         public ComputerRoom? ComputerRoom { get; set; } = null;

@@ -29,7 +29,8 @@ namespace ComputerManagement.Common.Enums
         ConflicNameComputer = 17,
         ConflicRowColComputerRooom = 18,
         ConflicRowColComputer = 19,
-
+        NotFoundSoftwareModel = 20,
+        ConflicFileVersion = 21,
 
     }
 }
