@@ -37,19 +37,25 @@ namespace ComputerManagement.Service.Implement
                 Code = ServiceResponseCode.NotFoundSoftwareModel
             };
 
-            _ = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == fileSource.SoftwareId && f.Version == fileSource.Version).FirstOrDefaultAsync() ?? throw new BaseException
+            var fileExist = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == fileSource.SoftwareId && f.Version == fileSource.Version).FirstOrDefaultAsync();
+            if (fileExist != null)
             {
-                StatusCode = HttpStatusCode.Conflict,
-                Code = ServiceResponseCode.ConflicFileVersion
-            };
-
-            var filePath = await this.StoreFileAsync(fileSource.FilePath, _fileConfig.StoreFile, fileSource.SoftwareId.ToString());
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.Conflict,
+                    Code = ServiceResponseCode.ConflicFileVersion
+                };
+            }
+            var fileName = fileSource.SoftwareId.ToString() + "_" + fileSource.Version + Path.GetExtension(fileSource.FilePath.FileName);
+            var filePath = await this.StoreFileAsync(fileSource.FilePath, _fileConfig.StoreFile, fileName);
 
             var fileModel = new FileModel
             {
-                FileName = fileSource.SoftwareId.ToString() + Path.GetExtension(fileSource.FilePath.FileName),
+                FileName = fileName,
                 ContentType = fileSource.FilePath.ContentType,
                 Size = fileSource.FilePath.Length,
+                Version = fileSource.Version,
+                SoftwareId = fileSource.SoftwareId,
             };
 
             var newGuid = await this.BeforeAddAsync(fileModel);
@@ -66,6 +72,28 @@ namespace ComputerManagement.Service.Implement
                 await file.CopyToAsync(stream);
             }
             return filePath;
+        }
+
+        public async Task<List<FileDto>> GetListFileBySoftwareId(Guid softwareId)
+        {
+            var fileModels = await _fileRepo.GetListFileBySoftwareId(softwareId);
+            var fileDtos = _mapper.Map<List<FileDto>>(fileModels);
+            return fileDtos;
+        }
+
+        public override async Task<bool> DeleteAsync(Guid id)
+        {
+            // check exist 
+            var fileExist = await _fileRepo.GetAsync(id);
+            this.CheckNullModel(fileExist);
+
+            // xóa file lưu trong ổ cứng
+            var filePath = Path.Combine(_fileConfig.StoreFile, fileExist.FileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            return await _fileRepo.DeleteAsync(fileExist);
         }
     }
 }

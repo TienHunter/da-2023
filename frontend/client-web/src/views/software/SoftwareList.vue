@@ -149,14 +149,7 @@ const loadData = async () => {
       loading.loadingTable = true;
       let rs = await softwareService.getList(pagingParam);
       if (rs.success && rs.data) {
-         let temp = rs.data.list?.map((item) => {
-            item.colorState = util.genColorState("state", item.state);
-            item.textState = util.genTextState("state", item.state);
-            item.capacity = `${item.currentCapacity || 0}/${item.maxCapacity || 0
-               }`;
-            return item;
-         });
-         dataSource.value = _.cloneDeep(temp);
+         dataSource.value = _.cloneDeep(rs.data.list);
          pagingParam.total = rs.data.total || 0;
       }
    } catch (error) {

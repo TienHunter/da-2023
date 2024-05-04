@@ -27,6 +27,11 @@ body {
   height: 100vh;
 }
 
+.container {
+  padding: 16px;
+  overflow: auto;
+}
+
 .toast-message {
   right: 100px;
 }

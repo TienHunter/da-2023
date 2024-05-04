@@ -49,7 +49,7 @@ class BaseService {
     * @param {*} params 
     * @returns 
     */
-   async getList(params) {
+   async getList(params = {}) {
       return await instance.post(`${this.getEndpoint()}/GetList`, params);
    }
 

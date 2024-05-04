@@ -1,5 +1,5 @@
 <template>
-  <div class="contailer">
+  <div class="container">
     <div class="toolbars flex justify-between py-4 rounded">
       <div class="toolbars-left">
         <router-link :to="{ name: 'UserList' }">
@@ -11,9 +11,7 @@
         </router-link>
       </div>
       <div class="toolbars-right flex gap-2">
-        <router-link
-          :to="{ name: 'UserEdit', params: { id: route.params.id } }"
-        >
+        <router-link :to="{ name: 'UserEdit', params: { id: route.params.id } }">
           <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
         </router-link>
       </div>
@@ -30,22 +28,14 @@
               <div class="gutter-box">{{ data[field.key] }}</div>
             </a-col>
 
-            <a-col
-              v-else-if="field.key == 'roleID'"
-              class="gutter-row"
-              :span="18"
-            >
+            <a-col v-else-if="field.key == 'roleID'" class="gutter-row" :span="18">
               <div class="gutter-box">
                 <a-tag :color="data.colorUserRole">
                   {{ data.textUserRole }}
                 </a-tag>
               </div>
             </a-col>
-            <a-col
-              v-else-if="field.key == 'state'"
-              class="gutter-row"
-              :span="18"
-            >
+            <a-col v-else-if="field.key == 'state'" class="gutter-row" :span="18">
               <div class="gutter-box">
                 <a-tag :color="data.colorUserState">
                   {{ data.textUserState }}
@@ -63,72 +53,72 @@
   </div>
 </template>
 <script setup>
-  import { userService } from "@/api";
-  import { ref, reactive, onBeforeMount } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import _ from "lodash";
-  import { message } from "ant-design-vue";
-  import { ResponseCode } from "@/constants";
-  import { util } from "@/utils";
-  const route = useRoute();
-  const router = useRouter();
-  const fields = reactive([
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Role",
-      dataIndex: "roleID",
-      key: "roleID",
-    },
-    {
-      title: "State",
-      dataIndex: "state",
-      key: "state",
-    },
-  ]);
-  let data = ref({});
-  const loading = reactive({
-    isLoadingBeforeMount: false,
-  });
-  onBeforeMount(async () => {
-    try {
-      loading.isLoadingBeforeMount = true;
-      let user = await userService.getById(route.params.id);
-      if (user?.success && user?.data) {
-        const { colorUserState, textUserState } = util.getViewUserState(
-          user.data.state
-        );
-        user.data.colorUserState = colorUserState;
-        user.data.textUserState = textUserState;
-        const { colorUserRole, textUserRole } = util.getViewUserRole(
-          user.data.roleID
-        );
-        user.data.colorUserRole = colorUserRole;
-        user.data.textUserRole = textUserRole;
-        data.value = _.cloneDeep(user.data);
-      }
-    } catch (error) {
-      console.log(error);
-      switch (error.code) {
-        case ResponseCode.NotFoundUser:
-          message.error($t("User.NotFoundUser"));
-          break;
-        default:
-          message.error($t("UnKnowError"));
-          break;
-      }
-      router.push({ name: "UserList" });
-    } finally {
-      loading.isLoadingBeforeMount = false;
+import { userService } from "@/api";
+import { ref, reactive, onBeforeMount } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import _ from "lodash";
+import { message } from "ant-design-vue";
+import { ResponseCode } from "@/constants";
+import { util } from "@/utils";
+const route = useRoute();
+const router = useRouter();
+const fields = reactive([
+  {
+    title: "Username",
+    dataIndex: "username",
+    key: "username",
+  },
+  {
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
+  },
+  {
+    title: "Role",
+    dataIndex: "roleID",
+    key: "roleID",
+  },
+  {
+    title: "State",
+    dataIndex: "state",
+    key: "state",
+  },
+]);
+let data = ref({});
+const loading = reactive({
+  isLoadingBeforeMount: false,
+});
+onBeforeMount(async () => {
+  try {
+    loading.isLoadingBeforeMount = true;
+    let user = await userService.getById(route.params.id);
+    if (user?.success && user?.data) {
+      const { colorUserState, textUserState } = util.getViewUserState(
+        user.data.state
+      );
+      user.data.colorUserState = colorUserState;
+      user.data.textUserState = textUserState;
+      const { colorUserRole, textUserRole } = util.getViewUserRole(
+        user.data.roleID
+      );
+      user.data.colorUserRole = colorUserRole;
+      user.data.textUserRole = textUserRole;
+      data.value = _.cloneDeep(user.data);
     }
-  });
+  } catch (error) {
+    console.log(error);
+    switch (error.code) {
+      case ResponseCode.NotFoundUser:
+        message.error($t("User.NotFoundUser"));
+        break;
+      default:
+        message.error($t("UnKnowError"));
+        break;
+    }
+    router.push({ name: "UserList" });
+  } finally {
+    loading.isLoadingBeforeMount = false;
+  }
+});
 </script>
 <style lang=""></style>

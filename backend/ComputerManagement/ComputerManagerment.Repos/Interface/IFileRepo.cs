@@ -9,5 +9,11 @@ namespace ComputerManagerment.Repos.Interface
 {
     public interface IFileRepo : IBaseRepo<FileModel>
     {
+        /// <summary>
+        /// lấy danh sách file cài theo phần mềm
+        /// </summary>
+        /// <param name="softwareId"></param>
+        /// <returns></returns>
+        Task<List<FileModel>> GetListFileBySoftwareId(Guid softwareId);
     }
 }

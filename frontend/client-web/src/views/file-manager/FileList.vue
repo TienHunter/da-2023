@@ -18,15 +18,20 @@
         @change="handleTableChange">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
-            <router-link :to="{ name: 'ComputerRoomView', params: { id: record.id } }">
+            <router-link :to="{ name: 'SoftwareView', params: { id: record.id } }">
               {{ record.name }}
             </router-link>
           </template>
-          <template v-else-if="column.key === 'state'">
-            <span>
-              <a-tag :color="record.colorState">
-                {{ record.textState }}
-              </a-tag>
+          <template v-else-if="column.key === 'softwareName'">
+            {{ record?.software?.name }}
+          </template>
+          <template v-else-if="column.key === 'fileSize'">
+            {{ `${record?.size / 1024}` }}
+            <b>KB</b>
+          </template>
+          <template v-else-if="column.key === 'createdAt' || column.key === 'updatedAt'">
+            <span v-if="record[column.key]">
+              {{ moment(record[column.key]).format(FormatDateKey.Default) }}
             </span>
           </template>
           <template v-else-if="column.key === 'operation'">
@@ -52,11 +57,13 @@
 <script setup>
 import { computed, h, onBeforeMount, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { computerRoomService } from "../../api";
+import { computerRoomService, fileService } from "@/api";
 import util from "@/utils/util";
 import _ from "lodash";
+import moment from "moment";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { FormatDateKey } from "@/constants";
 // ========== start state ==========
 const router = useRouter();
 const [modal, contextHolder] = Modal.useModal();
@@ -66,18 +73,19 @@ const loading = reactive({
 });
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    width: "200px",
+    title: $t("File.FileName"),
+    dataIndex: "fileName",
+    key: "fileName",
+    width: "300px",
     sorter: true,
     fixed: "left",
+    ellipsis: true,
   },
   {
-    title: "Số dãy",
-    dataIndex: "row",
-    key: "row",
-    width: "100px",
+    title: $t("File.SoftwareName"),
+    dataIndex: "softwareName",
+    key: "softwareName",
+    width: "160px",
     filters: [
       {
         text: "Male",
@@ -90,22 +98,27 @@ const columns = [
     ],
   },
   {
-    title: "Số lượng máy trên 1 dãy",
-    dataIndex: "col",
-    key: "col",
-    width: "160px",
-    ellipsis: true,
+    title: $t("File.Version"),
+    dataIndex: "version",
+    key: "version",
+    width: "100px",
   },
   {
-    title: "Số máy",
-    dataIndex: "capacity",
-    key: "capacity",
+    title: $t("File.FileSize"),
+    dataIndex: "fileSize",
+    key: "fileSize",
+    width: "160px",
+  },
+  {
+    title: $t("File.CreatedAt"),
+    dataIndex: "createdAt",
+    key: "createdAt",
     width: "150px",
   },
   {
-    title: "State",
-    dataIndex: "state",
-    key: "state",
+    title: $t("File.UpdatedAt"),
+    dataIndex: "updatedAt",
+    key: "updatedAt",
     width: "150px",
   },
   {
@@ -147,18 +160,9 @@ onBeforeMount(async () => {
 const loadData = async () => {
   try {
     loading.loadingTable = true;
-    let rs = await computerRoomService.getList(pagingParam);
-    if (rs.success && rs.data) {
-      let temp = rs.data.list?.map((item) => {
-        item.colorState = util.genColorState("state", item.state);
-        item.textState = util.genTextState("state", item.state);
-        item.capacity = `${item.currentCapacity || 0}/${item.maxCapacity || 0
-          }`;
-        return item;
-      });
-      dataSource.value = _.cloneDeep(temp);
-      pagingParam.total = rs.data.total || 0;
-    }
+    let rs = await fileService.getList(pagingParam);
+    dataSource.value = _.cloneDeep(rs.data.list);
+    pagingParam.total = rs.data.total || 0;
   } catch (error) {
     console.log(error);
   } finally {

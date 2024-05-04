@@ -16,5 +16,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="fileSource"></param>
         /// <returns></returns>
         Task<Guid> UploadFileAsync(FileSource fileSource);
+
+        /// <summary>
+        /// lấy danh sách file cài theo id phần mềm
+        /// </summary>
+        /// <param name="softwareId"></param>
+        /// <returns></returns>
+        Task<List<FileDto>> GetListFileBySoftwareId(Guid softwareId);
     }
 }

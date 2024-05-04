@@ -7,6 +7,7 @@ export default {
    Edit: "Sửa",
    NotFound: "Không tìm thấy tài nguyên",
    SaveSuccess: "Lưu thành công",
+   DetailInfo: "Thông tin chi tiết",
    Validate: {
       Required: "Vui lòng nhập {0}",
    },
@@ -117,12 +118,23 @@ export default {
       IsUpdate: "Cập nhật",
       IsInstall: "Cài đặt",
       CreatedAt: "Ngày tạo",
-      UpdatedAt: "Ngày cập nhật"
+      UpdatedAt: "Ngày cập nhật",
+      FileList: "Danh sách file cài",
+
    },
    File: {
       SoftwareName: "Tên phần mềm",
       Version: "Phiên bản",
       FileSource: "Chọn tệp",
+      FileName: "Tên file",
+      FileSize: "Dung lượng file",
+      CreatedAt: "Ngày tạo",
+      UpdatedAt: "Ngày sửa",
+      AddFileTitle: "Thêm file cài đặt",
+      DeleteSuccess: "Xóa file {0} thành công",
+      Validate: {
+         FileRequired: "Vui lòng tải file cài đặt lên"
+      }
    }
 
 }

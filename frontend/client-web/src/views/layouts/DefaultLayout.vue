@@ -3,20 +3,20 @@
     <PageSidebar />
     <a-layout>
       <PageHeader />
-      <a-layout-content style="padding: 16px; height: calc(100vh - 48px)">
+      <a-layout-content style="height: calc(100vh - 48px)">
         <slot></slot>
       </a-layout-content>
     </a-layout>
   </a-layout>
 </template>
 <script setup>
-  import PageHeader from "./PageHeader.vue";
-  import PageSidebar from "./PageSidebar.vue";
+import PageHeader from "./PageHeader.vue";
+import PageSidebar from "./PageSidebar.vue";
 </script>
 <style scoped>
-  .app {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-  }
+.app {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
 </style>

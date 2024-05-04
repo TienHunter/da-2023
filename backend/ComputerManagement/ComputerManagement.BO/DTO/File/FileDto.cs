@@ -15,6 +15,6 @@ namespace ComputerManagement.BO.DTO.File
         public string ContentType { get; set; }
         public double Size { get; set; }
         public Guid SoftwareId { get; set; }
-        public SoftwareDto? SoftwareDto { get; set; }
+        public SoftwareDto? Software { get; set; }
     }
 }

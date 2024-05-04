@@ -30,11 +30,25 @@ namespace ComputerManagement.Api.Controllers.Web
         /// <param name="fileSource"></param>
         /// <returns></returns>
         [HttpPost("upload-file")]
-        public async Task<IActionResult> UpdateFile([FromBody] FileSource fileSource)
+        public async Task<IActionResult> UpdateFile([FromForm] FileSource fileSource)
         {
             // do something
             var rs = new ServiceResponse();
             rs.Data = await _fileService.UploadFileAsync(fileSource);
+            return Ok(rs);
+        }
+
+        /// <summary>
+        /// upload file
+        /// </summary>
+        /// <param name="fileSource"></param>
+        /// <returns></returns>
+        [HttpGet("GetListFileBySoftwareId/{softwareId}")]
+        public async Task<IActionResult> UpdateFile([FromRoute] Guid softwareId)
+        {
+            // do something
+            var rs = new ServiceResponse();
+            rs.Data = await _fileService.GetListFileBySoftwareId(softwareId);
             return Ok(rs);
         }
 

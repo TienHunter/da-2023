@@ -1,5 +1,5 @@
 <template>
-  <div class="contailer">
+  <div class="container">
     <div class="content">
       <a-tabs v-model:activeKey="activeKey">
         <template #leftExtra>
@@ -52,13 +52,13 @@
   </div>
 </template>
 <script setup>
-  import { ref } from "vue";
-  import { useRouter } from "vue-router";
-  import ComputerDetailView from "./ComputerDetailView.vue";
-  import ComputerHistoryView from "./ComputerHistoryView.vue";
-  import ComputerNoteView from "./ComputerNoteView.vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import ComputerDetailView from "./ComputerDetailView.vue";
+import ComputerHistoryView from "./ComputerHistoryView.vue";
+import ComputerNoteView from "./ComputerNoteView.vue";
 
-  const router = useRouter();
-  const activeKey = ref("ComputerDetailView");
+const router = useRouter();
+const activeKey = ref("ComputerDetailView");
 </script>
 <style lang=""></style>

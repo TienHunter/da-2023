@@ -40,16 +40,24 @@ namespace ComputerManagerment.Repos.Implement
             if (pageNumber > 0 && pageSize > 0)
             {
                 entities = await query
-                .Include(f => f.SoftwareModel)
+                .Include(f => f.Software)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.Include(f => f.SoftwareModel).ToListAsync();
+                entities = await query.Include(f => f.Software).ToListAsync();
             }
             return (entities, totalCount);
+        }
+
+        public async Task<List<FileModel>> GetListFileBySoftwareId(Guid softwareId)
+        {
+            var query = _dbSet.AsQueryable();
+            var entities = new List<FileModel>();
+                entities = await _dbSet.Include(f=>f.Software).Where(f => f.SoftwareId == softwareId).ToListAsync();
+            return entities;
         }
     }
 }

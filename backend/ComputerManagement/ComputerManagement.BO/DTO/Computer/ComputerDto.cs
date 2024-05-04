@@ -42,7 +42,7 @@ namespace ComputerManagement.BO.DTO
         public string? HardDriverUsed { get; set; }
         [Required]
         public Guid ComputerRoomId { get; set; }
-        public ComputerRoom? ComputerRoom { get; set; } = null;
+        public ComputerRoomDto? ComputerRoom { get; set; } = null;
         public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }

@@ -1,5 +1,5 @@
 <template>
-  <div class="contailer">
+  <div class="container">
     <div class="content">
       <a-tabs v-model:activeKey="activeKey" :destroyInactiveTabPane="true">
         <template #leftExtra>

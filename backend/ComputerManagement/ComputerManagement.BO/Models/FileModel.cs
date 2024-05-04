@@ -17,6 +17,6 @@ namespace ComputerManagement.BO.Models
 
         [ForeignKey("SoftwareModel")]
         public Guid SoftwareId { get; set; }
-        public SoftwareModel SoftwareModel { get; set; }
+        public SoftwareModel Software { get; set; }
     }
 }
