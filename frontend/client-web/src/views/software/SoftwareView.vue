@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="tool-bars flex justify-between py-4">
+  <div class="container-content">
+    <div class="tool-bars flex justify-between py-4 sticky top-0 -mx-4 px-4 ">
       <div class="tool-bars__left">
         <router-link :to="{ name: 'SoftwareList' }">
           <a-button shape="circle">
@@ -9,6 +9,7 @@
             </template>
           </a-button>
         </router-link>
+
       </div>
       <div class="tool-bars__right">
         <router-link :to="{ name: 'SoftwareEdit', params: { id: route.params.id } }">
@@ -16,7 +17,7 @@
         </router-link>
       </div>
     </div>
-    <div class="content">
+    <div class="content pt-4">
       <div class="master">
         <h2>{{ $t("DetailInfo") }}</h2>
         <a-row :gutter="[16, 24]">
@@ -344,7 +345,13 @@ const afterSaveFile = async (e) => {
 // ========== end lifecycle ==========
 </script>
 <style lang="scss">
-.container {
+.container-content {
   height: 100%;
+
+  .tool-bars {
+    z-index: 1;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <a-spin tip="Loading..." :spinning="loading.isLoadingBeforeMount">
-    <div class="container">
+    <div class="container-content">
       <div class="toolbars flex justify-between p-4 rounded">
         <div class="toolbars-left">
           <router-link :to="{ name: 'ComputerRoomList' }">

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-content">
     <div class="toolbars flex justify-between py-4 rounded">
       <div class="toolbars-left">
         <router-link :to="{ name: 'UserList' }">

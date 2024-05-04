@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-content">
     <div class="table-operations flex justify-between">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
@@ -251,7 +251,7 @@ const onDelete = (record) => {
 // ========== end methods ==========
 </script>
 <style lang="scss">
-.container {
+.container-content {
   .table-operations {
     margin-bottom: 16px;
   }

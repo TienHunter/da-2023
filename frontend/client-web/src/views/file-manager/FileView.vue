@@ -1,4 +1,4 @@
-<template lang="">
+<template>
    <div>
       file view
    </div>

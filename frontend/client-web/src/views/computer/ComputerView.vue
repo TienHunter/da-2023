@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-content">
     <div class="content">
       <a-tabs v-model:activeKey="activeKey">
         <template #leftExtra>

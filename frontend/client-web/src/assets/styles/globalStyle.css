@@ -27,8 +27,10 @@ body {
   height: 100vh;
 }
 
-.container {
+.container-content {
+  position: relative;
   padding: 16px;
+  padding-top: 0;
   overflow: auto;
 }
 

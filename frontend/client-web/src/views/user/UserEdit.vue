@@ -1,6 +1,6 @@
 <template>
   <a-spin tip="Loading..." :spinning="loading.isLoadingBeforeMount">
-    <div class="container">
+    <div class="container-content">
       <div class="toolbars flex justify-between p-4 rounded">
         <div class="toolbars-left">
           <router-link :to="{ name: 'UserList' }">
@@ -12,13 +12,7 @@
           </router-link>
         </div>
         <div class="toolbars-right flex gap-2">
-          <a-button
-            type="primary"
-            ghost
-            @click="onSubmit"
-            :loading="loading.isLoadingSave"
-            >{{ $t("Save") }}</a-button
-          >
+          <a-button type="primary" ghost @click="onSubmit" :loading="loading.isLoadingSave">{{ $t("Save") }}</a-button>
           <a-button type="primary" @click="onSubmit">{{
             $t("SaveAndAdd")
           }}</a-button>
@@ -26,13 +20,7 @@
         </div>
       </div>
       <div class="content">
-        <a-form
-          ref="formRef"
-          :model="formState"
-          :rules="rules"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-        >
+        <a-form ref="formRef" :model="formState" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-form-item :label="$t('User.Username')" name="username">
             <a-input v-model:value="formState.username" :disabled="true" />
           </a-form-item>
@@ -74,87 +62,87 @@
   </a-spin>
 </template>
 <script setup>
-  import { reactive, ref, toRaw, onBeforeMount } from "vue";
-  import {
-    useRoute,
-    onBeforeRouteUpdate,
-    onBeforeRouteLeave,
-    useRouter,
-  } from "vue-router";
-  import { computerRoomService, userService } from "@/api";
-  import { ResponseCode, FormMode } from "../../constants";
-  import { message } from "ant-design-vue";
-  import _ from "lodash";
-  const route = useRoute();
-  const router = useRouter();
-  const formRef = ref();
-  const labelCol = {
-    span: 5,
-  };
-  const wrapperCol = {
-    span: 13,
-  };
-  let formState = reactive({
-    username: "",
-    email: "",
-    fullname: "",
-    roleID: null,
-    state: null,
-  });
-  const loading = reactive({
-    isLoadingSave: false,
-    isLoadingBeforeMount: false,
-  });
-  const rules = {};
+import { reactive, ref, toRaw, onBeforeMount } from "vue";
+import {
+  useRoute,
+  onBeforeRouteUpdate,
+  onBeforeRouteLeave,
+  useRouter,
+} from "vue-router";
+import { computerRoomService, userService } from "@/api";
+import { ResponseCode, FormMode } from "../../constants";
+import { message } from "ant-design-vue";
+import _ from "lodash";
+const route = useRoute();
+const router = useRouter();
+const formRef = ref();
+const labelCol = {
+  span: 5,
+};
+const wrapperCol = {
+  span: 13,
+};
+let formState = reactive({
+  username: "",
+  email: "",
+  fullname: "",
+  roleID: null,
+  state: null,
+});
+const loading = reactive({
+  isLoadingSave: false,
+  isLoadingBeforeMount: false,
+});
+const rules = {};
 
-  onBeforeMount(async () => {
-    loading.isLoadingBeforeMount = true;
+onBeforeMount(async () => {
+  loading.isLoadingBeforeMount = true;
+  try {
+    let user = await userService.getById(route.params.id);
+    if (user?.success && user?.data) {
+      formState = reactive(_.cloneDeep(user.data));
+    }
+  } catch (error) {
+    switch (error?.Code) {
+      case ResponseCode.NotFoundUser:
+        message.error($t("User.NotFoundUser"));
+        break;
+      default:
+        message.error($t("UnKnowError"));
+        break;
+    }
+    router.push({ name: "UserList" });
+  } finally {
+    loading.isLoadingBeforeMount = false;
+  }
+});
+
+const onSubmit = async () => {
+  try {
+    loading.isLoadingSave = true;
     try {
-      let user = await userService.getById(route.params.id);
+      let user = await userService.updateByAdmin(formState, route.params.id);
       if (user?.success && user?.data) {
-        formState = reactive(_.cloneDeep(user.data));
+        router.push({
+          name: "UserView",
+          params: { id: user.id },
+        });
       }
     } catch (error) {
+      console.log(error);
       switch (error?.Code) {
-        case ResponseCode.NotFoundUser:
-          message.error($t("User.NotFoundUser"));
+        case ResponseCode.ComputerRoomNameConflic:
           break;
         default:
-          message.error($t("UnKnowError"));
           break;
       }
-      router.push({ name: "UserList" });
-    } finally {
-      loading.isLoadingBeforeMount = false;
     }
-  });
-
-  const onSubmit = async () => {
-    try {
-      loading.isLoadingSave = true;
-      try {
-        let user = await userService.updateByAdmin(formState, route.params.id);
-        if (user?.success && user?.data) {
-          router.push({
-            name: "UserView",
-            params: { id: user.id },
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        switch (error?.Code) {
-          case ResponseCode.ComputerRoomNameConflic:
-            break;
-          default:
-            break;
-        }
-      }
-    } catch (error) {
-    } finally {
-      loading.isLoadingSave = false;
-    }
-  };
-  const resetForm = () => {
-    formRef.value.resetFields();
-  };
+  } catch (error) {
+  } finally {
+    loading.isLoadingSave = false;
+  }
+};
+const resetForm = () => {
+  formRef.value.resetFields();
+};
 </script>

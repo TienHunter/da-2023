@@ -42,7 +42,7 @@
         </template>
       </a-row>
     </div>
-    <div class="footer">
+    <div class=" py-2">
       {{ showTotal }}
     </div>
   </div>

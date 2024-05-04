@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-content">
     <div class="content">
       <a-tabs v-model:activeKey="activeKey" :destroyInactiveTabPane="true">
         <template #leftExtra>
@@ -24,7 +24,7 @@
           <template #tab>
             <span>
               <android-outlined />
-              Danh sach máy
+              Danh sách máy
             </span>
           </template>
           <ComputerRoomComputerList />
@@ -42,4 +42,8 @@ import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
 const router = useRouter();
 const activeKey = ref("ComputerRoomInfoView");
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.container-content {
+  overflow: hidden !important;
+}
+</style>
