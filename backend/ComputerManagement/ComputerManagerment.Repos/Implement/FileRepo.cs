@@ -24,14 +24,18 @@ namespace ComputerManagerment.Repos.Implement
 
             switch (fieldSort?.ToLower())
             {
-
-                case "UpdatedAt":
+                case "filename":
+                    query = sortAsc ? query.OrderBy(e => e.FileName) : query.OrderByDescending(e => e.FileName);
+                    break;
+                case "updatedat":
                     query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
                     break;
-                case "CreatedAt":
+                case "createdat":
                     query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
                     break;
-
+                case "softwarename":
+                    query = sortAsc ? query.OrderBy(e => e.Software.Name) : query.OrderByDescending(e => e.Software.Name);
+                    break;
                 default:
                     query = query.OrderByDescending(e => e.UpdatedAt);
                     break;
@@ -56,7 +60,7 @@ namespace ComputerManagerment.Repos.Implement
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<FileModel>();
-                entities = await _dbSet.Include(f=>f.Software).Where(f => f.SoftwareId == softwareId).ToListAsync();
+                entities = await _dbSet.Include(f=>f.Software).Where(f => f.SoftwareId == softwareId).OrderByDescending(e => e.UpdatedAt).ToListAsync();
             return entities;
         }
     }

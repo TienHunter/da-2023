@@ -96,7 +96,7 @@ namespace ComputerManagement.Service.Implement
 
         }
 
-        public virtual async Task ValidateBeforeAddAsync(Computer computer)
+        public override async Task ValidateBeforeAddAsync(Computer computer)
         {
             await base.ValidateBeforeAddAsync(computer);
             // check conflic mac address
@@ -122,6 +122,18 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
+        public override async Task<(List<ComputerDto>, int)> GetListAsync(PagingParam pagingParam)
+        {
+            var (dtos, totalCount) = await base.GetListAsync(pagingParam);
+            foreach (var item in dtos)
+            {
+                if (item.StateTime < DateTime.Now.AddMinutes(-3))
+                {
+                    item.State = ComputerState.Off;
+                }
+            }
+            return (dtos, totalCount);
+        }
         public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
         {
             var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);

@@ -1,6 +1,6 @@
 <template>
   <div class="container-content">
-    <div class="table-operations flex justify-between">
+    <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"

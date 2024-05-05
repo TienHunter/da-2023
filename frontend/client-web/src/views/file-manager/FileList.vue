@@ -1,6 +1,6 @@
 <template>
   <div class="container-content">
-    <div class="table-operations flex justify-between">
+    <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
@@ -86,16 +86,8 @@ const columns = [
     dataIndex: "softwareName",
     key: "softwareName",
     width: "160px",
-    filters: [
-      {
-        text: "Male",
-        value: "male",
-      },
-      {
-        text: "Female",
-        value: "female",
-      },
-    ],
+    sorter: true,
+    ellipsis: true,
   },
   {
     title: $t("File.Version"),
@@ -217,19 +209,15 @@ const onDelete = (record) => {
     title: "Cảnh báo",
     icon: h(ExclamationCircleOutlined),
     content: h("div", [
-      `Bạn có chắc chắn muốn xóa phòng máy ${record.name}.`,
-      h("br"),
-      `Khi xóa phòng
-           máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
-           xóa đi.`,
+      `Bạn có chắc chắn muốn xóa file cài ${record.fileName} của phần mềm ${record?.software.name}.`
     ]),
     okText: "Yes",
     okType: "danger",
     async onOk() {
       try {
-        let rs = await computerRoomService.delete(record.id);
+        let rs = await fileService.delete(record.id);
         if (rs?.success && rs?.data) {
-          message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
+          message.success($t("fileService.DeleteSuccess", [record.fileName]));
           if (dataSource.value.length > 1) {
             let indexToDelete = dataSource.value.findIndex(
               (item) => item.id === record.id

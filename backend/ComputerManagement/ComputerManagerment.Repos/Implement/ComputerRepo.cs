@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ namespace ComputerManagerment.Repos.Implement
             {
                 entities = await query
                 .Include(c => c.ComputerRoom)
+                
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

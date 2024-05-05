@@ -25,5 +25,11 @@ class FileService extends baseService {
       return await instance.get(`${this.getEndpoint()}/GetListFileBySoftwareId/${softwareId}`);
    }
 
+   async getFileByFilename(filename) {
+      return await instance.get(`${this.getEndpoint()}/get-file/${filename}`, {
+         responseType: "blob",
+      })
+   }
+
 }
 export default new FileService();

@@ -95,5 +95,20 @@ namespace ComputerManagement.Service.Implement
             }
             return await _fileRepo.DeleteAsync(fileExist);
         }
+
+        public async Task<byte[]> GetFileByFileName(string fileName)
+        {
+            var filePath = Path.Combine(_fileConfig.StoreFile,fileName);
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath))
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Code = ServiceResponseCode.NotFoundFile
+                };
+            }
+
+            return await File.ReadAllBytesAsync(filePath);
+        }
     }
 }

@@ -1,6 +1,6 @@
 <template>
    <div class="container-content">
-      <div class="table-operations flex justify-between">
+      <div class="table-operations flex justify-between pt-4">
          <div class="operations-left"></div>
          <div class="operations-right flex gap-2">
             <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
@@ -208,15 +208,15 @@ const onDelete = (record) => {
       content: h("div", [
          `Bạn có chắc chắn muốn xóa phần mềm ${record.name}.`,
          h("br"),
-         `Khi xóa phần mềm thì các máy tính sẽ không được cài đặt hoặc cập nhật.`,
+         `Các máy tính sẽ không được cài đặt hoặc cập nhật phần mềm này nữa.`,
       ]),
       okText: "Yes",
       okType: "danger",
       async onOk() {
          try {
-            let rs = await computerRoomService.delete(record.id);
+            let rs = await softwareService.delete(record.id);
             if (rs?.success && rs?.data) {
-               message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
+               message.success($t("Software.DeleteSuccess", [record.name]));
                if (dataSource.value.length > 1) {
                   let indexToDelete = dataSource.value.findIndex(
                      (item) => item.id === record.id

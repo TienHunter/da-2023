@@ -12,9 +12,9 @@
 
       </div>
       <div class="tool-bars__right">
-        <router-link :to="{ name: 'SoftwareEdit', params: { id: route.params.id } }">
+        <!-- <router-link :to="{ name: 'SoftwareEdit', params: { id: route.params.id } }">
           <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
-        </router-link>
+        </router-link> -->
       </div>
     </div>
     <div class="content pt-4">
@@ -90,11 +90,16 @@
               </template>
               <template v-else-if="column.key === 'operation'">
                 <div class="flex gap-2">
-                  <a-button round>
+                  <a-button round :disabled="!record?.fileName" @click="dowliadFile(record?.fileName)">
+                    <template #icon>
+                      <DownloadOutlined />
+                    </template>
+                  </a-button>
+                  <!-- <a-button round>
                     <template #icon>
                       <EditOutlined />
                     </template>
-                  </a-button>
+                  </a-button> -->
                   <a-button round class="bg-red-200" @click="onDelete(record)">
                     <template #icon>
                       <DeleteOutlined />
@@ -341,6 +346,32 @@ const toggleShowFileQuickAddModal = (isShow) => {
 const afterSaveFile = async (e) => {
   fileQuickAddProp.isShow = false;
   await fetchDataFiles();
+}
+
+/**
+ * tải file
+ */
+const dowliadFile = async (fileName) => {
+  if (fileName) {
+    try {
+      let blob = await fileService.getFileByFilename(fileName);
+      // Tạo URL tạm thời từ Blob
+      const url = URL.createObjectURL(blob);
+      // Tạo một liên kết tải về
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName; // Tên của file khi tải về
+      // Thêm liên kết vào body và nhấp tự động
+      document.body.appendChild(link);
+      link.click();
+      // Xóa URL tạm thời sau khi đã sử dụng
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(error);
+      message.error("UnKnowError");
+    }
+  }
+
 }
 // ========== end lifecycle ==========
 </script>

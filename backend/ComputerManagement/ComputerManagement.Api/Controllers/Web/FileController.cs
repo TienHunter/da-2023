@@ -5,6 +5,7 @@ using ComputerManagement.Controllers.Web;
 using ComputerManagement.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComputerManagement.Api.Controllers.Web
 {
@@ -52,5 +53,14 @@ namespace ComputerManagement.Api.Controllers.Web
             return Ok(rs);
         }
 
+        [HttpGet("get-file/{filename}")]
+        public async Task<IActionResult> GetFile([FromRoute] [Required] string filename)
+        {
+            // do something
+            
+            var fileBytes = await _fileService.GetFileByFileName(filename);
+
+            return File(fileBytes, "application/octet-stream");
+        }
     }
 }

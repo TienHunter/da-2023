@@ -23,5 +23,8 @@ namespace ComputerManagement.Service.Interface
         /// <param name="softwareId"></param>
         /// <returns></returns>
         Task<List<FileDto>> GetListFileBySoftwareId(Guid softwareId);
+
+
+        Task<byte[]> GetFileByFileName(string fileName);
     }
 }

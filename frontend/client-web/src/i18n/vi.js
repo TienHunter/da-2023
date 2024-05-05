@@ -120,6 +120,7 @@ export default {
       CreatedAt: "Ngày tạo",
       UpdatedAt: "Ngày cập nhật",
       FileList: "Danh sách file cài",
+      DeleteSuccess: "Xóa phần mềm {0} thành công"
 
    },
    File: {
