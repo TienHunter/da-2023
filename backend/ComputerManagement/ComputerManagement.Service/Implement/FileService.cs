@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -109,6 +110,100 @@ namespace ComputerManagement.Service.Implement
             }
 
             return await File.ReadAllBytesAsync(filePath);
+        }
+
+        public async Task<bool> CheckUpdateAsync(string fileName)
+        {
+            var rs = false;
+            var (softwareId, version, contentType) = this.ParseFileName(fileName);
+            // check cờ trong db 
+            var software = await _softwareRepo.GetAsync(softwareId);
+            if(software != null && software.IsUpdate)
+            {
+                // lấy file cập nhật mới nhất
+                var fileLatest = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.UpdatedAt).FirstOrDefaultAsync();
+                if(fileLatest != null && fileLatest.FileName != fileName)
+                {
+                    rs= true;
+                }
+            }
+            return rs;
+        }
+
+        public async Task<bool> CheckInstallAsync(Guid softwareId)
+        {
+            var rs = false;
+            var software = await _softwareRepo.GetAsync(softwareId);
+            if(software != null && software.IsInstall)
+            {
+                rs = true;
+            }
+            return rs;
+        }
+
+        /// <summary>
+        /// tách filename từ input
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private (Guid, string, string) ParseFileName(string fileName)
+        {
+            // Kiểm tra xem tên file có null hoặc rỗng không
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InValidFileName
+                };
+            }
+
+            // Tìm vị trí của dấu gạch dưới cuối cùng
+            int lastUnderscoreIndex = fileName.LastIndexOf('_');
+
+            // Kiểm tra xem có dấu gạch dưới không
+            if (lastUnderscoreIndex == -1)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InValidFileName
+                };
+            }
+
+            // Tìm vị trí của dấu chấm trong tên file
+            int dotIndex = fileName.LastIndexOf('.');
+
+            // Kiểm tra xem có dấu chấm không
+            if (dotIndex == -1)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InValidFileName
+                };
+            }
+
+            // Tách GUID từ đầu đến dấu gạch dưới cuối cùng
+            string guidString = fileName.Substring(0, lastUnderscoreIndex);
+            Guid guid;
+            if (!Guid.TryParse(guidString, out guid))
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InValidFileName
+                };
+            }
+
+            // Tách phiên bản từ dấu chấm đến dấu gạch dưới
+            string version = fileName.Substring(lastUnderscoreIndex + 1, dotIndex - lastUnderscoreIndex - 1);
+
+            // Lấy đuôi file từ vị trí của dấu chấm đến cuối tên file
+            string extension = fileName.Substring(dotIndex + 1);
+
+            return (guid, version, extension);
         }
     }
 }
