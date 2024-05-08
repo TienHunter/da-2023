@@ -1,6 +1,7 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.DTO.Users;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -57,11 +58,25 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
+        /// <summary>
+        /// cập với user với quyền admin
+        /// </summary>
+        /// <param name="userUpdateByAdmin"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut("update-by-admin/{id}")]
         public async Task<IActionResult> UpdateByAdmin([FromBody] UserUpdateByAdmin userUpdateByAdmin, [FromRoute] Guid id)
         {
             var rs = new ServiceResponse();
             rs.Data = await _userService.UpdateUserByAdminAsync(userUpdateByAdmin, id);
+            return Ok(rs);
+        }
+
+        [HttpPut("UpdateState/{userId}/{userState}")]
+        public async Task<IActionResult> UpdateState([FromRoute] Guid userId, [FromRoute] UserState userState)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _userService.UpdateStateAsync(userId, userState);
             return Ok(rs);
         }
     }

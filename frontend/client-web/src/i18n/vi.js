@@ -81,6 +81,11 @@ export default {
       UserPending: "Chờ duyệt",
       UserActive: "Hoạt động",
       UserRevoked: "Đã thu hồi",
+      UserState: {
+         Pending: "Chờ duyệt",
+         Active: "Kích hoạt",
+         Revoke: "Thu hồi"
+      }
    },
    Computer: {
       ComputerRoomName: "Tên phòng máy",

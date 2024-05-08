@@ -77,7 +77,7 @@ namespace ComputerManagement.Service.Implement
                 rs.Data = new
                 {
                     AccessToken = accessToken,
-                    UserID = userExist.Id,
+                    Id = userExist.Id,
                     Email = userExist.Email,
                     Fullname = userExist.Fullname,
                     Username = userExist.Username,
@@ -202,6 +202,30 @@ namespace ComputerManagement.Service.Implement
             };
 
             _mapper.Map(userUpdateByAdmin, userExist);
+
+            await this.BeforeUpdateAsync(userExist);
+
+            return await _userRepo.UpdateAsync(userExist);
+        }
+
+        public async Task<bool> UpdateStateAsync(Guid userId, UserState userState)
+        {
+            var userAuth = await _userRepo.GetAsync(_contextData.UserID);
+            if (userAuth?.RoleID != UserRole.Admin)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.Forbidden,
+                    Code = ServiceResponseCode.Forbidden
+                };
+            }
+            var userExist = await _userRepo.GetAsync(userId) ?? throw new BaseException
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Code = ServiceResponseCode.NotFoundUser
+            };
+            userExist.State = userState;
+            await this.BeforeUpdateAsync(userExist);
 
             return await _userRepo.UpdateAsync(userExist);
         }

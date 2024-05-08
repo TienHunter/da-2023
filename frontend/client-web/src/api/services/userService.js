@@ -23,5 +23,8 @@ class UserSerivce extends baseService {
    async updateByAdmin(data, id) {
       return await instance.put(`${this.getEndpoint()}/update-by-admin/${id}`, data);
    }
+   async updateUserState(userId, userState) {
+      return await instance.put(`${this.getEndpoint()}/UpdateState/${userId}/${userState}`)
+   }
 }
 export default new UserSerivce();

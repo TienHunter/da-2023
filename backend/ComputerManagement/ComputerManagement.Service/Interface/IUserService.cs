@@ -1,6 +1,7 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.DTO.Users;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -43,5 +44,13 @@ namespace ComputerManagement.Service
         /// <param name="id"></param>
         /// <returns></returns>
         Task<bool> UpdateUserByAdminAsync(UserUpdateByAdmin userUpdateByAdmin, Guid id);
+
+        /// <summary>
+        /// cập nhật state cho user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userState"></param>
+        /// <returns></returns>
+        Task<bool> UpdateStateAsync(Guid userId, UserState userState);
     }
 }

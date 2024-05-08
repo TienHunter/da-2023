@@ -13,9 +13,6 @@
         </div>
         <div class="toolbars-right flex gap-2">
           <a-button type="primary" ghost @click="onSubmit" :loading="loading.isLoadingSave">{{ $t("Save") }}</a-button>
-          <a-button type="primary" @click="onSubmit">{{
-            $t("SaveAndAdd")
-          }}</a-button>
           <a-button>{{ $t("Cancel") }}</a-button>
         </div>
       </div>

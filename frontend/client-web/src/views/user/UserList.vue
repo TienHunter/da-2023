@@ -1,6 +1,6 @@
 <template>
   <div class="container-content">
-    <div class="table-operations flex justify-between">
+    <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
@@ -11,11 +11,8 @@
       </div>
     </div>
     <div class="content">
-      <a-table :columns="columns" :row-key="(record) => record.id" :row-selection="{
-        selectedRowKeys: selectRows.selectedRowKeys,
-        onChange: onSelectChange,
-      }" :data-source="dataSource" :pagination="pagination" :loading="loading.loadingTable"
-        @change="handleTableChange">
+      <a-table :columns="columns" :row-key="(record) => record.id" :row-selection="rowSelection"
+        :data-source="dataSource" :pagination="pagination" :loading="loading.loadingTable" @change="handleTableChange">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'username'">
             <router-link :to="{ name: 'UserView', params: { id: record.id } }">
@@ -38,16 +35,33 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round>
+              <a-button round :disabled="userContext?.id == record.id" @click="navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200">
+              <a-button round class="bg-red-200" :disabled="userContext?.id == record.id">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
               </a-button>
+              <a-dropdown :trigger="['click']" :disabled="userContext?.id == record.id">
+                <a-button @click.prevent>
+                  <MoreOutlined />
+                </a-button>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item v-if="record.state != UserState.Active"
+                      @click="changeStateUser(UserState.Active, record)">
+                      {{ $t("User.UserState.Active") }}
+                    </a-menu-item>
+                    <a-menu-item v-if="record.state != UserState.Revoke"
+                      @click="changeStateUser(UserState.Revoke, record)">
+                      {{ $t("User.UserState.Revoke") }}
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
             </div>
           </template>
         </template>
@@ -61,8 +75,12 @@ import { useRouter } from "vue-router";
 import _ from "lodash";
 import { computerRoomService, userService } from "../../api";
 import util from "@/utils/util";
+import { LocalStorageKey, UserState } from "@/constants";
+import { localStore } from "@/utils";
+import { message } from "ant-design-vue";
 // ========== start state ==========
 const router = useRouter();
+const userContext = ref({});
 const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
@@ -102,7 +120,7 @@ const columns = [
     title: "Action",
     key: "operation",
     fixed: "right",
-    width: 100,
+    width: 160,
   },
 ];
 const pagingParam = reactive({
@@ -129,6 +147,7 @@ const selectRows = reactive({
 onBeforeMount(async () => {
   try {
     loading.loadingTable = true;
+    userContext.value = localStore.getItem(LocalStorageKey.userInfor);
     let rs = await userService.getList(pagingParam);
     if (rs.success && rs.data) {
       dataSource.value = _.cloneDeep(
@@ -182,15 +201,17 @@ const handleTableChange = (pag, filters, sorter) => {
   //  });
 };
 
-/**
- * sự kiện selected rows
- * @param {*} selectedRowKeys
- */
-const onSelectChange = (selectedRowKeys) => {
-  console.log("selectedRowKeys changed: ", selectedRowKeys);
-  selectRows.selectedRowKeys = selectedRowKeys;
-};
 
+
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    selectRows.selectedRowKeys = selectedRowKeys;
+  },
+  getCheckboxProps: record => ({
+    disabled: record.id == userContext.value.id,
+  }),
+};
 /**
  * sự kiện tìm kiếm ở ô input search
  * @param {*} searchValue
@@ -200,19 +221,39 @@ const onSearch = (searchValue) => {
 };
 
 /**
- * router sang form add
+ * navigate sang form edit
  */
-// const onAdd = () => {
-//   router.push({ name: "ComputerRoomAdd" });
-// };
+const navigateEdit = (item) => {
+  // check before router
+  router.push({ name: "UserEdit", params: { id: item.id } });
+}
+
+const changeStateUser = async (state, user) => {
+  try {
+    let rs = await userService.updateUserState(user.id, state);
+    if (rs && rs.success && rs.data) {
+      user.state = state;
+      const { colorUserState, textUserState } = util.getViewUserState(
+        user.state
+      );
+      user.colorUserState = colorUserState;
+      user.textUserState = textUserState;
+    }
+  } catch (error) {
+    console.log(error);
+    message.error($t("UnKnowError"));
+  }
+}
 // ========== end methods ==========
 </script>
 <style scoped>
-.table-operations {
-  margin-bottom: 16px;
-}
+.container-content {
+  .table-operations {
+    margin-bottom: 16px;
+  }
 
-.table-operations>button {
-  margin-right: 8px;
+  .table-operations>button {
+    margin-right: 8px;
+  }
 }
 </style>
