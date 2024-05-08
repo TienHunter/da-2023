@@ -1,6 +1,7 @@
 <template>
 
-   <a-modal v-model:open="open" :title="$t('Computer.ComputerInfoTitle')" @ok="onOk" @cancel="onCancel">
+   <a-modal v-model:open="open" :title="$t('Computer.ComputerInfoTitle')" :okText="$t('ViewDetail')"
+      :cancelText="$t('Close')" @ok="onOk" @cancel="onCancel">
       <div class="master">
          <a-row :gutter="[16, 24]">
             <template v-for="field in fieldsMaster" :key="field.dataIndex">
@@ -32,6 +33,7 @@ import computerKey from '@/constants/computerKey';
 import { message } from 'ant-design-vue';
 import _ from 'lodash';
 import { onBeforeMount, reactive, ref, } from 'vue';
+import { useRouter } from 'vue-router';
 // ========== start state ========== 
 const props = defineProps({
    id: {
@@ -40,6 +42,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits("hideModal")
+
+const router = useRouter();
 const loading = reactive({
    spining: false
 })
@@ -105,7 +109,7 @@ const handleDataRender = (item) => {
    debugger;
 }
 const onOk = () => {
-
+   router.push({ name: "ComputerView", params: { id: props.id } });
 }
 const onCancel = () => {
    emit('hideModal', false)

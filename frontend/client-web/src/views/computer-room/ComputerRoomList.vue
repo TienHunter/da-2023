@@ -3,8 +3,8 @@
     <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
-        <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
-          :loading="loading.loadingInputSearch" @search="onSearch" />
+        <a-input v-model:value="searchText" :placeholder="$t('ComputerRoom.SearchListHint')" allow-clear
+          style="width: 200px" />
         <router-link :to="{ name: 'ComputerRoomAdd' }">
           <a-button type="primary">{{ $t("Add") }}</a-button>
         </router-link>
@@ -50,7 +50,7 @@
   <contextHolder />
 </template>
 <script setup>
-import { computed, h, onBeforeMount, reactive, ref } from "vue";
+import { computed, h, onBeforeMount, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { computerRoomService } from "../../api";
 import util from "@/utils/util";
@@ -124,6 +124,7 @@ const pagingParam = reactive({
   sortAsc: false,
   total: 0,
 });
+const searchText = ref("");
 const pagination = computed(() => ({
   total: pagingParam.total,
   current: pagingParam.pageNumber,
@@ -142,9 +143,18 @@ const selectRows = reactive({
 onBeforeMount(async () => {
   await loadData();
 });
+
+watch(searchText, () => {
+  pagingParam.keySearch = searchText.value;
+  debounceSearch();
+});
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+
+const debounceSearch = _.debounce(async () => {
+  await loadData();
+}, 600);
 const loadData = async () => {
   try {
     loading.loadingTable = true;

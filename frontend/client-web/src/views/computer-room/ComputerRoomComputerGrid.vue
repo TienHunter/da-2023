@@ -5,46 +5,50 @@
       </div>
       <div class="operations-right"></div>
     </div>
-    <div class="content">
-      <a-row :gutter="[24, 24]">
-        <template v-for="row in computerRoom.row" :key="row">
-          <a-col v-for="col in computerRoom.col" :key="col" :span="24 / computerRoom.col">
-            <div class="flex flex-col items-center justify-center">
-              <template v-if="dataRender[row] && dataRender[row][col]">
-                <div>
-                  <a-badge :count="dataRender[row][col]['listErrorId']?.length" :overflow-count="10" class="pointer"
-                    @click="quickViewComputer(dataRender[row][col]['id'])">
-                    <a-avatar shape="square" size="large" class="bg-green-500">
-                      <template #icon>
-                        <LaptopOutlined
-                          :class="{ 'bg-blue-500': dataRender[row][col]['state'] == 1, 'bg-gray-500': dataRender[row][col]['state'] == 2 }" />
-                      </template>
-                    </a-avatar>
-                  </a-badge>
-                </div>
-                <div class="font-bold pt-2 text-2xl">
-                  {{ dataRender[row][col]['name'] }}
-                </div>
-                <div>
+    <div class="body mx-10">
+      <div class="content p-4 rounded-lg border-solid border-2 border-black">
+        <a-row :gutter="[24, 24]" class="">
+          <template v-for="row in computerRoom.row" :key="row">
+            <a-col v-for="col in computerRoom.col" :key="col" :span="24 / computerRoom.col">
+              <div class="flex flex-col items-center justify-center">
+                <template v-if="dataRender[row] && dataRender[row][col]">
+                  <div>
+                    <a-badge :count="dataRender[row][col]['listErrorId']?.length" :overflow-count="10" class="pointer"
+                      @click="quickViewComputer(dataRender[row][col]['id'])">
+                      <a-avatar shape="square" size="large" class="bg-green-500">
+                        <template #icon>
+                          <LaptopOutlined
+                            :class="{ 'bg-blue-500': dataRender[row][col]['state'] == 1, 'bg-gray-500': dataRender[row][col]['state'] == 2 }" />
+                        </template>
+                      </a-avatar>
+                    </a-badge>
+                  </div>
+                  <div class="font-bold pt-2 text-2xl">
+                    {{ dataRender[row][col]['name'] }}
+                  </div>
+                  <div>
 
-                </div>
-              </template>
-              <template v-else>
-                <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)">
-                  <template #icon>
-                    <PlusOutlined />
-                  </template>
-                </a-button>
-              </template>
-            </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)">
+                    <template #icon>
+                      <PlusOutlined />
+                    </template>
+                  </a-button>
+                </template>
+              </div>
 
-          </a-col>
-        </template>
-      </a-row>
+            </a-col>
+          </template>
+        </a-row>
+
+      </div>
+      <div class=" py-2">
+        {{ showTotal }}
+      </div>
     </div>
-    <div class=" py-2">
-      {{ showTotal }}
-    </div>
+
   </div>
   <ComputerQuickAddModal v-if="computerPropAdd.isShow" :data="computerPropAdd"
     @toggleShowQuickAddComputerModal="(e) => toggleShowQuickAddComputerModal(e)"
@@ -265,7 +269,7 @@ const hideComputerQuickView = (e) => {
 
   .content {
     max-height: calc(100vh - 240px);
-    overflow: scroll;
+    overflow: auto;
   }
 }
 </style>

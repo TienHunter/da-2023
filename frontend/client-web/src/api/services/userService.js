@@ -14,6 +14,9 @@ class UserSerivce extends baseService {
    async register(userRegister) {
       return await instance.post(`${this.getEndpoint()}/register`, userRegister);
    }
+   async changePassword(data) {
+      return await instance.put(`${this.getEndpoint()}/ChangePassword`, data);
+   }
    async logout() {
       return await instance.put(`${this.getEndpoint()}/logout`);
    }

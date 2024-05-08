@@ -43,12 +43,12 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round>
+              <a-button round @click="navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200">
+              <a-button round class="bg-red-200" @click="onDelete(record)">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -59,16 +59,20 @@
       </a-table>
     </div>
   </div>
+  <contextHolder />
 </template>
 <script setup>
-import { computed, onBeforeMount, reactive, ref } from "vue";
+import { computed, onBeforeMount, reactive, ref, h } from "vue";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import { Modal, message } from "ant-design-vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { computerRoomService, computerService } from "../../api";
 import util from "@/utils/util";
 import { FormatDateKey } from "@/constants";
 // ========== start state ==========
 const router = useRouter();
+const [modal, contextHolder] = Modal.useModal();
 const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
@@ -211,6 +215,53 @@ const onSearch = (searchValue) => {
   console.log("use value", searchValue);
 };
 
+/**
+ * navigate sang form edit
+ * @param item 
+ */
+const navigateEdit = (item) => {
+  // check something
+  router.push({ name: "ComputerEdit", params: { id: item.id } });
+}
+
+/**
+ * xóa bản ghi
+ */
+const onDelete = (record) => {
+  modal.confirm({
+    title: "Cảnh báo",
+    icon: h(ExclamationCircleOutlined),
+    content: h("div", [
+      `Bạn có chắc chắn muốn xóa máy ${record.name} ở phòng máy ${record?.computerRoom?.name}.`
+    ]),
+    okText: "Yes",
+    okType: "danger",
+    async onOk() {
+      try {
+        let rs = await computerService.delete(record.id);
+        if (rs?.success && rs?.data) {
+          message.success($t("Computer.DeleteSuccess", [record.name, record?.computerRoom?.name]));
+          if (dataSource.value.length > 1) {
+            let indexToDelete = dataSource.value.findIndex(
+              (item) => item.id === record.id
+            );
+            if (indexToDelete != -1) {
+              dataSource.value.splice(indexToDelete, 1);
+              pagingParam.total -= 1;
+            }
+          } else {
+            pagingParam.pageNumber = 1;
+            await loadData();
+          }
+        }
+      } catch (errors) {
+        message.error($t("UnKnowError"));
+        console.log(errors);
+      }
+    },
+    onCancel() { },
+  });
+};
 /**
  * router sang form add
  */

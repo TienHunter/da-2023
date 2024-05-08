@@ -8,6 +8,8 @@ export default {
    NotFound: "Không tìm thấy tài nguyên",
    SaveSuccess: "Lưu thành công",
    DetailInfo: "Thông tin chi tiết",
+   ViewDetail: "Xem chi tiết",
+   Close: "Đóng",
    Validate: {
       Required: "Vui lòng nhập {0}",
    },
@@ -30,9 +32,12 @@ export default {
       Fullname: "Họ và tên",
       UsernameHint: "Tài khoản",
       EmailHint: "Email",
+      OldPassword: "Mật khẩu cũ",
+      NewPassword: "Mật khẩu mới",
       ConfirmPasswordHint: "Xác nhận mật khẩu",
       YouHaveAccount: "Bạn có tài khoản ? ",
       Profile: "Hồ sơ",
+      ChangePassword: "Đổi mật khẩu",
       Logout: "Đăng xuất",
       WrongLogin: "Sai tài khoản hoặc mật khẩu",
       LoginSuccess: "Đăng nhập thành công",
@@ -41,7 +46,8 @@ export default {
       EmailConflict: "Email đã được sử dụng",
       EmailInvalid: "Email không đúng định dạng",
       UserPending: "Tài khoản đang chờ duyệt, Vui lòng liên hệ quản trị viên",
-      UserRevoked: "Tài khoản đã bị thu hồi, Vui lòng liên hệ quản trị viên"
+      UserRevoked: "Tài khoản đã bị thu hồi, Vui lòng liên hệ quản trị viên",
+      ChangePasswordSuccess: "Đổi mật khẩu thành công"
    },
    ComputerRoom: {
       Name: "Tên phòng máy",
@@ -50,6 +56,7 @@ export default {
       MaxCapacity: "Số lượng máy tối đa",
       State: "Tình trang",
       StateHint: "Vui lòng chọn tình trạng phòng máy",
+      SearchListHint: "Nhập tên phòng máy...",
       Validate: {
          NameRequired: "Vui lòng nhập tên phòng máy",
          NameConflic: "Tên phòng máy đã tồn tại",
@@ -97,6 +104,7 @@ export default {
       Row: "Vị trí hàng",
       Col: "Vị trí cột",
       Condition: "Tình trạng máy",
+      DeleteSuccess: "Xóa máy {0} ở phòng máy {1} thành công",
       ConditionKey: {
          Perfect: "Hoàn hảo",
          Good: "Tốt",
