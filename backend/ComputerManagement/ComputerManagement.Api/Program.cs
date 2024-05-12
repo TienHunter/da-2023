@@ -94,6 +94,10 @@ builder.Services.AddScoped<ISoftwareRepo, SoftwareRepo>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IFileRepo, FileRepo>();
 
+builder.Services.AddScoped<IMonitorSessionRepo, MonitorSessionRepo>();
+builder.Services.AddScoped<IMonitorSessionService, MonitorSessionService>();
+
+
 // add cors
 builder.Services.AddCors(options =>
 {

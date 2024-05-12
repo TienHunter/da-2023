@@ -29,6 +29,16 @@
           </template>
           <ComputerRoomComputerList />
         </a-tab-pane>
+        <a-tab-pane key="ComputerRoomMonitorSessionList">
+          <template #tab>
+            <span>
+              <android-outlined />
+              Danh sách phiên theo dõi
+            </span>
+          </template>
+          <MonitorSessionListByComputerRoom />
+        </a-tab-pane>
+
       </a-tabs>
     </div>
   </div>
@@ -38,6 +48,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ComputerRoomInfoView from "./ComputerRoomInfoView.vue";
 import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
+import MonitorSessionListByComputerRoom from "../monitor-session/MonitorSessionListByComputerRoom.vue";
 
 const router = useRouter();
 const activeKey = ref("ComputerRoomInfoView");

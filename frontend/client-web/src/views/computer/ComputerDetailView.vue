@@ -3,9 +3,7 @@
     <div class="toolbars flex justify-between">
       <div class="toolbar-left"></div>
       <div class="toolbar-right">
-        <router-link
-          :to="{ name: 'ComputerEdit', params: { id: route.params.id } }"
-        >
+        <router-link :to="{ name: 'ComputerEdit', params: { id: route.params.id } }">
           <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
         </router-link>
       </div>
@@ -22,14 +20,10 @@
             </a-tag>
           </div>
         </a-col>
-        <a-col
-          v-else-if="field.key == 'condition'"
-          class="gutter-row"
-          :span="18"
-        >
+        <a-col v-else-if="field.key == 'listError'" class="gutter-row" :span="18">
           <div class="gutter-box">
-            <a-tag :color="computerInfo.colorComputerCondition">
-              {{ computerInfo.textComputerCondition }}
+            <a-tag v-for="(tag, index) in computerInfo.listError" :key="index" :color="tag.color">
+              {{ tag.label }}
             </a-tag>
           </div>
         </a-col>
@@ -41,85 +35,90 @@
   </div>
 </template>
 <script setup>
-  import { computerService, userService } from "@/api";
-  import { ref, reactive, onBeforeMount } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import moment from "moment";
-  import _ from "lodash";
-  import { message } from "ant-design-vue";
-  import { ResponseCode, FormatDateKey } from "@/constants";
-  import { util } from "@/utils";
-  const route = useRoute();
-  const router = useRouter();
-  const fields = reactive([
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "ComputerRoomName",
-      dataIndex: "computerRoomName",
-      key: "computerRoomName",
-    },
-    {
-      title: "MacAddress",
-      dataIndex: "macAddress",
-      key: "macAddress",
-    },
-    {
-      title: "State",
-      dataIndex: "state",
-      key: "state",
-    },
-    {
-      title: "StateTime",
-      dataIndex: "stateTime",
-      key: "stateTime",
-    },
-    {
-      title: "Condition",
-      dataIndex: "condition",
-      key: "condition",
-    },
-  ]);
-  let computerInfo = ref({});
-  const loading = reactive({
-    isLoadingBeforeMount: false,
-  });
-  onBeforeMount(async () => {
-    try {
-      loading.isLoadingBeforeMount = true;
-      let computer = await computerService.getById(route.params.id);
-      if (computer?.success && computer?.data) {
-        const { colorComputerState, textComputerState } =
-          util.getViewComputerState(computer.data.state);
-        computer.data.colorComputerState = colorComputerState;
-        computer.data.textComputerState = textComputerState;
-        const { colorComputerCondition, textComputerCondition } =
-          util.getViewComputerCondition(computer.data.condition);
-        computer.data.colorComputerCondition = colorComputerCondition;
-        computer.data.textComputerCondition = textComputerCondition;
-        computer.data.stateTime = computer.data.stateTime
-          ? moment(computer.data.stateTime).format(FormatDateKey.Default)
-          : "";
-        computer.data.computerRoomName = computer.data.computerRoom?.name;
-        computerInfo.value = _.cloneDeep(computer.data);
-      }
-    } catch (error) {
-      console.log(error);
-      switch (error.code) {
-        case ResponseCode.NotFoundUser:
-          message.error($t("User.NotFoundUser"));
-          break;
-        default:
-          message.error($t("UnKnowError"));
-          break;
-      }
-      router.push({ name: "ComputerList" });
-    } finally {
-      loading.isLoadingBeforeMount = false;
+import { computerService, userService } from "@/api";
+import { ref, reactive, onBeforeMount } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import moment from "moment";
+import _ from "lodash";
+import { message } from "ant-design-vue";
+import { ResponseCode, FormatDateKey, ComputerKey } from "@/constants";
+import { util } from "@/utils";
+const route = useRoute();
+const router = useRouter();
+const fields = reactive([
+  {
+    title: $t("Computer.Name"),
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: $t("Computer.ComputerRoomName"),
+    dataIndex: "computerRoomName",
+    key: "computerRoomName",
+  },
+  {
+    title: $t("Computer.MacAddress"),
+    dataIndex: "macAddress",
+    key: "macAddress",
+  },
+  {
+    title: $t("Computer.State"),
+    dataIndex: "state",
+    key: "state",
+  },
+  {
+    title: $t("Computer.StateTime"),
+    dataIndex: "stateTime",
+    key: "stateTime",
+  },
+  {
+    title: $t("Computer.Condition"),
+    dataIndex: "listError",
+    key: "listError",
+  },
+]);
+let computerInfo = ref({});
+const loading = reactive({
+  isLoadingBeforeMount: false,
+});
+onBeforeMount(async () => {
+  try {
+    loading.isLoadingBeforeMount = true;
+    let computer = await computerService.getById(route.params.id);
+    if (computer?.success && computer?.data) {
+      const { colorComputerState, textComputerState } =
+        util.getViewComputerState(computer.data.state);
+      computer.data.colorComputerState = colorComputerState;
+      computer.data.textComputerState = textComputerState;
+
+      computer.data.stateTime = computer.data.stateTime
+        ? moment(computer.data.stateTime).format(FormatDateKey.Default)
+        : "";
+      computer.data.listError = computer.data?.listErrorId?.length > 0 ? computer.data.listErrorId.map(errorId => {
+        const { label, color } = util.handleRenderComputerError(errorId);
+        return {
+          value: errorId,
+          label: label,
+          color: color
+        }
+      }) : [{ value: ComputerKey.ComputerError.Perfect, label: $t("Computer.ComputerError.Perfect"), color: 'green' }]
+      computer.data.computerRoomName = computer.data.computerRoom?.name;
+      computerInfo.value = _.cloneDeep(computer.data);
     }
-  });
+  } catch (error) {
+    console.log(error);
+    switch (error.code) {
+      case ResponseCode.NotFoundUser:
+        message.error($t("User.NotFoundUser"));
+        break;
+      default:
+        message.error($t("UnKnowError"));
+        break;
+    }
+    router.push({ name: "ComputerList" });
+  } finally {
+    loading.isLoadingBeforeMount = false;
+  }
+});
 </script>
 <style></style>

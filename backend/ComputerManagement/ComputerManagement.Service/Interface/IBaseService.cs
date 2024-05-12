@@ -114,5 +114,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="ids"></param>
         /// <returns></returns>
         Task<bool> DeleteRangeAsync(List<Guid> ids);
+
+        /// <summary>
+        /// xử lý dữ liệu thêm trước khi map
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task HandleDataBeforeMapAddAsync(TDto dto);
     }
 }

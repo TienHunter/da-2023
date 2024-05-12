@@ -3,6 +3,11 @@
     <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
+        <a-button type="text" @click="refreshGrid">
+          <template #icon>
+            <ReloadOutlined />
+          </template>
+        </a-button>
         <a-input v-model:value="searchText" :placeholder="$t('ComputerRoom.SearchListHint')" allow-clear
           style="width: 200px" />
         <router-link :to="{ name: 'ComputerRoomAdd' }">
@@ -64,58 +69,50 @@ const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
 });
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    width: "200px",
-    sorter: true,
-    fixed: "left",
-  },
-  {
-    title: "Số dãy",
-    dataIndex: "row",
-    key: "row",
-    width: "100px",
-    filters: [
-      {
-        text: "Male",
-        value: "male",
-      },
-      {
-        text: "Female",
-        value: "female",
-      },
-    ],
-  },
-  {
-    title: "Số lượng máy trên 1 dãy",
-    dataIndex: "col",
-    key: "col",
-    width: "160px",
-    ellipsis: true,
-  },
-  {
-    title: "Số máy",
-    dataIndex: "capacity",
-    key: "capacity",
-    width: "150px",
-  },
-  {
-    title: "State",
-    dataIndex: "state",
-    key: "state",
-    width: "150px",
-  },
-  {
-    title: "Action",
-    dataIndex: "operation",
-    key: "operation",
-    width: "100px",
-    fixed: "right",
-  },
-];
+const filteredInfo = ref();
+const sortedInfo = ref();
+const columns = computed(() => {
+  const filtered = filteredInfo.value || {};
+  const sorted = sortedInfo.value || {};
+  return [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "100px",
+      sorter: (a, b) => a > b,
+      sortOrder: sorted.columnKey === 'name' && sorted.order,
+      fixed: "left",
+    },
+    {
+      title: "Số dãy",
+      dataIndex: "row",
+      key: "row",
+      width: "100px",
+
+    },
+    {
+      title: "Số lượng máy trên 1 dãy",
+      dataIndex: "col",
+      key: "col",
+      width: "160px",
+      ellipsis: true,
+    },
+    {
+      title: "Số máy",
+      dataIndex: "capacity",
+      key: "capacity",
+      width: "150px",
+    },
+    {
+      title: "Action",
+      dataIndex: "operation",
+      key: "operation",
+      width: "100px",
+      fixed: "right",
+    },
+  ];
+})
 const pagingParam = reactive({
   pageSize: 20,
   pageNumber: 1,
@@ -190,7 +187,8 @@ const handleTableChange = async (pag, filters, sorter) => {
     sorter.order,
     filters
   );
-
+  filteredInfo.value = filters;
+  sortedInfo.value = sorter;
   pagingParam.pageNumber = pag?.current || 1;
   pagingParam.pageSize = pag.pageSize;
   pagingParam.fieldSort = sorter.field;
@@ -258,6 +256,17 @@ const onDelete = (record) => {
     onCancel() { },
   });
 };
+
+const refreshGrid = async () => {
+  filteredInfo.value = null;
+  sortedInfo.value = null;
+  pagingParam.keySearch = "";
+  pagingParam.pageNumber = 1;
+  pagingParam.pageSize = 20;
+  pagingParam.fieldSort = "UpdatedAt";
+  pagingParam.sortAsc; false;
+  await loadData();
+}
 // ========== end methods ==========
 </script>
 <style lang="scss">

@@ -30,10 +30,10 @@ namespace ComputerManagement.Controllers.Web
         public virtual async Task<IActionResult> GetList([FromBody] PagingParam pagingParam)
         {
             var rs = new ServiceResponse();
-            var (enitties, totalCount) = await _baseService.GetListAsync(pagingParam);
+            var (dtos, totalCount) = await _baseService.GetListAsync(pagingParam);
             rs.Data = new
             {
-                List = enitties,
+                List = dtos,
                 Total = totalCount
             };
             return Ok(rs);
@@ -43,10 +43,8 @@ namespace ComputerManagement.Controllers.Web
         [HttpPost("")]
         public virtual async Task<IActionResult> Add([FromBody] TDto dto)
         {
-            var rs = new ServiceResponse
-            {
-                Data = await _baseService.AddAsync(dto)
-            };
+            var rs = new ServiceResponse();
+            rs.Data = await _baseService.AddAsync(dto);
             return Ok(rs);
         }
 

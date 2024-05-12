@@ -6,6 +6,7 @@ import routesComputer from "../views/computer/route.js";
 import routeFile from "../views/file-manager/route.js";
 import routeSoftware from "../views/software/route.js";
 import routeUser from "../views/user/route.js";
+import routeMonitorSession from "../views/monitor-session/route.js";
 import HelloWorld from "../components/HelloWorld.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
 import localStore from "../utils/localStore.js";
@@ -18,6 +19,7 @@ const routes = [
    ...routesComputer,
    ...routeFile,
    ...routeSoftware,
+   ...routeMonitorSession,
    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",

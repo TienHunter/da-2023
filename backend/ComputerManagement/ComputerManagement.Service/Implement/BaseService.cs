@@ -39,6 +39,7 @@ namespace ComputerManagement.Service.Implement
 
         public virtual async Task<Guid> AddAsync(TDto dto)
         {
+            await this.HandleDataBeforeMapAddAsync(dto);
             TModel? model = _mapper.Map<TModel>(dto);
             var newId = await BeforeAddAsync(model);
             await this.ValidateBeforeAddAsync(model);
@@ -190,6 +191,11 @@ namespace ComputerManagement.Service.Implement
             await this.ValidateBeforeDeleteRangeAsync(models);
 
             return await _baseRepo.DeleteRangeAsync(models);
+        }
+
+        public virtual async Task HandleDataBeforeMapAddAsync(TDto dto)
+        {
+           
         }
     }
 }

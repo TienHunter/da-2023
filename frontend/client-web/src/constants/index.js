@@ -6,3 +6,4 @@ export { default as UserRole } from "./userRole";
 export { default as UserState } from "./userState";
 export { default as FormatDateKey } from "./dateFormat";
 export { default as ComputerKey } from "./computerKey";
+export { default as MonitorType } from "./monitorType";

@@ -25,6 +25,7 @@ namespace ComputerManagement.Data
         public DbSet<ComputerHistory> ComputerHistory { get; set; }
         public DbSet<SoftwareModel> SoftwareModel { get; set; }
         public DbSet<FileModel> FileModel { get; set; }
+        public DbSet<MonitorSession> MonitorSession { get; set; }
 
     }
 }

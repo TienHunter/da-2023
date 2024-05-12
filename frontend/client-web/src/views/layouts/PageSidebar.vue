@@ -1,9 +1,5 @@
-<template lang="">
-  <a-layout-sider
-    v-model:collapsed="collapsed"
-    id="components-layout-demo-side"
-    collapsible
-  >
+<template>
+  <a-layout-sider v-model:collapsed="collapsed" id="components-layout-demo-side" collapsible>
     <div class="logo" />
     <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
       <a-menu-item key="Dashboard">
@@ -30,29 +26,35 @@
           <span>User manage</span>
         </router-link>
       </a-menu-item>
-    <a-menu-item key="Software">
-      <router-link :to="{ name: 'SoftwareList' }">
-      <ShoppingOutlined />
-      <span>Software Manage</span>
-      </router-link>
-    </a-menu-item>
-    <a-menu-item key="File">
-      <router-link :to="{ name: 'FileList' }">
-      <file-outlined />
-      <span>File Manage</span>
-    </router-link>
-    </a-menu-item>
+      <a-menu-item key="Software">
+        <router-link :to="{ name: 'SoftwareList' }">
+          <ShoppingOutlined />
+          <span>Software Manage</span>
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="File">
+        <router-link :to="{ name: 'FileList' }">
+          <file-outlined />
+          <span>File Manager</span>
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="MonitorSession">
+        <router-link :to="{ name: 'MonitorSessionList' }">
+          <file-outlined />
+          <span>Monitor session Manage</span>
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>
 <script setup>
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount, computed, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const collapsed = ref(false);
 const selectedKeys = ref([]);
-onBeforeMount(() => {
+watchEffect(() => {
   selectedKeys.value = [route.matched[0]?.name];
 });
 </script>

@@ -73,7 +73,8 @@ export default {
          Range: "{0} trong khoảng {1} - {2}"
 
       },
-      DeleteSuccess: "Xóa phòng máy {0} thành công"
+      DeleteSuccess: "Xóa phòng máy {0} thành công",
+
    },
    User: {
       Username: "Tài khoản",
@@ -98,13 +99,14 @@ export default {
       ComputerRoomName: "Tên phòng máy",
       Name: "Tên máy",
       MacAddress: "Địa chỉ mac",
-      Condition: "Tình trạng máy",
       ComputerAddTitle: "Thêm máy tính",
       ComputerInfoTitle: "Thông tin máy",
       Row: "Vị trí hàng",
       Col: "Vị trí cột",
       Condition: "Tình trạng máy",
       DeleteSuccess: "Xóa máy {0} ở phòng máy {1} thành công",
+      State: "Trạng thái",
+      StateTime: "Cập nhật trạng thái lần cuối",
       ConditionKey: {
          Perfect: "Hoàn hảo",
          Good: "Tốt",
@@ -148,6 +150,22 @@ export default {
       DeleteSuccess: "Xóa file {0} thành công",
       Validate: {
          FileRequired: "Vui lòng tải file cài đặt lên"
+      }
+   },
+   MonitorSession: {
+      ComputerRoomName: "Tên phòng máy",
+      MonitorTypeLabel: "Loại giám sát",
+      StartDate: "Thời gian bắt đầu",
+      EndDate: "Thời gian kết thúc",
+      Domain: "Tên miền cho phép",
+      OwnerIdText: "Người sở hữu",
+      Date: "Ngày",
+      Session: "Phiên giám sát",
+      QuickAddMonitorSessionTitle: "Thêm nhanh phiên giám sát",
+      AddDomain: "Thêm tên miền",
+      MonitorType: {
+         Practive: "Thực hành",
+         Exam: "Kiểm tra"
       }
    }
 

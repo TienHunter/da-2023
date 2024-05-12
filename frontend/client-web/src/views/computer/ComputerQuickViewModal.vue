@@ -106,7 +106,6 @@ const handleDataRender = (item) => {
       }
    }) : [{ value: computerKey.ComputerError.Perfect, label: $t("Computer.ComputerError.Perfect"), color: 'green' }]
    computerInfo.value = _.cloneDeep(item);
-   debugger;
 }
 const onOk = () => {
    router.push({ name: "ComputerView", params: { id: props.id } });
@@ -116,7 +115,6 @@ const onCancel = () => {
 };
 
 const handleRenderComputerError = (errorId) => {
-   debugger;
    let label = "", color = "";
    switch (errorId) {
       case computerKey.ComputerError.Perfect:

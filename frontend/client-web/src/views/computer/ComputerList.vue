@@ -22,19 +22,13 @@
               {{ record.macAddress }}
             </router-link>
           </template>
-          <template v-else-if="column.key === 'state'">
-            <span>
-              <a-tag :color="record.colorComputerState">
-                {{ record.textComputerState }}
+
+          <template v-else-if="column.key === 'listError'">
+            <div v-for="(tag, index) in record.listError" class="p-1" :key="index">
+              <a-tag :color="tag.color">
+                {{ tag.label }}
               </a-tag>
-            </span>
-          </template>
-          <template v-else-if="column.key === 'condition'">
-            <span>
-              <a-tag :color="record.colorComputerCondition">
-                {{ record.textComputerCondition }}
-              </a-tag>
-            </span>
+            </div>
           </template>
           <template v-else-if="column.key === 'computerRoomName'">
             <span>
@@ -69,7 +63,7 @@ import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { computerRoomService, computerService } from "../../api";
 import util from "@/utils/util";
-import { FormatDateKey } from "@/constants";
+import { ComputerKey, FormatDateKey } from "@/constants";
 // ========== start state ==========
 const router = useRouter();
 const [modal, contextHolder] = Modal.useModal();
@@ -79,39 +73,39 @@ const loading = reactive({
 });
 const columns = [
   {
-    title: "Name",
+    title: $t("Computer.Name"),
     dataIndex: "name",
     key: "name",
     width: "100px",
   },
   {
-    title: "MacAddress",
+    title: $t("Computer.MacAddress"),
     dataIndex: "macAddress",
     key: "macAddress",
     width: "150px",
   },
   {
-    title: "ComputerRoomName",
+    title: $t("ComputerRoom.Name"),
     dataIndex: "computerRoomName",
     key: "computerRoomName",
     width: "100px",
   },
+  // {
+  //   title: "State",
+  //   dataIndex: "state",
+  //   key: "state",
+  //   width: "100px",
+  // },
+  // {
+  //   title: "StateTime",
+  //   dataIndex: "stateTime",
+  //   key: "stateTime",
+  //   width: "150px",
+  // },
   {
-    title: "State",
-    dataIndex: "state",
-    key: "state",
-    width: "100px",
-  },
-  {
-    title: "StateTime",
-    dataIndex: "stateTime",
-    key: "stateTime",
-    width: "150px",
-  },
-  {
-    title: "Condition",
-    dataIndex: "condition",
-    key: "condition",
+    title: $t("Computer.Condition"),
+    dataIndex: "listError",
+    key: "listError",
     width: "100px",
   },
   {
@@ -149,20 +143,17 @@ onBeforeMount(async () => {
     loading.loadingTable = true;
     let rs = await computerService.getList(pagingParam);
     if (rs.success && rs.data) {
-      dataSource.value = rs.data.list?.map((item) => {
-        const { colorComputerState, textComputerState } =
-          util.getViewComputerState(item.state);
-        item.colorComputerState = colorComputerState;
-        item.textComputerState = textComputerState;
-        const { colorComputerCondition, textComputerCondition } =
-          util.getViewComputerCondition(item.condition);
-        item.colorComputerCondition = colorComputerCondition;
-        item.textComputerCondition = textComputerCondition;
-        item.stateTime = item.stateTime
-          ? moment(item.stateTime).format(FormatDateKey.Default)
-          : "";
+      dataSource.value = _.cloneDeep(rs.data.list?.map((item) => {
+        item.listError = item?.listErrorId?.length > 0 ? item.listErrorId.map(errorId => {
+          const { label, color } = util.handleRenderComputerError(errorId);
+          return {
+            value: errorId,
+            label: label,
+            color: color
+          }
+        }) : [{ value: ComputerKey.ComputerError.Perfect, label: $t("Computer.ComputerError.Perfect"), color: 'green' }]
         return item;
-      });
+      }));
 
       pagingParam.total = rs.data.total || 0;
     }

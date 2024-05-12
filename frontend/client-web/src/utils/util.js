@@ -117,6 +117,8 @@ const util = {
             textComputerState = "Tắt";
             break;
          default:
+            colorComputerState = 'orange';
+            textComputerState = "Tắt";
             break;
       }
       return { colorComputerState, textComputerState };
@@ -152,6 +154,39 @@ const util = {
       }
       return { colorComputerCondition, textComputerCondition };
    },
+
+   handleRenderComputerError(errorId) {
+      let label = "", color = "";
+      switch (errorId) {
+         case ComputerKey.ComputerError.Perfect:
+            label = $t("Computer.ComputerError.Perfect");
+            color = "green";
+            break;
+         case ComputerKey.ComputerError.Hardware:
+            label = $t("Computer.ComputerError.Hardware");
+            color = "error";
+            break;
+         case ComputerKey.ComputerError.Software:
+            label = $t("Computer.ComputerError.Software");
+            color = "orange";
+            break;
+         case ComputerKey.ComputerError.Network:
+            label = $t("Computer.ComputerError.Network");
+            color = "blue";
+            break;
+         case ComputerKey.ComputerError.OS:
+            label = $t("Computer.ComputerError.OS");
+            color = "warning";
+            break;
+         case ComputerKey.ComputerError.Unknow:
+            label = $t("Computer.ComputerError.Unknow");
+            color = "red";
+            break;
+         default:
+            break;
+      }
+      return { label, color }
+   }
 }
 
 export default util
