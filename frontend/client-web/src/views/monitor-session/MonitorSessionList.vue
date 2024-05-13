@@ -197,8 +197,6 @@ const loadData = async () => {
       let rs = await monitorSessionService.getList(pagingParam);
       if (rs.success && rs.data) {
          let temp = rs.data.list?.map((item) => {
-            item.colorState = util.genColorState("state", item.state);
-            item.textState = util.genTextState("state", item.state);
             item.computerRoomName = item?.computerRoom?.name;
             item.startDate = item.startDate ? dayjs(item.startDate).format(FormatDateKey.Default) : "";
             item.endDate = item.endDate ? dayjs(item.endDate).format(FormatDateKey.Default) : "";

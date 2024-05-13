@@ -27,7 +27,7 @@
               Danh sách máy
             </span>
           </template>
-          <ComputerRoomComputerList />
+          <ComputerRoomComputerList :computerRoomId="route.params.id" />
         </a-tab-pane>
         <a-tab-pane key="ComputerRoomMonitorSessionList">
           <template #tab>
@@ -45,12 +45,13 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ComputerRoomInfoView from "./ComputerRoomInfoView.vue";
 import ComputerRoomComputerList from "./ComputerRoomComputerList.vue";
 import MonitorSessionListByComputerRoom from "../monitor-session/MonitorSessionListByComputerRoom.vue";
 
 const router = useRouter();
+const route = useRoute();
 const activeKey = ref("ComputerRoomInfoView");
 </script>
 <style lang="scss" scoped>

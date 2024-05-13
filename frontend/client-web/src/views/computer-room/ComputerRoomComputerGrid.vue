@@ -31,7 +31,8 @@
                   </div>
                 </template>
                 <template v-else>
-                  <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)">
+                  <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)"
+                    :disabled="!props.isEditAble">
                     <template #icon>
                       <PlusOutlined />
                     </template>
@@ -69,6 +70,18 @@ import { FormatDateKey } from "@/constants";
 import ComputerQuickAddModal from "../computer/ComputerQuickAddModal.vue";
 import ComputerQuickViewModal from "../computer/ComputerQuickViewModal.vue";
 // ========== start state ==========
+const props = defineProps({
+  computerRoomId: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  isEditAble: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const router = useRouter();
 const route = useRoute();
 const [modal, contextHolder] = Modal.useModal();
@@ -102,7 +115,7 @@ const computerPropView = reactive({
 // ========== start life cycle ==========
 onBeforeMount(async () => {
   try {
-    let rs = await computerRoomService.getById(route.params.id);
+    let rs = await computerRoomService.getById(props.computerRoomId);
     if (rs && rs.success && rs.data) {
       computerRoom.value = rs.data;
     }
@@ -130,7 +143,7 @@ onBeforeUnmount(() => {
 const loadData = async () => {
   try {
     let rs = await computerService.getListByComputerRoomId(
-      route.params.id,
+      props.computerRoomId,
       pagingParam
     );
     if (rs.success && rs.data) {

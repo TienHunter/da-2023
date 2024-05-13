@@ -68,6 +68,18 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
 import { ComputerKey, FormatDateKey } from "@/constants";
 // ========== start state ==========
+
+const props = defineProps({
+  computerRoomId: {
+    type: String,
+    default: "",
+    required: true
+  },
+  isEditAble: {
+    type: Boolean,
+    default: false
+  }
+});
 const router = useRouter();
 const route = useRoute();
 
@@ -76,52 +88,96 @@ const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
 });
-const columns = [
-  {
-    title: $t("Computer.Name"),
-    dataIndex: "name",
-    key: "name",
-    width: "100px",
-  },
-  {
-    title: $t("Computer.MacAddress"),
-    dataIndex: "macAddress",
-    key: "macAddress",
-    width: "150px",
-    ellipsis: true,
-  },
-  {
-    title: $t("Computer.ComputerRoomName"),
-    dataIndex: "computerRoomName",
-    key: "computerRoomName",
-    width: "100px",
-    ellipsis: true,
-  },
-  {
-    title: $t("Computer.State"),
-    dataIndex: "state",
-    key: "state",
-    width: "100px",
-  },
-  {
-    title: $t("Computer.StateTime"),
-    dataIndex: "stateTime",
-    key: "stateTime",
-    width: "150px",
-  },
-  {
-    title: $t("Computer.Condition"),
-    dataIndex: "listError",
-    key: "listError",
-    width: "100px",
-  },
-  {
-    title: "Action",
-    key: "operation",
-    fixed: "right",
-    width: 100,
-  },
-];
+const columns = computed(() => {
+
+  return props.isEditAble ? [
+    {
+      title: $t("Computer.Name"),
+      dataIndex: "name",
+      key: "name",
+      width: "100px",
+    },
+    {
+      title: $t("Computer.MacAddress"),
+      dataIndex: "macAddress",
+      key: "macAddress",
+      width: "150px",
+      ellipsis: true,
+    },
+    {
+      title: $t("Computer.ComputerRoomName"),
+      dataIndex: "computerRoomName",
+      key: "computerRoomName",
+      width: "100px",
+      ellipsis: true,
+    },
+    {
+      title: $t("Computer.State"),
+      dataIndex: "state",
+      key: "state",
+      width: "100px",
+    },
+    {
+      title: $t("Computer.StateTime"),
+      dataIndex: "stateTime",
+      key: "stateTime",
+      width: "150px",
+    },
+    {
+      title: $t("Computer.Condition"),
+      dataIndex: "listError",
+      key: "listError",
+      width: "100px",
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
+    },
+  ] :
+    [
+      {
+        title: $t("Computer.Name"),
+        dataIndex: "name",
+        key: "name",
+        width: "100px",
+      },
+      {
+        title: $t("Computer.MacAddress"),
+        dataIndex: "macAddress",
+        key: "macAddress",
+        width: "150px",
+        ellipsis: true,
+      },
+      {
+        title: $t("Computer.ComputerRoomName"),
+        dataIndex: "computerRoomName",
+        key: "computerRoomName",
+        width: "100px",
+        ellipsis: true,
+      },
+      {
+        title: $t("Computer.State"),
+        dataIndex: "state",
+        key: "state",
+        width: "100px",
+      },
+      {
+        title: $t("Computer.StateTime"),
+        dataIndex: "stateTime",
+        key: "stateTime",
+        width: "150px",
+      },
+      {
+        title: $t("Computer.Condition"),
+        dataIndex: "listError",
+        key: "listError",
+        width: "100px",
+      },
+
+    ];
+})
 const dataSource = ref([]);
 const showTotal = computed(
   () => `Total ${dataSource.value?.length || 0} items`
@@ -148,7 +204,7 @@ const loadData = async () => {
   try {
     loading.loadingTable = true;
     let rs = await computerService.getListByComputerRoomId(
-      route.params.id,
+      props.computerRoomId,
       pagingParam
     );
     if (rs.success && rs.data) {
