@@ -49,6 +49,12 @@ builder.Services.Configure<FileConfig>(options =>
     builder.Configuration.GetSection("FileConfig").Bind(options);
 });
 
+// add di fileConfig
+builder.Services.Configure<EmailConfig>(options =>
+{
+    builder.Configuration.GetSection("EmailConfig").Bind(options);
+});
+
 // add authen
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -71,6 +77,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // add di
+builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<ContextData>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();

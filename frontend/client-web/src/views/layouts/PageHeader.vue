@@ -27,7 +27,7 @@
               </template>
               {{ $t("auth.ChangePassword") }}
             </a-button>
-            <a-button type="text" class="text-left">
+            <a-button type="text" class="text-left" @click="logout">
               <template #icon>
                 <LogoutOutlined />
               </template>

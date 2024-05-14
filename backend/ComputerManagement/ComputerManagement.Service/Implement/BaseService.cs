@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ComputerManagement.BO.DTO;
+using ComputerManagement.BO.Lib.Interface;
 using ComputerManagement.BO.Models;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
@@ -26,6 +27,7 @@ namespace ComputerManagement.Service.Implement
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork _uow;
         protected readonly ContextData _contextData;
+        protected readonly IEmailService _emailService;
         #endregion
 
         public BaseService(IServiceProvider serviceProvider, IBaseRepo<TModel> baseRepo)
@@ -35,6 +37,7 @@ namespace ComputerManagement.Service.Implement
             _mapper = serviceProvider.GetService(typeof(IMapper)) as IMapper;
             _uow = serviceProvider.GetService(typeof(IUnitOfWork)) as IUnitOfWork;
             _contextData = serviceProvider.GetService(typeof(ContextData)) as ContextData;
+            _emailService = serviceProvider.GetService(typeof(IEmailService)) as IEmailService;
         }
 
         public virtual async Task<Guid> AddAsync(TDto dto)
@@ -196,6 +199,28 @@ namespace ComputerManagement.Service.Implement
         public virtual async Task HandleDataBeforeMapAddAsync(TDto dto)
         {
            
+        }
+
+        /// <summary>
+        /// tạo task chạy luồng riêng
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        protected Task CreateAndRunTaskAsync(Func<Task> function)
+        {
+            return Task.Run(async () =>
+            {
+                try
+                {
+                    await function().ConfigureAwait(false);
+                }catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }finally
+                {
+
+                }
+            });
         }
     }
 }

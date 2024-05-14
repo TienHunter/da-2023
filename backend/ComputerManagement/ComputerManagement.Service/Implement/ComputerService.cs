@@ -132,6 +132,7 @@ namespace ComputerManagement.Service.Implement
                     item.State = ComputerState.Off;
                 }
             }
+
             return (dtos, totalCount);
         }
         public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)

@@ -120,11 +120,24 @@ namespace ComputerManagement.Service.Implement
 
             var user = _mapper.Map<User>(userRegister);
             user.Password = _passwordHasher.Hash(user.Password);
+            user.RoleID = UserRole.Teacher;
             // xử lý phân quyền và trạng thái làm sau
             //user.RoleID = (int)UserRole.Teacher;
             //user.State = UserState.Active;
             base.BeforeAddAsync(user);
-            rs.Data = await _userRepo.AddAsync(user);
+            var isSuccess =  await _userRepo.AddAsync(user);
+            rs.Data = isSuccess;
+            if(isSuccess)
+            {
+                
+                await this.CreateAndRunTaskAsync(async() =>
+                {
+                    var filePath = "D:\\da\\source\\backend\\ComputerManagement\\ComputerManagement.Common\\Templates\\CreateAccountSuccess.html";
+                    var subject = "Tạo tài khoản thành công";
+                    var bodySend = File.ReadAllText(filePath);
+                    await _emailService.SenEmailAsync(user.Email, subject,bodySend);
+                });
+            }
             return rs;
         }
 
@@ -224,10 +237,40 @@ namespace ComputerManagement.Service.Implement
                 StatusCode = HttpStatusCode.NotFound,
                 Code = ServiceResponseCode.NotFoundUser
             };
-            userExist.State = userState;
-            await this.BeforeUpdateAsync(userExist);
+            var rs = true;
+            if(userExist.State != userState)
+            {
+                userExist.State = userState;
+                await this.BeforeUpdateAsync(userExist);
 
-            return await _userRepo.UpdateAsync(userExist);
+                 rs = await _userRepo.UpdateAsync(userExist);
+                if (rs)
+                {
+                    await this.CreateAndRunTaskAsync(async () =>
+                    {
+                        if(userState == UserState.Active)
+                        {
+                            var filePath = "D:\\da\\source\\backend\\ComputerManagement\\ComputerManagement.Common\\Templates\\AccountActive.html";
+                            var subject = "Tài khoản đã được kích hoạt";
+                            var bodySend = File.ReadAllText(filePath);
+                            // Thay thế chuỗi ##UrlLogin## bằng đường dẫn đăng nhập
+                            bodySend = bodySend.Replace("##UrlLogin##", "http://localhost:8080/login");
+                            await _emailService.SenEmailAsync(userExist.Email, subject, bodySend);
+                        }else if(userState == UserState.Revoked)
+                        {
+                            var filePath = "D:\\da\\source\\backend\\ComputerManagement\\ComputerManagement.Common\\Templates\\AccountRevoked.html";
+                            var subject = "Tài khoản đã bị thu hồi";
+                            var bodySend = File.ReadAllText(filePath);
+                            // Thay thế chuỗi ##UrlLogin## bằng đường dẫn đăng nhập
+                            bodySend = bodySend.Replace("##EmailSystem##", _emailService.GetEmailConfig().FromEmail);
+                            await _emailService.SenEmailAsync(userExist.Email, subject, bodySend);
+                        }
+                        
+                    });
+                }
+            }
+            
+            return rs;
         }
     }
 }

@@ -29,9 +29,6 @@
           </a-form-item>
           <a-form-item :label="$t('User.Role')" name="roleID">
             <a-select v-model:value="formState.roleID">
-              <a-select-option :value="0">{{
-                $t("User.RoleNo")
-              }}</a-select-option>
               <a-select-option :value="1">{{
                 $t("User.RoleAdmin")
               }}</a-select-option>
