@@ -28,8 +28,11 @@ namespace ComputerManagement.BO.DTO
         /// </summary>
         [Required]
         public int Col { get; set; }
-        public ComputerState State { get; set; }
-        public DateTime StateTime { get; set; }
+
+        /// <summary>
+        /// trạng thái máy tính
+        /// </summary>
+        public ComputerState ComputerState { get; set; }
         /// <summary>
         /// tình trạng máy
         /// </summary>

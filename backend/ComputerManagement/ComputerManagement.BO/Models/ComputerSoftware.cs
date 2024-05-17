@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,12 +11,16 @@ namespace ComputerManagement.BO.Models
     [Table("computer_software")]
     public class ComputerSoftware : BaseModel
     {
-        public string SoftwareCode { get; set; }
-        public string SoftwareName { get; set;}
-        public string Version { get; set;}
-
         [ForeignKey("Computer")]
         public Guid ComputerId { get; set;}
-        public Computer computer { get; set;}
+        public Computer Computer { get; set;}
+        [ForeignKey("SoftwareModal")]
+        public Guid SoftwareId { get; set;}
+        public SoftwareModel Software { get; set;}
+
+        /// <summary>
+        /// phần mềm đã được cài đặt chưa
+        /// </summary>
+        public bool IsInstalled { get; set;}
     }
 }

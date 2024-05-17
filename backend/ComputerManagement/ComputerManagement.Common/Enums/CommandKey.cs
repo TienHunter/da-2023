@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Common.Enums
 {
-    public enum ComputerState
+    public enum CommandKey
     {
-        On=1,
-        Off=2,
-        Sleep=3,
+        /// <summary>
+        /// tải file cài phần mềm
+        /// </summary>
+        DowloadSoftware = 1,
     }
 }

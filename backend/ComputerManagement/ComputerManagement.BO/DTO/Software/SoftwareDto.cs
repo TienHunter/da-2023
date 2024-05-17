@@ -16,6 +16,24 @@ namespace ComputerManagement.BO.DTO
         public string Name { get; set; }
 
         /// <summary>
+        /// tên process
+        /// </summary>
+        [Required]
+        public string Process { get; set; }
+
+        /// <summary>
+        /// đường dẫn folder chứa file cài
+        /// </summary>
+        [Required]
+        public string InstallationFileFolder { get; set; }
+
+        /// <summary>
+        /// đường dẫn folder chứa phần mềm
+        /// </summary>
+        [Required]
+        public string SoftwareFolder { get; set; }
+
+        /// <summary>
         /// cờ update
         /// </summary>
         public bool IsUpdate { get; set; }

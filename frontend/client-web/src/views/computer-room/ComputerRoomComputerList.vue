@@ -8,10 +8,10 @@
     </div>
     <div class="content">
       <template v-if="typeView">
-        <ComputerRoomComputerGrid :computerRoomId="props.computerRoomId" />
+        <ComputerRoomComputerGrid :computerRoomId="props.computerRoomId" :isEditAble="true" />
       </template>
       <template v-else>
-        <ComputerRoomComputerTable :computerRoomId="props.computerRoomId" />
+        <ComputerRoomComputerTable :computerRoomId="props.computerRoomId" :isEditAble="true" />
       </template>
     </div>
   </div>

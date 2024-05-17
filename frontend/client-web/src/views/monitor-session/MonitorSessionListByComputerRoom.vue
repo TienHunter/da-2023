@@ -91,8 +91,6 @@ const columns = computed(() => {
          dataIndex: "computerRoomName",
          key: "computerRoomName",
          width: "100px",
-         sorter: (a, b) => a > b,
-         sortOrder: sorted.columnKey === 'computerRoomName' && sorted.order,
          fixed: "left",
       },
       {

@@ -16,6 +16,22 @@ namespace ComputerManagement.BO.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// tên process
+        /// </summary>
+        public string Process { get; set; }
+
+        /// <summary>
+        /// đường dẫn folder chứa file cài
+        /// </summary>
+        public string InstallationFileFolder { get; set; }
+
+        /// <summary>
+        /// đường dẫn folder chứa phần mềm
+        /// </summary>
+        public string SoftwareFolder { get; set; }
+
+
+        /// <summary>
         /// cờ update
         /// </summary>
         public bool IsUpdate { get; set; }

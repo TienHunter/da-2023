@@ -21,6 +21,7 @@ namespace ComputerManagement.Service.Implement
 
         private readonly IComputerRepo _computerRepo = computerRepo;
         private readonly IComputerRoomRepo _computerRoomRepo = serviceProvider.GetService(typeof(IComputerRoomRepo)) as IComputerRoomRepo;
+        private readonly IComputerStateRepo _computerStateRepo = serviceProvider.GetService(typeof(IComputerStateRepo)) as IComputerStateRepo;
 
         public async Task<ComputerDto> GetComputerByMacAddress(string macAddress)
         {
@@ -37,10 +38,21 @@ namespace ComputerManagement.Service.Implement
         {
             var computerExist = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).FirstOrDefaultAsync();
             base.CheckNullModel(computerExist);
-            computerExist.State = ComputerState.On;
-            computerExist.StateTime = DateTime.Now;
-
-            return await _computerRepo.UpdateAsync(computerExist);
+            var computerState = await _computerStateRepo.GetQueryable().Where(cs => cs.ComputerId == computerExist.Id).FirstOrDefaultAsync();
+            if(computerState != null)
+            {
+                return await _computerStateRepo.UpdateAsync(computerState);
+            }else
+            {
+                computerState = new ComputerState
+                {
+                    ComputerId = computerExist.Id,
+                    State = true,
+                    LastUpdate = DateTime.Now,
+                };
+                return await _computerStateRepo.AddAsync(computerState);
+            }
+            
 
             // có thể bắn emit lên client để cập nhật lại state computer
         }
@@ -125,14 +137,6 @@ namespace ComputerManagement.Service.Implement
         public override async Task<(List<ComputerDto>, int)> GetListAsync(PagingParam pagingParam)
         {
             var (dtos, totalCount) = await base.GetListAsync(pagingParam);
-            foreach (var item in dtos)
-            {
-                if (item.StateTime < DateTime.Now.AddMinutes(-3))
-                {
-                    item.State = ComputerState.Off;
-                }
-            }
-
             return (dtos, totalCount);
         }
         public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
@@ -140,9 +144,9 @@ namespace ComputerManagement.Service.Implement
             var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
             foreach (var item in computers)
             {
-                if(item.StateTime < DateTime.Now.AddMinutes(-3))
+                if(item?.ComputerState?.LastUpdate < DateTime.Now.AddMinutes(-3))
                 {
-                    item.State = ComputerState.Off;
+                    item.ComputerState.State = false;
                 }
             }
             return _mapper.Map<List<ComputerDto>>(computers);
@@ -151,8 +155,6 @@ namespace ComputerManagement.Service.Implement
         public override async Task<Guid> BeforeAddAsync(Computer computer)
         {
             var newGuid = await base.BeforeAddAsync(computer);
-            computer.State = ComputerState.Off;
-            computer.StateTime = DateTime.Now;
             return newGuid;
         }
 

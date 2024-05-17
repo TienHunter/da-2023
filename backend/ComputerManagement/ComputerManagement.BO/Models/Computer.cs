@@ -34,24 +34,19 @@ namespace ComputerManagement.BO.Models
         public int Col { get; set; }
 
         /// <summary>
-        /// trạng thái máy
+        /// trạng thái máy tính
         /// </summary>
-        public ComputerState State { get; set; }
-
-        /// <summary>
-        /// thời gian cập nhật trạng thái gần nhất
-        /// </summary>
-        public DateTime StateTime { get; set; }
+        public ComputerState ComputerState { get; set; }
 
         /// <summary>
         /// tình trạng máy
         /// </summary>
         public string ListErrorId { get; set; } = "";
-        public string OS { get; set; }
-        public string CPU { get; set; }
-        public string RAM { get; set; }
-        public string HardDriver { get; set; }
-        public string HardDriverUsed { get; set; }
+        public string OS { get; set; } = "";
+        public string CPU { get; set; } = "";
+        public string RAM { get; set; } = "";
+        public string HardDriver { get; set; } = "";
+        public string HardDriverUsed { get; set; } = "";
 
         [ForeignKey("ComputerRoom")]
         public Guid ComputerRoomId { get; set; }

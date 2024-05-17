@@ -4,6 +4,7 @@ using ComputerManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerManagement.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517100247_20240517170237")]
+    partial class _20240517170237
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,6 +77,12 @@ namespace ComputerManagement.Data.Migrations
 
                     b.Property<int>("Row")
                         .HasColumnType("int");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -193,22 +202,6 @@ namespace ComputerManagement.Data.Migrations
                     b.HasIndex("SoftwareId");
 
                     b.ToTable("computer_software");
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerState", b =>
-                {
-                    b.Property<Guid>("ComputerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("State")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ComputerId");
-
-                    b.ToTable("computer_state");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.FileModel", b =>
@@ -509,15 +502,6 @@ namespace ComputerManagement.Data.Migrations
                     b.Navigation("Software");
                 });
 
-            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerState", b =>
-                {
-                    b.HasOne("ComputerManagement.BO.Models.Computer", null)
-                        .WithOne("ComputerState")
-                        .HasForeignKey("ComputerManagement.BO.Models.ComputerState", "ComputerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ComputerManagement.BO.Models.FileModel", b =>
                 {
                     b.HasOne("ComputerManagement.BO.Models.SoftwareModel", "Software")
@@ -570,9 +554,6 @@ namespace ComputerManagement.Data.Migrations
             modelBuilder.Entity("ComputerManagement.BO.Models.Computer", b =>
                 {
                     b.Navigation("ComputerSofewares");
-
-                    b.Navigation("ComputerState")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerRoom", b =>

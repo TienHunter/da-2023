@@ -20,15 +20,6 @@
           </template>
           <ComputerDetailView />
         </a-tab-pane>
-        <a-tab-pane key="ComputerHistoryView">
-          <template #tab>
-            <span>
-              <android-outlined />
-              Lịch sử truy cập
-            </span>
-          </template>
-          <ComputerHistoryView />
-        </a-tab-pane>
         <a-tab-pane key="ComputerNoteView">
           <template #tab>
             <span>

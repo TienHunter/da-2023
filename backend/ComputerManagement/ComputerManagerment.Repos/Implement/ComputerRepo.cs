@@ -91,7 +91,7 @@ namespace ComputerManagerment.Repos.Implement
                     query = query.OrderByDescending(e => e.UpdatedAt);
                     break;
             }
-            entities = await query.Include(c => c.ComputerRoom).ToListAsync();
+            entities = await query.Include(c => c.ComputerRoom).Include(c=>c.ComputerState).ToListAsync();
             return entities;
         }
     }
