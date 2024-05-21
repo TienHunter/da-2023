@@ -85,7 +85,7 @@ onBeforeMount(async () => {
 
    } catch (error) {
       console.log(error);
-      message.error($t("UnKnowError"));
+      message.error($t("UnknownError"));
    }
    finally {
       loading.spining = false;

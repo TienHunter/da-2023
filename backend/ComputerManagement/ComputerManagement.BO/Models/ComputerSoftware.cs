@@ -14,10 +14,8 @@ namespace ComputerManagement.BO.Models
         [ForeignKey("Computer")]
         public Guid ComputerId { get; set;}
         public Computer Computer { get; set;}
-        [ForeignKey("SoftwareModal")]
         public Guid SoftwareId { get; set;}
-        public SoftwareModel Software { get; set;}
-
+        public string SoftwareName { get; set;}
         /// <summary>
         /// phần mềm đã được cài đặt chưa
         /// </summary>

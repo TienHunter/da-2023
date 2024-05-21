@@ -241,7 +241,7 @@ const changeStateUser = async (state, user) => {
     }
   } catch (error) {
     console.log(error);
-    message.error($t("UnKnowError"));
+    message.error($t("UnknownError"));
   }
 }
 // ========== end methods ==========

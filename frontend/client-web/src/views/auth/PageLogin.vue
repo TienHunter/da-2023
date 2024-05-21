@@ -86,7 +86,7 @@ const validatePassword = async (_rule, value) => {
           message.warning($t("auth.UserRevoked"));
           break;
         default:
-          message.error($t("UnKnowError"));
+          message.error($t("UnknownError"));
           return Promise.resolve();
           break;
       }

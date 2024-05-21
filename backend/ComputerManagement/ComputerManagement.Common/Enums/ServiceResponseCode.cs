@@ -33,7 +33,9 @@ namespace ComputerManagement.Common.Enums
         ConflicFileVersion = 21,
         NotFoundFile = 22,
         InValidFileName = 23,
-        ConflicMonitorSessionTime = 24
+        ConflicMonitorSessionTime = 24,
+        ConflicSoftwareName=25,
+        ConflicSoftwareProcess=26,
 
     }
 }

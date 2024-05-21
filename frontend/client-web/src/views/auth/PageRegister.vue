@@ -78,7 +78,7 @@ const validateUsername = async (_rule, value) => {
           break;
         default:
           message.error("create job failure");
-          return Promise.resolve($t("UnKnowError"));
+          return Promise.resolve($t("UnknownError"));
           break;
       }
     }

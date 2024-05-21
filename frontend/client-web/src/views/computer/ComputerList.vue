@@ -3,6 +3,11 @@
     <div class="table-operations flex justify-between pt-4">
       <div class="operations-left"></div>
       <div class="operations-right flex gap-2">
+        <a-button type="text" @click="refreshGrid">
+          <template #icon>
+            <ReloadOutlined />
+          </template>
+        </a-button>
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
           :loading="loading.loadingInputSearch" @search="onSearch" />
         <router-link :to="{ name: 'ComputerRoomAdd' }">
@@ -166,7 +171,31 @@ onBeforeMount(async () => {
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const loadData = async () => {
+  try {
+    loading.loadingTable = true;
+    let rs = await computerService.getList(pagingParam);
+    if (rs.success && rs.data) {
+      dataSource.value = _.cloneDeep(rs.data.list?.map((item) => {
+        item.listError = item?.listErrorId?.length > 0 ? item.listErrorId.map(errorId => {
+          const { label, color } = util.handleRenderComputerError(errorId);
+          return {
+            value: errorId,
+            label: label,
+            color: color
+          }
+        }) : [{ value: ComputerKey.ComputerError.Perfect, label: $t("Computer.ComputerError.Perfect"), color: 'green' }]
+        return item;
+      }));
 
+      pagingParam.total = rs.data.total || 0;
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.loadingTable = false;
+  }
+};
 /**
  * paging
  * @param {*} pag
@@ -246,13 +275,22 @@ const onDelete = (record) => {
           }
         }
       } catch (errors) {
-        message.error($t("UnKnowError"));
+        message.error($t("UnknownError"));
         console.log(errors);
       }
     },
     onCancel() { },
   });
 };
+
+const refreshGrid = async () => {
+  pagingParam.keySearch = "";
+  pagingParam.pageNumber = 1;
+  pagingParam.pageSize = 20;
+  pagingParam.fieldSort = "UpdatedAt";
+  pagingParam.sortAsc; false;
+  await loadData();
+}
 /**
  * router sang form add
  */

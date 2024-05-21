@@ -112,7 +112,7 @@ onBeforeMount(async () => {
         message.error($t("User.NotFoundUser"));
         break;
       default:
-        message.error($t("UnKnowError"));
+        message.error($t("UnknownError"));
         break;
     }
     router.push({ name: "ComputerList" });

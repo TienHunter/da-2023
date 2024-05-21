@@ -58,7 +58,7 @@ const routes = [
                   }
                } catch (error) {
                   console.log(error);
-                  message.error($t("UnKnowError"));
+                  message.error($t("UnknownError"));
                   next({ name: "MonitorSessionList" });
                } finally {
 

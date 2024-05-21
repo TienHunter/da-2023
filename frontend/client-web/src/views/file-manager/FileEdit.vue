@@ -121,7 +121,7 @@ onBeforeMount(async () => {
                message.error($t("ComputerRoom.Validate.NotFound"));
                break;
             default:
-               message.error($t("UnKnowError"));
+               message.error($t("UnknownError"));
                break;
          }
          router.push({ name: "SoftwareList" });
@@ -137,7 +137,7 @@ onBeforeMount(async () => {
       }
    } catch (error) {
       console.log(error);
-      message.error($t("UnKnowError"));
+      message.error($t("UnknownError"));
    }
 });
 

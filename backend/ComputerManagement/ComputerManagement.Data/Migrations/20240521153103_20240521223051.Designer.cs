@@ -4,6 +4,7 @@ using ComputerManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerManagement.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521153103_20240521223051")]
+    partial class _20240521223051
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,8 +85,6 @@ namespace ComputerManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ComputerRoomId");
 
                     b.HasIndex("MacAddress")
                         .IsUnique();
@@ -467,17 +468,6 @@ namespace ComputerManagement.Data.Migrations
                     b.ToTable("user");
                 });
 
-            modelBuilder.Entity("ComputerManagement.BO.Models.Computer", b =>
-                {
-                    b.HasOne("ComputerManagement.BO.Models.ComputerRoom", "ComputerRoom")
-                        .WithMany("Computers")
-                        .HasForeignKey("ComputerRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ComputerRoom");
-                });
-
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerHistory", b =>
                 {
                     b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
@@ -492,7 +482,7 @@ namespace ComputerManagement.Data.Migrations
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerSoftware", b =>
                 {
                     b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
-                        .WithMany("ComputerSofewares")
+                        .WithMany()
                         .HasForeignKey("ComputerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -560,15 +550,8 @@ namespace ComputerManagement.Data.Migrations
 
             modelBuilder.Entity("ComputerManagement.BO.Models.Computer", b =>
                 {
-                    b.Navigation("ComputerSofewares");
-
                     b.Navigation("ComputerState")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerRoom", b =>
-                {
-                    b.Navigation("Computers");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.User", b =>

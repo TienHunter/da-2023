@@ -37,7 +37,7 @@
                </template>
                <template v-else-if="column.key === 'operation'">
                   <div class="flex gap-2">
-                     <a-button round>
+                     <a-button round @click="navigatorEdit(record)">
                         <template #icon>
                            <EditOutlined />
                         </template>
@@ -64,7 +64,8 @@ import { softwareService } from "../../api";
 import util from "@/utils/util";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { FormatDateKey } from "@/constants";
+import { FormatDateKey, LocalStorageKey, UserRole } from "@/constants";
+import { localStore } from "@/utils";
 // ========== start state ==========
 const router = useRouter();
 const [modal, contextHolder] = Modal.useModal();
@@ -72,49 +73,52 @@ const loading = reactive({
    loadingTable: false,
    loadingInputSearch: false,
 });
-const columns = [
-   {
-      title: $t('Software.Name'),
-      dataIndex: "name",
-      key: "name",
-      width: "200px",
-      sorter: true,
-      fixed: "left",
-   },
-   {
-      title: $t('Software.IsUpdate'),
-      dataIndex: "isUpdate",
-      key: "isUpdate",
-      width: "80px",
-      align: "center"
-   },
-   {
-      title: $t('Software.IsInstall'),
-      dataIndex: "isInstall",
-      key: "isInstall",
-      width: "80px",
-      align: "center"
-   },
-   {
-      title: $t('Software.CreatedAt'),
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: "150px",
-   },
-   {
-      title: $t('Software.UpdatedAt'),
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      width: "150px",
-   },
-   {
-      title: "Action",
-      dataIndex: "operation",
-      key: "operation",
-      width: "100px",
-      fixed: "right",
-   },
-];
+const columns = computed(() => {
+   return [
+      {
+         title: $t('Software.Name'),
+         dataIndex: "name",
+         key: "name",
+         width: "200px",
+         sorter: true,
+         fixed: "left",
+      },
+      {
+         title: $t('Software.IsUpdate'),
+         dataIndex: "isUpdate",
+         key: "isUpdate",
+         width: "80px",
+         align: "center"
+      },
+      {
+         title: $t('Software.IsInstall'),
+         dataIndex: "isInstall",
+         key: "isInstall",
+         width: "80px",
+         align: "center"
+      },
+      {
+         title: $t('Software.CreatedAt'),
+         dataIndex: "createdAt",
+         key: "createdAt",
+         width: "150px",
+      },
+      {
+         title: $t('Software.UpdatedAt'),
+         dataIndex: "updatedAt",
+         key: "updatedAt",
+         width: "150px",
+      },
+      {
+         title: "Action",
+         dataIndex: "operation",
+         key: "operation",
+         width: "100px",
+         fixed: "right",
+         hidden: localStore.getItem(LocalStorageKey.userInfor)?.roleID !== UserRole.Admin
+      },
+   ].filter(c => !c.hidden)
+})
 const pagingParam = reactive({
    pageSize: 10,
    pageNumber: 1,
@@ -198,6 +202,10 @@ const onSearch = (searchValue) => {
    console.log("use value", searchValue);
 };
 
+const navigatorEdit = (record) => {
+   router.push({ name: "SoftwareEdit", params: { id: record.id } })
+}
+
 /**
  * xóa bản ghi
  */
@@ -231,7 +239,7 @@ const onDelete = (record) => {
                }
             }
          } catch (errors) {
-            message.error($t("UnKnowError"));
+            message.error($t("UnknownError"));
             console.log(errors);
          }
       },

@@ -1,9 +1,11 @@
 ﻿using ComputerManagement.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,7 +52,7 @@ namespace ComputerManagement.BO.Models
 
         [ForeignKey("ComputerRoom")]
         public Guid ComputerRoomId { get; set; }
-        public ComputerRoom ComputerRoom { get; set; }
-        public ICollection<ComputerSoftware> ComputerSofewares { get; set; } = new List<ComputerSoftware>();
+        public virtual ComputerRoom ComputerRoom { get; set; }
+        public virtual ICollection<ComputerSoftware> ComputerSofewares { get; set; } = new List<ComputerSoftware>();
     }
 }

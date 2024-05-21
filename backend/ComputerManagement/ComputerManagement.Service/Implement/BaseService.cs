@@ -107,7 +107,7 @@ namespace ComputerManagement.Service.Implement
             return (dtos, totalCount);
         }
 
-        public virtual async Task<bool> UpdateAsync(TDto dto, Guid id)
+        public virtual async Task<Guid> UpdateAsync(TDto dto, Guid id)
         {
             var modelExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(modelExist);
@@ -119,7 +119,7 @@ namespace ComputerManagement.Service.Implement
             if (rs)
             {
                 await AfterUpdateAsync(modelExist);
-                return rs;
+                return id;
             }
             else
             {

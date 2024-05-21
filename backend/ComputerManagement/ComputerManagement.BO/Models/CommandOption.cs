@@ -14,7 +14,12 @@ namespace ComputerManagement.BO.Models
         /// <summary>
         /// id của đối tượng (máy tính/ phòng máy/ ...)
         /// </summary>
-        public Guid ObjectId { get; set; }
+        public Guid SourceId { get; set; }
+
+        /// <summary>
+        /// id map đến (phần mềm)
+        /// </summary>
+        public Guid DesId { get; set; }
 
         /// <summary>
         /// cờ của hành động

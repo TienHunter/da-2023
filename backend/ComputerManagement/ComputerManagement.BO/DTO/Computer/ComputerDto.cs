@@ -1,5 +1,6 @@
 ﻿using ComputerManagement.BO.Models;
 using ComputerManagement.Common.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

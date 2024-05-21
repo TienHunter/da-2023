@@ -21,5 +21,13 @@ const ResponseCode = {
    ConflicNameComputer: 17,
    ConflicRowColComputerRooom: 18,
    ConflicRowColComputer: 19,
+   NotFoundSoftwareModel: 20,
+   ConflicFileVersion: 21,
+   NotFoundFile: 22,
+   InValidFileName: 23,
+   ConflicMonitorSessionTime: 24,
+   ConflicSoftwareName: 25,
+   ConflicSoftwareProcess: 26,
+
 }
 export default ResponseCode;

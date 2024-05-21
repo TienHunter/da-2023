@@ -28,7 +28,7 @@ namespace ComputerManagement.Service.Interface
         /// <param name="dto"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> UpdateAsync(TDto dto, Guid id);
+        Task<Guid> UpdateAsync(TDto dto, Guid id);
 
         /// <summary>
         /// xóa bản ghi

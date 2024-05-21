@@ -129,7 +129,7 @@ onBeforeMount(async () => {
     // }, 3000); // Thực hiện mỗi 3 giây
   } catch (error) {
     console.log(error);
-    message.error($t("UnKnowError"))
+    message.error($t("UnknownError"))
   }
 
 });
@@ -205,7 +205,7 @@ const onDelete = (record) => {
           }
         }
       } catch (errors) {
-        message.error($t("UnKnowError"));
+        message.error($t("UnknownError"));
         console.log(errors);
       }
     },
@@ -246,7 +246,7 @@ const afterAddComputer = async (e) => {
     await loadData();
     handleDataRender();
   } catch (error) {
-    message.error($t("UnKnowError"));
+    message.error($t("UnknownError"));
   }
 }
 

@@ -59,5 +59,61 @@ namespace ComputerManagerment.Repos.Implement
 
             return (entities, totalCount);
         }
+
+        public async Task<(List<ComputerRoom>, int)> GetListBySoftwareIdAsync(Guid softwareId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        {
+            var query = _dbSet.AsQueryable();
+            var entities = new List<ComputerRoom>();
+
+            if (!string.IsNullOrEmpty(keySearch))
+            {
+                query = query.Where(e => e.Name.Contains(keySearch));
+            }
+
+            switch (fieldSort?.ToLower())
+            {
+
+                case "name":
+                    query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
+                    break;
+                case "updatedat":
+                    query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
+                    break;
+                case "createdat":
+                    query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
+                    break;
+                default:
+                    query = query.OrderByDescending(e => e.UpdatedAt);
+                    break;
+            }
+            var totalCount = await query.CountAsync();
+            if (pageNumber > 0 && pageSize > 0)
+            {
+                entities = await query
+                    .Include(cr =>cr.Computers)
+                    .ThenInclude(c => c.ComputerSofewares.Where(cs => cs.SoftwareId == softwareId))
+                    .Select(cr => new ComputerRoom
+                    {
+                        Id = cr.Id,
+                        Name = cr.Name,
+                        Row = cr.Row,
+                        CurrentCapacity = cr.CurrentCapacity,
+                        MaxCapacity = cr.MaxCapacity,
+                        CurrentDowloadSoftware = cr.Computers.Where(c=> c.ComputerSofewares.Count() > 0).Count(),
+                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSofewares.Where(cs => cs.IsInstalled).Count() > 0).Count(),
+
+                    })
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
+            else
+            {
+                entities = await query.ToListAsync();
+            }
+
+
+            return (entities, totalCount);
+        }
     }
 }

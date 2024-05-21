@@ -14,8 +14,7 @@ namespace ComputerManagement.Service.Mapper
         public ComputerRoomMapper()
         {
             CreateMap<ComputerRoomDto, ComputerRoom>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Pending, opt => opt.Ignore());
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ComputerRoom, ComputerRoomDto>();
         }
     }

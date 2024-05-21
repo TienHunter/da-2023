@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -34,16 +35,14 @@ namespace ComputerManagement.BO.Models
         /// số máy hiện tại
         /// </summary>
         public int CurrentCapacity { get; set; }
-        /// <summary>
-        /// tình trạng
-        /// </summary>
-        public int State { get; set; }
+        public virtual ICollection<Computer> Computers { get; set; } = new List<Computer>();
 
-        /// <summary>
-        /// có đang được sử dụng không
-        /// </summary>
         [NotMapped]
-        public bool Pending { get; set; }
-        public ICollection<ScheduleBookRoom> ScheduleBookRooms { get; } = new List<ScheduleBookRoom>();
+        public int CurrentDowloadSoftware { get; set; }
+        [NotMapped]
+        public int CurrentInstalledSoftware { get; set; }
+        [NotMapped]
+        public int CurrentActiveSoftware { get; set; }
+
     }
 }

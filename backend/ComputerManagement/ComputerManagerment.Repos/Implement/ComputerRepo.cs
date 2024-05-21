@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,14 +51,60 @@ namespace ComputerManagerment.Repos.Implement
             {
                 entities = await query
                 .Include(c => c.ComputerRoom)
-                
+                .Select(c => new Computer
+                {
+                    Id = c.Id,
+                    MacAddress = c.MacAddress,
+                    Name = c.Name,
+                    Row = c.Row,
+                    Col = c.Col,
+                    ListErrorId = c.ListErrorId,
+                    OS = c.OS,
+                    CPU = c.CPU,
+                    RAM = c.RAM,
+                    HardDriver = c.HardDriver,
+                    HardDriverUsed = c.HardDriverUsed,
+                    ComputerRoomId = c.ComputerRoomId,
+                    ComputerRoom = new ComputerRoom
+                    {
+                        Id = c.ComputerRoom.Id,
+                        Name = c.ComputerRoom.Name,
+                        Row = c.ComputerRoom.Row,
+                        Col = c.ComputerRoom.Col,
+                        CurrentCapacity = c.ComputerRoom.CurrentCapacity,
+                        MaxCapacity = c.ComputerRoom.MaxCapacity,
+                    }
+                })
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.Include(c => c.ComputerRoom).ToListAsync();
+                entities = await query.Include(c => c.ComputerRoom).Select(c => new Computer
+                {
+                    Id = c.Id,
+                    MacAddress = c.MacAddress,
+                    Name = c.Name,
+                    Row = c.Row,
+                    Col = c.Col,
+                    ListErrorId = c.ListErrorId,
+                    OS = c.OS,
+                    CPU = c.CPU,
+                    RAM = c.RAM,
+                    HardDriver = c.HardDriver,
+                    HardDriverUsed = c.HardDriverUsed,
+                    ComputerRoomId = c.ComputerRoomId,
+                    ComputerRoom = new ComputerRoom
+                    {
+                        Id = c.ComputerRoom.Id,
+                        Name = c.ComputerRoom.Name,
+                        Row = c.ComputerRoom.Row,
+                        Col = c.ComputerRoom.Col,
+                        CurrentCapacity = c.ComputerRoom.CurrentCapacity,
+                        MaxCapacity = c.ComputerRoom.MaxCapacity,
+                    }
+                }).ToListAsync();
             }
 
 
@@ -68,7 +115,7 @@ namespace ComputerManagerment.Repos.Implement
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<Computer>();
-            query = query.Where(c=>c.ComputerRoomId == computerRoomId);
+            query = query.Where(c => c.ComputerRoomId == computerRoomId);
             if (!string.IsNullOrEmpty(keySearch))
             {
                 query = query.Where(e => e.Name.Contains(keySearch));
@@ -91,7 +138,7 @@ namespace ComputerManagerment.Repos.Implement
                     query = query.OrderByDescending(e => e.UpdatedAt);
                     break;
             }
-            entities = await query.Include(c => c.ComputerRoom).Include(c=>c.ComputerState).ToListAsync();
+            entities = await query.Include(c => c.ComputerRoom).Include(c => c.ComputerState).ToListAsync();
             return entities;
         }
     }

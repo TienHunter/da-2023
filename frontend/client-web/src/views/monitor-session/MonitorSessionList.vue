@@ -295,7 +295,7 @@ const onDelete = (record) => {
                }
             }
          } catch (errors) {
-            message.error($t("UnKnowError"));
+            message.error($t("UnknownError"));
             console.log(errors);
          }
       },

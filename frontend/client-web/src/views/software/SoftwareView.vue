@@ -143,6 +143,26 @@ const fieldMaster = reactive([
     key: "name",
   },
   {
+    title: $t("Software.Process"),
+    dataIndex: "process",
+    key: "process",
+  },
+  {
+    title: $t("Software.Name"),
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: $t("Software.InstallationFileFolder"),
+    dataIndex: "installationFileFolder",
+    key: "installationFileFolder",
+  },
+  {
+    title: $t("Software.SoftwareFolder"),
+    dataIndex: "softwareFolder",
+    key: "softwareFolder",
+  },
+  {
     title: $t("Software.IsUpdate"),
     dataIndex: "isUpdate",
     key: "isUpdate",
@@ -235,7 +255,7 @@ onBeforeMount(async () => {
     await fetchDataFiles();
   } catch (error) {
     console.log(error);
-    message.error($t("UnKnowError"))
+    message.error($t("UnknownError"))
   }
   finally {
 
@@ -252,7 +272,7 @@ const fetchDataMaster = async () => {
     }
   } catch (error) {
     console.log(error);
-    message.error($t("UnKnowError"))
+    message.error($t("UnknownError"))
   }
 }
 
@@ -267,7 +287,7 @@ const fetchDataFiles = async () => {
     }
   } catch (error) {
     console.log(error);
-    message.error($t("UnKnowError"));
+    message.error($t("UnknownError"));
   }
 }
 
@@ -327,7 +347,7 @@ const onDelete = (record) => {
         }
       } catch (errors) {
         console.log(errors);
-        message.error($t("UnKnowError"));
+        message.error($t("UnknownError"));
       }
     },
     onCancel() { },
@@ -368,7 +388,7 @@ const dowliadFile = async (fileName) => {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.log(error);
-      message.error("UnKnowError");
+      message.error("UnknownError");
     }
   }
 

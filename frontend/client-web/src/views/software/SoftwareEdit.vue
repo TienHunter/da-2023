@@ -25,6 +25,15 @@
                <a-form-item :label="$t('Software.Name')" name="name">
                   <a-input v-model:value="formState.name" />
                </a-form-item>
+               <a-form-item :label="$t('Software.Process')" name="process">
+                  <a-input v-model:value="formState.process" />
+               </a-form-item>
+               <a-form-item :label="$t('Software.InstallationFileFolder')" name="installationFileFolder">
+                  <a-input v-model:value="formState.installationFileFolder" />
+               </a-form-item>
+               <a-form-item :label="$t('Software.SoftwareFolder')" name="softwareFolder">
+                  <a-input v-model:value="formState.softwareFolder" />
+               </a-form-item>
                <a-form-item :label="$t('Software.IsUpdate')" name="isUpdate">
                   <a-checkbox v-model:checked="formState.isUpdate" />
                </a-form-item>
@@ -47,30 +56,76 @@ import {
 import { computerRoomService, softwareService } from "@/api";
 import { ResponseCode, FormMode } from "../../constants";
 import { message } from "ant-design-vue";
+import _ from "lodash";
 const route = useRoute();
 const router = useRouter();
 const formRef = ref();
 const labelCol = {
-   span: 3,
+   span: 6,
 };
 const wrapperCol = {
-   span: 6,
+   span: 12,
 };
 let formState = ref({
    name: "",
-   isUpdate: true,
-   isInstall: true
+   process: "",
+   installationFileFolder: "",
+   softwareFolder: "",
+   isUpdate: false,
+   isInstall: false
 });
 const loading = reactive({
    isLoadingSave: false,
    isLoadingBeforeMount: false,
 });
 const isCallCheck = ref(false);
+const errorCode = ref(0);
+const validateName = async (_rule, value) => {
+   if (value === "") {
+      return Promise.reject($t("Validate.Required", [$t("Software.Name")]));
+   } else if (errorCode.value === ResponseCode.ConflicSoftwareName) {
+      errorCode.value = 0;
+      return Promise.reject($t("Validate.AlreadyExist", [$t("Software.Name")]));
+   } else {
+      return Promise.resolve();
+   }
+};
+const validateProcess = async (_rule, value) => {
+   if (value === "") {
+      return Promise.reject($t("Validate.Required", [$t("Software.Process")]));
+   } else if (errorCode.value === ResponseCode.ConflicSoftwareProcess) {
+      errorCode.value = 0;
+      return Promise.reject($t("Validate.AlreadyExist", [$t("Software.Process")]));
+   } else {
+      return Promise.resolve();
+   }
+};
 const rules = {
    name: [
       {
          required: true,
-         message: $t("Validate.Required", [$t("Software.Name")]),
+         validator: validateName,
+         trigger: "change",
+      },
+   ],
+   process: [
+      {
+         required: true,
+         valdator: validateProcess,
+         trigger: "change",
+      },
+   ],
+   installationFileFolder: [
+      {
+         required: true,
+         message: $t("Validate.Required", [$t("Software.InstallationFileFolder")]),
+         trigger: "change",
+      },
+   ],
+   softwareFolder: [
+      {
+         required: true,
+         message: $t("Validate.Required", [$t("Software.SoftwareFolder")]),
          trigger: "change",
       },
    ],
@@ -82,15 +137,16 @@ onBeforeMount(async () => {
       try {
          let software = await softwareService.getById(route.params.id);
          if (software?.success && software?.data) {
-            formState.value = reactive(computer.data);
+            formState.value = _.cloneDeep(software.data);
          }
       } catch (error) {
+         console.log(error);
          switch (error?.Code) {
             case ResponseCode.NotFoundComputerRoom:
                message.error($t("ComputerRoom.Validate.NotFound"));
                break;
             default:
-               message.error($t("UnKnowError"));
+               message.error($t("UnknownError"));
                break;
          }
          router.push({ name: "SoftwareList" });
@@ -125,9 +181,19 @@ const onSubmit = async (key) => {
       } catch (error) {
          console.log(error);
          switch (error?.Code) {
+            case ResponseCode.ConflicSoftwareName:
+               errorCode.value = error.Code;
+               await formRef.value.validateFields("name");
+               break;
+            case ResponseCode.ConflicSoftwareProcess:
+               errorCode.value = error.Code;
+               await formRef.value.validateFields("process");
+               break;
             default:
+               message.error($t("UnknownError"))
                break;
          }
+
       }
    } catch (error) {
    } finally {

@@ -1,5 +1,5 @@
 export default {
-   UnKnowError: "Đã xảy ra lỗi",
+   UnknownError: "Đã xảy ra lỗi",
    Add: "Thêm",
    Save: "Lưu",
    SaveAndAdd: "Lưu và thêm",
@@ -12,6 +12,7 @@ export default {
    Close: "Đóng",
    Validate: {
       Required: "Vui lòng nhập {0}",
+      AlreadyExist: "{0} đã tồn tại"
    },
    auth: {
       Login: "Đăng nhập",
@@ -130,12 +131,16 @@ export default {
 
    Software: {
       Name: "Tên phần mềm",
+      Process: "Tên tiến trình",
+      InstallationFileFolder: "Đường dẫn chứa file cài đặt",
+      SoftwareFolder: "Thư mục chứa phần mềm",
       IsUpdate: "Cập nhật",
       IsInstall: "Cài đặt",
       CreatedAt: "Ngày tạo",
       UpdatedAt: "Ngày cập nhật",
       FileList: "Danh sách file cài",
-      DeleteSuccess: "Xóa phần mềm {0} thành công"
+      DeleteSuccess: "Xóa phần mềm {0} thành công",
+
 
    },
    File: {
