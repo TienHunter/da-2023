@@ -156,7 +156,7 @@ const loadData = async () => {
   try {
     loading.loadingTable = true;
     let rs = await computerRoomService.getList(pagingParam);
-    if (rs.success && rs.data) {
+    if (rs && rs.success && rs.data) {
       let temp = rs.data.list?.map((item) => {
         item.colorState = util.genColorState("state", item.state);
         item.textState = util.genTextState("state", item.state);
@@ -269,7 +269,7 @@ const refreshGrid = async () => {
 }
 // ========== end methods ==========
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .container-content {
   .table-operations {
     margin-bottom: 16px;

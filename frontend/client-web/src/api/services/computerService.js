@@ -11,8 +11,8 @@ class ComputerService extends baseService {
  * @param {*} params 
  * @returns 
  */
-   async getListByComputerRoomId(computerId, params) {
-      return await instance.post(`${this.getEndpoint()}/GetListByComputerRoomId/${computerId}`, params);
+   async getListByComputerRoomId(computerRoomId, params) {
+      return await instance.post(`${this.getEndpoint()}/GetListByComputerRoomId/${computerRoomId}`, params);
    }
 }
 export default new ComputerService();

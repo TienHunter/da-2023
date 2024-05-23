@@ -10,7 +10,7 @@ namespace ComputerManagerment.Repos.Interface
     public interface IComputerRoomRepo : IBaseRepo<ComputerRoom>
     {
         /// <summary>
-        /// lấy danh sách computer có hiển thị thông tin tải,cài đăt, hoạt động của phần mềm
+        /// lấy danh sách phòng máy có hiển thị thông tin tải,cài đăt, hoạt động của phần mềm
         /// </summary>
         /// <param name="softwareId"></param>
         /// <param name="keySearch"></param>

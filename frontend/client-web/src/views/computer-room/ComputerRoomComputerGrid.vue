@@ -17,8 +17,7 @@
                       @click="quickViewComputer(dataRender[row][col]['id'])">
                       <a-avatar shape="square" size="large" class="bg-green-500">
                         <template #icon>
-                          <LaptopOutlined
-                            :class="{ 'bg-blue-500': dataRender[row][col]['state'] == 1, 'bg-gray-500': dataRender[row][col]['state'] == 2 }" />
+                          <LaptopOutlined :class="dataRender[row][col]['state'] ? 'bg-blue-500' : 'bg-gray-500'" />
                         </template>
                       </a-avatar>
                     </a-badge>

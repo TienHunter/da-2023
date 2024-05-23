@@ -23,6 +23,13 @@ namespace ComputerManagement.Service.Implement
             _computerRoomRepo = computerRoomRepo;
         }
 
+        public async Task<(List<ComputerRoomDto>, int)> GetListBySoftwareIdAsync(Guid softwareId, PagingParam pagingParam)
+        {
+            var (entities, totalCount) = await _computerRoomRepo.GetListBySoftwareIdAsync(softwareId, pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
+            var dtos = _mapper.Map<List<ComputerRoomDto>>(entities);
+            return (dtos, totalCount);
+        }
+
         public override async Task ValidateBeforeAddAsync(ComputerRoom computerRoom)
         {
             await base.ValidateBeforeAddAsync(computerRoom);

@@ -8,12 +8,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace ComputerManagement.Controllers.Web
 {
     [Authorize]
-    public class ComputerRoomController : BaseController<ComputerRoomDto, ComputerRoom>
+    public class ComputerRoomController(IComputerRoomService computerRoomService) : BaseController<ComputerRoomDto, ComputerRoom>(computerRoomService)
     {
-        private readonly IComputerRoomService _computerRoomService;
-        public ComputerRoomController(IComputerRoomService computerRoomService) : base(computerRoomService)
+        private readonly IComputerRoomService _computerRoomService = computerRoomService;
+
+        [HttpPost("GetListFilterBySoftware/{softwareId}")]
+        public virtual async Task<IActionResult> GetList([FromRoute] Guid softwareId,[FromBody] PagingParam pagingParam)
         {
-            _computerRoomService = computerRoomService;
+            var rs = new ServiceResponse();
+            var (computerRoomDtos, totalCount) = await _computerRoomService.GetListBySoftwareIdAsync(softwareId,pagingParam);
+            rs.Data = new
+            {
+                List = computerRoomDtos,
+                Total = totalCount
+            };
+            return Ok(rs);
+
         }
     }
 }

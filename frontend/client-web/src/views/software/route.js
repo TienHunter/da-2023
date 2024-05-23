@@ -2,6 +2,7 @@ import SoftwareList from "./SoftwareList.vue";
 import SoftwareEdit from "./SoftwareEdit.vue";
 import SoftwareView from "./SoftwareView.vue";
 import { Permission, FormMode } from "../../constants";
+import { softwareService } from "@/api";
 const routes = [
    {
       path: "/software",
@@ -43,6 +44,22 @@ const routes = [
             path: ":id/view",
             name: "SoftwareView",
             component: SoftwareView,
+            beforeEnter: async (to, from, next) => {
+               try {
+                  const rs = await softwareService.getById(to.params.id);
+                  if (rs && rs.success && rs.data) {
+                     to.meta.data = rs.data;
+                     next();
+                  } else {
+                     message.error($t("UnknownError"));
+                     next({ name: "MonitorSessionList" });
+                  }
+               } catch (error) {
+                  console.log(error);
+                  message.error($t("UnknownError"));
+                  next({ name: "MonitorSessionList" });
+               }
+            }
          },
       ],
    },

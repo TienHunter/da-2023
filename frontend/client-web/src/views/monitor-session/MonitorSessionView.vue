@@ -60,7 +60,7 @@ const monitorSessionData = ref({});
 // ========== end state ==========
 
 // ========== start lifecycle ========== 
-onBeforeMount(async () => {
+onBeforeMount(() => {
    monitorSessionData.value = route.meta.data;
    console.log(monitorSessionData.value);
 })

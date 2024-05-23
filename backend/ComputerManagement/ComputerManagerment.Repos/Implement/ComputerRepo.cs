@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +17,12 @@ namespace ComputerManagerment.Repos.Implement
     {
         public override async Task<Computer?> GetAsync(Guid id)
         {
-            return await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
+            var rs =  await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
+            if(rs != null && rs.ComputerRoom != null)
+            {
+                rs.ComputerRoom.Computers = new List<Computer>();
+            }
+            return rs;
         }
 
         public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
@@ -139,6 +145,17 @@ namespace ComputerManagerment.Repos.Implement
                     break;
             }
             entities = await query.Include(c => c.ComputerRoom).Include(c => c.ComputerState).ToListAsync();
+
+            if(entities?.Count > 0)
+            {
+                foreach (var item in entities)
+                {
+                    if(item.ComputerRoom != null)
+                    {
+                        item.ComputerRoom.Computers = new List<Computer>();
+                    }
+                }
+            }
             return entities;
         }
     }
