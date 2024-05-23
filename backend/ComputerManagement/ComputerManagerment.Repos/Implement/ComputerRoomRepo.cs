@@ -109,7 +109,19 @@ namespace ComputerManagerment.Repos.Implement
             }
             else
             {
-                entities = await query.ToListAsync();
+                entities = await query.Include(cr => cr.Computers)
+                    .ThenInclude(c => c.ComputerSofewares.Where(cs => cs.SoftwareId == softwareId))
+                    .Select(cr => new ComputerRoom
+                    {
+                        Id = cr.Id,
+                        Name = cr.Name,
+                        Row = cr.Row,
+                        CurrentCapacity = cr.CurrentCapacity,
+                        MaxCapacity = cr.MaxCapacity,
+                        CurrentDowloadSoftware = cr.Computers.Where(c => c.ComputerSofewares.Count() > 0).Count(),
+                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSofewares.Where(cs => cs.IsInstalled).Count() > 0).Count(),
+
+                    }).ToListAsync();
             }
 
 

@@ -29,6 +29,7 @@ namespace ComputerManagement.BO.DTO
         public int CurrentDowloadSoftware { get; set; }
         public int CurrentInstalledSoftware { get; set; }
         public int CurrentActiveSoftware { get; set; }
+        [JsonIgnore]
         public List<Computer> Computers { get; set; } = new List<Computer>();
 
         public string? CreatedBy { get; set; }

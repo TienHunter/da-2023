@@ -18,10 +18,7 @@ namespace ComputerManagerment.Repos.Implement
         public override async Task<Computer?> GetAsync(Guid id)
         {
             var rs =  await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
-            if(rs != null && rs.ComputerRoom != null)
-            {
-                rs.ComputerRoom.Computers = new List<Computer>();
-            }
+          
             return rs;
         }
 
@@ -57,60 +54,13 @@ namespace ComputerManagerment.Repos.Implement
             {
                 entities = await query
                 .Include(c => c.ComputerRoom)
-                .Select(c => new Computer
-                {
-                    Id = c.Id,
-                    MacAddress = c.MacAddress,
-                    Name = c.Name,
-                    Row = c.Row,
-                    Col = c.Col,
-                    ListErrorId = c.ListErrorId,
-                    OS = c.OS,
-                    CPU = c.CPU,
-                    RAM = c.RAM,
-                    HardDriver = c.HardDriver,
-                    HardDriverUsed = c.HardDriverUsed,
-                    ComputerRoomId = c.ComputerRoomId,
-                    ComputerRoom = new ComputerRoom
-                    {
-                        Id = c.ComputerRoom.Id,
-                        Name = c.ComputerRoom.Name,
-                        Row = c.ComputerRoom.Row,
-                        Col = c.ComputerRoom.Col,
-                        CurrentCapacity = c.ComputerRoom.CurrentCapacity,
-                        MaxCapacity = c.ComputerRoom.MaxCapacity,
-                    }
-                })
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.Include(c => c.ComputerRoom).Select(c => new Computer
-                {
-                    Id = c.Id,
-                    MacAddress = c.MacAddress,
-                    Name = c.Name,
-                    Row = c.Row,
-                    Col = c.Col,
-                    ListErrorId = c.ListErrorId,
-                    OS = c.OS,
-                    CPU = c.CPU,
-                    RAM = c.RAM,
-                    HardDriver = c.HardDriver,
-                    HardDriverUsed = c.HardDriverUsed,
-                    ComputerRoomId = c.ComputerRoomId,
-                    ComputerRoom = new ComputerRoom
-                    {
-                        Id = c.ComputerRoom.Id,
-                        Name = c.ComputerRoom.Name,
-                        Row = c.ComputerRoom.Row,
-                        Col = c.ComputerRoom.Col,
-                        CurrentCapacity = c.ComputerRoom.CurrentCapacity,
-                        MaxCapacity = c.ComputerRoom.MaxCapacity,
-                    }
-                }).ToListAsync();
+                entities = await query.Include(c => c.ComputerRoom).ToListAsync();
             }
 
 
@@ -146,16 +96,6 @@ namespace ComputerManagerment.Repos.Implement
             }
             entities = await query.Include(c => c.ComputerRoom).Include(c => c.ComputerState).ToListAsync();
 
-            if(entities?.Count > 0)
-            {
-                foreach (var item in entities)
-                {
-                    if(item.ComputerRoom != null)
-                    {
-                        item.ComputerRoom.Computers = new List<Computer>();
-                    }
-                }
-            }
             return entities;
         }
     }

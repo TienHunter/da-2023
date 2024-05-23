@@ -25,7 +25,7 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<ComputerDto> GetComputerByMacAddress(string macAddress)
         {
-            var computer = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).FirstOrDefaultAsync() ?? throw new BaseException
+            var computer = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).Include(c =>c.ComputerRoom).FirstOrDefaultAsync() ?? throw new BaseException
             {
                 StatusCode = HttpStatusCode.NotFound,
                 Code = ServiceResponseCode.NotFoundComputer,
