@@ -43,6 +43,13 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <param name="softwareId"></param>
         /// <returns></returns>
-        Task<bool> CheckInstallAsync(Guid softwareId);  
+        Task<bool> CheckInstallAsync(Guid softwareId);
+
+        /// <summary>
+        /// lấy file có version cao nhất theo id phần mềm
+        /// </summary>
+        /// <param name="softwareId"></param>
+        /// <returns></returns>
+        Task<byte[]> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId);
     }
 }

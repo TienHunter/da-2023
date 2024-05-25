@@ -100,7 +100,7 @@ namespace ComputerManagerment.Repos.Implement
                         CurrentCapacity = cr.CurrentCapacity,
                         MaxCapacity = cr.MaxCapacity,
                         CurrentDowloadSoftware = cr.Computers.Where(c=> c.ComputerSofewares.Count() > 0).Count(),
-                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSofewares.Where(cs => cs.IsInstalled).Count() > 0).Count(),
+                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSofewares.Where(cs => cs.IsInstalled == true).Count() > 0).Count(),
 
                     })
                     .Skip((pageNumber - 1) * pageSize)

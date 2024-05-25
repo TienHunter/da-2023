@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Interface
 {
-    public interface ISoftwareService : IBaseService<SoftwareDto, SoftwareModel>
+    public interface IComputerSoftwareService : IBaseService<ComputerSoftwareDto, ComputerSoftware>
     {
         /// <summary>
-        /// lấy danh sách phần mềm theo ids
+        /// thêm mới/ cập nhật phần mềm đã dowload về agent
         /// </summary>
-        /// <param name="ids"></param>
+        /// <param name="computerSoftwareDto"></param>
         /// <returns></returns>
-        Task<List<SoftwareDto>> GetListByListIdsAsync(List<Guid> ids);
+        Task<bool> UpsertAsync(ComputerSoftwareDto computerSoftwareDto);
     }
 }

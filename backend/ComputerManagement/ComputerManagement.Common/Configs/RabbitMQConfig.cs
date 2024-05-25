@@ -22,5 +22,6 @@ namespace ComputerManagement.Common.Configs
         public UInt32 PerfetchSize { get; set; }
         public UInt16 PerfetchCount { get; set; }
         public bool Global { get; set; }
+        public int BatchSize { get; set; } = 20;
     }
 }

@@ -12,7 +12,7 @@ namespace ComputerManagement.BO.DTO
         /// <summary>
         /// danh sách id source
         /// </summary>
-        public List<Guid> SourceIds { get; set; }
+        public List<Guid> SourceIds { get; set; }= new List<Guid>();
 
         /// <summary>
         /// id des mapping
@@ -22,7 +22,7 @@ namespace ComputerManagement.BO.DTO
         /// <summary>
         /// command key
         /// </summary>
-        public CommandKey CommandKey { get; set; }
+        public string CommandKey { get; set; } = "";
 
         /// <summary>
         /// giá trị command
@@ -32,6 +32,6 @@ namespace ComputerManagement.BO.DTO
         /// <summary>
         /// flag để biết mapping từ đâu (computer/computerRoom/all/...)
         /// </summary>
-        public string KeyMapping { get; set; }
+        public string KeyMapping { get; set; }= "";
     }
 }

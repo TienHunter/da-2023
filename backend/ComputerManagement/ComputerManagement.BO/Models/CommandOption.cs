@@ -24,7 +24,7 @@ namespace ComputerManagement.BO.Models
         /// <summary>
         /// cờ của hành động
         /// </summary>
-        public CommandKey CommandKey { get; set; }
+        public string CommandKey { get; set; }
 
         /// <summary>
         /// thực thi hành động không

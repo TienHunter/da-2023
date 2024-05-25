@@ -129,6 +129,9 @@ builder.Services.AddScoped<IComputerStateRepo, ComputerStateRepo>();
 builder.Services.AddScoped<ICommandOptionService, CommandOptionService>();
 builder.Services.AddScoped<ICommandOptionRepo, CommandOptionRepo>();
 
+builder.Services.AddScoped<IComputerSoftwareRepo, ComputerSoftwareRepo>();
+builder.Services.AddScoped<IComputerSoftwareService, ComputerSoftwareService>();
+
 builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
 builder.Services.AddCors(options =>

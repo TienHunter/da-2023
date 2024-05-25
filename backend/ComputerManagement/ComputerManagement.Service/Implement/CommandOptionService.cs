@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
@@ -22,11 +23,18 @@ namespace ComputerManagement.Service.Implement
     {
         private readonly ICommandOptionRepo _commandOptionRepo = commandOptionRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
+
+        public async Task<List<CommandOption>> GetListCommandOptionByComputerIdAsync(Guid computerId)
+        {
+            var rs = await _commandOptionRepo.GetQueryable().Where(cm => cm.SourceId == computerId).ToListAsync();
+            return rs;
+        }
+
         public async Task UpsertAsync(CommandParam commandParam)
         {
             switch(commandParam.CommandKey)
             {
-                case CommandKey.DowloadSoftware:
+                case CommandOptionKey.DowloadSoftware:
                     await UpsertDowloadSoftwareAsync(commandParam);
                     break;
                 default:
@@ -34,9 +42,13 @@ namespace ComputerManagement.Service.Implement
             }
         }
 
+        /// <summary>
+        /// đẩy dữ liệu command option lên queue để upsert cờ dowload phần mềm
+        /// </summary>
+        /// <param name="commandParam"></param>
+        /// <returns></returns>
         private async Task UpsertDowloadSoftwareAsync(CommandParam commandParam)
         {
-            var listCommand = new List<CommandOption>();
             var listComputerId = new List<Guid>();
 
             // lấy danh sách id máy tính theo key mapping
@@ -55,27 +67,40 @@ namespace ComputerManagement.Service.Implement
             await this.CreateAndRunTaskAsync(async() =>
             {
                 // Lấy RabbitMQConfig trực tiếp từ _serviceProvider
+                var listCommand = new List<CommandOption>();
                 var rbConfig = _serviceProvider.GetRequiredService<IOptions<RabbitMQConfig>>().Value;
-                foreach (var item in listComputerId)
+                if(rbConfig != null)
                 {
-                    var commandOption = new CommandOption
+                    foreach (var item in listComputerId)
                     {
-                        SourceId = item,
-                        DesId = commandParam.DesId,
-                        CommandKey = commandParam.CommandKey,
-                        CommandValue = commandParam.CommandValue
-                    };
-                    var messageQueue = new MessageQueue
+                        var commandOption = new CommandOption
+                        {
+                            SourceId = item,
+                            DesId = commandParam.DesId,
+                            CommandKey = commandParam.CommandKey,
+                            CommandValue = commandParam.CommandValue
+                        };
+                        listCommand.Add(commandOption);
+                        //var messageQueue = new MessageQueue
+                        //{
+                        //    Message = JsonConvert.SerializeObject(commandOption),
+                        //    ActionType = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE
+                        //};
+                        //_ = QueueFactory.EnQueue(rbConfig, QueueKey.COMMAND_OPTION, JsonConvert.SerializeObject(messageQueue));
+                    }
+
+                    for (int i = 0; i < listCommand.Count; i += rbConfig.BatchSize)
                     {
-                        Message = JsonConvert.SerializeObject(commandOption),
-                        ActionType = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE
-                    };
-                    _ = QueueFactory.EnQueue(rbConfig,QueueKey.COMMAND_OPTION, JsonConvert.SerializeObject(messageQueue));
+                        var batch = listCommand.GetRange(i, Math.Min(rbConfig.BatchSize, listCommand.Count - i));
+                        var messageQueue = new MessageQueue
+                        {
+                            Message = JsonConvert.SerializeObject(batch),
+                            ActionType = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE
+                        };
+                        _ = QueueFactory.EnQueue(rbConfig, QueueKey.COMMAND_OPTION, JsonConvert.SerializeObject(messageQueue));
+                    }
                 }
             });
-
-
-
         }
     }
 }

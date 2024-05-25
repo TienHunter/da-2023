@@ -16,7 +16,7 @@
          </div>
       </div>
       <div class="content">
-         <a-table :columns="columns" :row-key="(record) => record.id" :row-selection="{
+         <a-table ref="tableRef" :columns="columns" :row-key="(record) => record.id" :row-selection="{
             selectedRowKeys: selectRows.selectedRowKeys,
             onChange: onSelectChange,
          }" :data-source="dataSource" :pagination="pagination" :scroll="scrollConfig" :loading="loading.loadingTable"
@@ -57,7 +57,7 @@
    <contextHolder />
 </template>
 <script setup>
-import { computed, h, onBeforeMount, reactive, ref, watch } from "vue";
+import { computed, h, nextTick, onBeforeMount, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { computerRoomService } from "../../api";
 import util from "@/utils/util";
@@ -111,8 +111,8 @@ const columns = computed(() => {
       },
       {
          title: "Số máy đã cài đặt phần mềm",
-         dataIndex: "numberComputerDowloaded",
-         key: "numberComputerDowloaded",
+         dataIndex: "numberComputerInstalled",
+         key: "numberComputerInstalled",
          width: "120px",
       },
       {
@@ -141,7 +141,22 @@ const pagination = computed(() => ({
    showTotal: (total) => `Total ${total} items`,
 }));
 const dataSource = ref([]);
-const scrollConfig = ref({ x: 1200, y: 400 });
+const tableRef = ref(null);
+const scrollConfig = ref({
+   y: "400px"
+});
+watchEffect(() => {
+
+   if (tableRef.value && tableRef.value.$el) {
+      console.log(tableRef.value.$el);
+      // Lấy giá trị top của table
+      const tableTop = tableRef.value.$el.getBoundingClientRect().top;
+      // Tính toán giá trị y bằng cách trừ top của table từ 100vh
+      scrollConfig.value.y = `calc(100vh - ${tableTop}px - 16px)`;
+      console.log(scrollConfig.value.y);
+   }
+})
+
 const selectRows = reactive({
    selectedRowKeys: [],
 });
@@ -171,7 +186,7 @@ const loadData = async () => {
          let temp = rs.data.list?.map((item) => {
             item.numberComputerDowloaded = `${item.currentDowloadSoftware || 0}/${item.currentCapacity || 0
                }`;
-            item.dataIndex = `${item.currentInstalledSoftware || 0}/${item.currentCapacity || 0
+            item.numberComputerInstalled = `${item.currentInstalledSoftware || 0}/${item.currentCapacity || 0
                }`;
             return item;
          });
@@ -261,5 +276,8 @@ const handleMenuClick = e => {
    //     height: calc(100vh - 248px) !important;
    //   }
    // }
+
 }
+
+::v-deep {}
 </style>

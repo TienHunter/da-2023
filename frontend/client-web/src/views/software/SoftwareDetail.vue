@@ -407,13 +407,7 @@ const dowliadFile = async (fileName) => {
       border-bottom: 1px solid rgba(5, 5, 5, 0.06);
     }
 
-    .ant-tabs-content-holder {
-      overflow-y: auto
-    }
 
-    .ant-tabs-content {
-      overflow-y: auto
-    }
   }
 }
 </style>

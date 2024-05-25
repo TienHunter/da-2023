@@ -16,5 +16,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="commandParam"></param>
         /// <returns></returns>
         Task UpsertAsync(CommandParam commandParam);
+
+        /// <summary>
+        /// lấy danh sách thiết lập lệnh theo id máy tính
+        /// </summary>
+        /// <param name="computerId"></param>
+        /// <returns></returns>
+        Task<List<CommandOption>> GetListCommandOptionByComputerIdAsync(Guid computerId);
     }
 }

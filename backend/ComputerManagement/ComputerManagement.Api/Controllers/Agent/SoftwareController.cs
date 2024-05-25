@@ -23,5 +23,17 @@ namespace ComputerManagement.Api.Controllers.Agent
             rs.Data = await _softwareService.GetListAsync(paging);
             return Ok(rs);
         }
+
+        /// <summary>
+        /// lấy danh sách phần mềm theo id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetListByListId")]
+        public async Task<IActionResult> GetListByListId([FromBody] List<Guid> ids)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _softwareService.GetListByListIdsAsync(ids);
+            return Ok(rs);
+        }
     }
 }

@@ -205,5 +205,21 @@ namespace ComputerManagement.Service.Implement
 
             return (guid, version, extension);
         }
+
+        public async Task<byte[]> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId)
+        {
+            var fileNameVersionLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).Select(f => f.FileName).FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId))
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Code = ServiceResponseCode.NotFoundFile
+                };
+            }
+            var filePath = Path.Combine(_fileConfig.StoreFile, fileNameVersionLatestBySoftwareId);
+            return await File.ReadAllBytesAsync(filePath);
+        }
     }
 }

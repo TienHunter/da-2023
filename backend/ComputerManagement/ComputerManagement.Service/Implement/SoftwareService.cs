@@ -43,6 +43,11 @@ namespace ComputerManagement.Service.Implement
             return rs;
         }
 
+        public async Task<List<SoftwareDto>> GetListByListIdsAsync(List<Guid> ids)
+        {
+            var rs = await _softwareRepo.GetQueryable().Where(s => ids.Contains(s.Id)).ToListAsync();
+            return _mapper.Map<List<SoftwareDto>>(rs);
+        }
 
         public override async Task ValidateBeforeAddAsync(SoftwareModel software)
         {

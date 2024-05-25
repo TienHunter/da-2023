@@ -38,11 +38,11 @@ namespace ComputerManagement.Service.Queue
                     var message = Encoding.UTF8.GetString(body);
                     // Deserialize JSON string to object
                     var obj = JsonConvert.DeserializeObject<MessageQueue>(message);
-                    var commandOption = JsonConvert.DeserializeObject<CommandOption>(obj.Message);
+                    var commandOptions = JsonConvert.DeserializeObject<List<CommandOption>>(obj.Message);
                     switch (obj.ActionType)
                     {
                         case QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE:
-                            this.UpserttCommandOption(commandOption);
+                            this.UpserttCommandOption(commandOptions);
                             break;
                     }
                 }
@@ -64,30 +64,29 @@ namespace ComputerManagement.Service.Queue
             //});
         }
 
-        private async Task UpserttCommandOption(CommandOption commandOption)
+        private async Task UpserttCommandOption(List<CommandOption> commandOptions)
         {
             var commandOptionRepo = new CommandOptionRepo(_dbContext);
-            var commandExist = await commandOptionRepo.GetQueryable().Where(cm => cm.SourceId == commandOption.SourceId && cm.DesId == commandOption.DesId && cm.CommandKey == commandOption.CommandKey).FirstOrDefaultAsync();
-            if(commandExist != null)
+            foreach (var commandOption in commandOptions)
             {
-                // update
-                commandExist.CommandValue = commandOption.CommandValue;
-                commandExist.UpdatedAt = DateTime.Now;
+                var commandExist = await commandOptionRepo.GetQueryable().Where(cm => cm.SourceId == commandOption.SourceId && cm.DesId == commandOption.DesId && cm.CommandKey == commandOption.CommandKey).FirstOrDefaultAsync();
+                if (commandExist != null)
+                {
+                    // update
+                    commandExist.CommandValue = commandOption.CommandValue;
+                    commandExist.UpdatedAt = DateTime.Now;
+                    await commandOptionRepo.UpdateAsync(commandExist);
+                }
+                else
+                {
+                    commandOption.Id = Guid.NewGuid();
+                    commandOption.CreatedAt = DateTime.Now;
+                    commandOption.UpdatedAt = DateTime.Now;
 
-                await commandOptionRepo.UpdateAsync(commandExist);
-                //_dbContext.CommandOption.Update(commandExist);
-                //await _dbContext.SaveChangesAsync();
-            }else
-            {
-                commandOption.Id = Guid.NewGuid();
-                commandOption.CreatedAt  = DateTime.Now;
-                commandOption.UpdatedAt = DateTime.Now;
-
-                await commandOptionRepo.AddAsync(commandOption);
-
-                //_dbContext.CommandOption.Add(commandOption);
-                //await _dbContext.SaveChangesAsync();
+                    await commandOptionRepo.AddAsync(commandOption);
+                }
             }
+            
         }
     }
 }

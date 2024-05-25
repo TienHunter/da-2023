@@ -43,6 +43,19 @@ namespace ComputerManagement.Api.Controllers.Agent
             rs.Data = await _computerService.UpdateComputerConfigAsync(computerConfig, computerId);
             return Ok(rs);
         }
+
+        /// <summary>
+        /// thêm máy tính từ phía agent
+        /// </summary>
+        /// <param name="computerDto"></param>
+        /// <returns></returns>
+        [HttpPost("")]
+        public async Task<IActionResult> Add([FromBody] ComputerDto computerDto)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _computerService.AddAsync(computerDto);
+            return Ok(rs);
+        }
     }
 }
 
