@@ -34,7 +34,7 @@ namespace ComputerManagerment.Repos.Implement
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public virtual async Task<(List<T> , int )> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public virtual async Task<(List<T>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             throw new NotImplementedException();
         }
@@ -57,7 +57,7 @@ namespace ComputerManagerment.Repos.Implement
 
         public async Task<List<T>> GetListByIdsAsync(List<Guid> ids)
         {
-            return await  _dbSet.Where(entity => ids.Contains(this.GetIdFromEntity(entity))).ToListAsync();
+            return await _dbSet.Where(entity => ids.Contains(this.GetIdFromEntity(entity))).ToListAsync();
         }
 
         private Guid GetIdFromEntity(T entity)

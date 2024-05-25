@@ -17,6 +17,8 @@ using ComputerManagement.Data.Seed;
 using ComputerManagement.Api.Middlewares;
 using ComputerManagement.Service.Interface;
 using Newtonsoft.Json;
+using ComputerManagement.Service.Worker;
+using ComputerManagement.Service.Queue;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -30,7 +32,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
-builder.Services.AddDbContext<AppDbContext>(options =>
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//{
+//    options.UseSqlServer(connectionString, sqlServerOptions =>
+//    {
+//        sqlServerOptions.MigrationsAssembly("ComputerManagement.Data");
+//    });
+//    options.EnableSensitiveDataLogging();
+//});
+
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString, sqlServerOptions =>
     {
@@ -56,6 +67,12 @@ builder.Services.Configure<FileConfig>(options =>
 builder.Services.Configure<EmailConfig>(options =>
 {
     builder.Configuration.GetSection("EmailConfig").Bind(options);
+});
+
+// add di rabbitConfig
+builder.Services.Configure<RabbitMQConfig>(options =>
+{
+    builder.Configuration.GetSection("RabbitMQConfig").Bind(options);
 });
 
 // add authen
@@ -109,7 +126,10 @@ builder.Services.AddScoped<IMonitorSessionService, MonitorSessionService>();
 
 builder.Services.AddScoped<IComputerStateRepo, ComputerStateRepo>();
 
+builder.Services.AddScoped<ICommandOptionService, CommandOptionService>();
+builder.Services.AddScoped<ICommandOptionRepo, CommandOptionRepo>();
 
+builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
 builder.Services.AddCors(options =>
 {

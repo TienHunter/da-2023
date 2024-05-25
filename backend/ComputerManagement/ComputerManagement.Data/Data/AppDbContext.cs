@@ -27,6 +27,7 @@ namespace ComputerManagement.Data
         public DbSet<SoftwareModel> SoftwareModel { get; set; }
         public DbSet<FileModel> FileModel { get; set; }
         public DbSet<MonitorSession> MonitorSession { get; set; }
+        public DbSet<CommandOption> CommandOption { get; set; }
 
     }
 }

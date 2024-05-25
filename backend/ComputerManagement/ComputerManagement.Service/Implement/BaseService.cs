@@ -2,6 +2,7 @@
 using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.Lib.Interface;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Configs;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
@@ -9,6 +10,7 @@ using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,7 @@ namespace ComputerManagement.Service.Implement
             _uow = serviceProvider.GetService(typeof(IUnitOfWork)) as IUnitOfWork;
             _contextData = serviceProvider.GetService(typeof(ContextData)) as ContextData;
             _emailService = serviceProvider.GetService(typeof(IEmailService)) as IEmailService;
+
         }
 
         public virtual async Task<Guid> AddAsync(TDto dto)
