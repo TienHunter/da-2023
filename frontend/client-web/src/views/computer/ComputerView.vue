@@ -52,4 +52,24 @@ import ComputerNoteView from "./ComputerNoteView.vue";
 const router = useRouter();
 const activeKey = ref("ComputerDetailView");
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.container-content {
+  padding: 0;
+
+  .content {
+    ::v-deep {
+      .ant-tabs-nav {
+        padding: 0px 16px;
+      }
+
+      .ant-tabs-content-holder {
+        position: relative;
+        padding: 0 16px 16px 16px;
+        overflow-y: auto;
+        height: 100%;
+      }
+    }
+
+  }
+}
+</style>

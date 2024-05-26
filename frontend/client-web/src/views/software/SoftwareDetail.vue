@@ -228,7 +228,7 @@ const dataFiles = ref([]);
 const showTotal = computed(
   () => `Total ${dataFiles.value?.length || 0} items`
 );
-const scrollConfig = ref({ x: 1200, y: 400 });
+const scrollConfig = ref({ x: 1200 });
 const selectRows = reactive({
   selectedRowKeys: [],
 });
@@ -390,9 +390,9 @@ const dowliadFile = async (fileName) => {
 
 }
 
-// const navigateEdit = () => {
-//   router.push({ name: "SoftwareEdit", params: { id: route.params.id } });
-// }
+const navigateEdit = () => {
+  router.push({ name: "SoftwareEdit", params: { id: route.params.id } });
+}
 // ========== end lifecycle ==========
 </script>
 <style lang="scss" scoped>

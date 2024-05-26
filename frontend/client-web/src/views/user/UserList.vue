@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="content">
-      <a-table :columns="columns" :row-key="(record) => record.id" :row-selection="rowSelection"
+      <a-table :columns="columns" :row-key="(record) => record.id" :scroll="scrollConfig" :row-selection="rowSelection"
         :data-source="dataSource" :pagination="pagination" :loading="loading.loadingTable" @change="handleTableChange">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'username'">
@@ -85,6 +85,7 @@ const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 240px)" });
 const columns = [
   {
     title: "Username",
@@ -246,8 +247,10 @@ const changeStateUser = async (state, user) => {
 }
 // ========== end methods ==========
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .container-content {
+  padding: 0 16px 16px 16px;
+
   .table-operations {
     margin-bottom: 16px;
   }

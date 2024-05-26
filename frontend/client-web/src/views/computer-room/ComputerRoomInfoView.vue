@@ -19,21 +19,6 @@
             <a-col v-if="field.key == 'capacity'" class="gutter-row" :span="18">
               <div class="gutter-box">{{ data[field.key] }}</div>
             </a-col>
-
-            <a-col v-else-if="field.key == 'state'" class="gutter-row" :span="18">
-              <div class="gutter-box">
-                <a-tag :color="data.colorState">
-                  {{ data.textState }}
-                </a-tag>
-              </div>
-            </a-col>
-            <a-col v-else-if="field.key == 'pending'" class="gutter-row" :span="18">
-              <div class="gutter-box">
-                <a-tag :color="data.colorPending">
-                  {{ data.textPending }}
-                </a-tag>
-              </div>
-            </a-col>
             <a-col v-else class="gutter-row" :span="18">
               <div class="gutter-box">{{ data[field.key] }}</div>
             </a-col>
@@ -70,16 +55,7 @@ const fields = reactive([
     dataIndex: "capacity",
     key: "capacity",
   },
-  {
-    title: "State",
-    dataIndex: "state",
-    key: "state",
-  },
-  {
-    title: "Pending",
-    dataIndex: "pending",
-    key: "pending",
-  },
+
 ]);
 let data = ref({});
 const loading = reactive({

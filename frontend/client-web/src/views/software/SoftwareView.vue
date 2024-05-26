@@ -11,14 +11,17 @@
                   </a-button>
                </router-link>
             </template>
-            <a-tab-pane key="SoftwareDetail" class="info-detail">
+            <a-tab-pane key="SoftwareDetail">
                <template #tab>
                   <span>
                      <apple-outlined />
                      Thông tin chi tiết
                   </span>
                </template>
-               <SoftwareDetail />
+               <div class="software-detail">
+                  <SoftwareDetail />
+               </div>
+
             </a-tab-pane>
             <a-tab-pane key="ComputerRoomList">
                <template #tab>
@@ -27,7 +30,10 @@
                      Thông tin phần mềm ở các phòng máy
                   </span>
                </template>
-               <ComputerRoomListBySoftware :masterId="route.params.id" :masterData="route.meta.data" />
+               <div class="computer-room-list-software">
+                  <ComputerRoomListBySoftware :masterId="route.params.id" :masterData="route.meta.data" />
+               </div>
+
             </a-tab-pane>
             <a-tab-pane key="ComputerRoomMonitorSessionList">
                <template #tab>
@@ -36,7 +42,7 @@
                      Thông tin phần mềm ở các máy
                   </span>
                </template>
-               <ComputeristBySoftware />
+               <ComputerListBySoftware />
             </a-tab-pane>
 
          </a-tabs>
@@ -57,15 +63,27 @@ const activeKey = ref("SoftwareDetail");
 <style lang="scss" scoped>
 .container-content {
    overflow: hidden !important;
-}
+   padding: 0;
 
-::v-deep {
-   .ant-tabs-content-holder {
-      overflow-y: auto
-   }
+   ::v-deep {
+      .ant-tabs-nav {
+         padding: 0px 16px;
+      }
 
-   .info-detail {
-      overflow-y: auto
+      .ant-tabs-content-holder {
+         position: relative;
+         // padding: 0 16px 16px 16px;
+         // overflow-y: auto;
+         height: 100%;
+      }
+
+      .info-detail {
+         overflow-y: auto
+      }
+
+      .software-detail {
+         height: calc(100vh - 120px);
+      }
    }
 }
 </style>

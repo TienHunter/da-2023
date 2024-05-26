@@ -1,18 +1,29 @@
 <template>
   <div class="container-content">
     <div class="table-operations flex justify-between pt-4">
-      <div class="operations-left"></div>
+      <div class="operations-left">
+        <div v-if="hasSelected" class="flex items-center gap-4">
+          <a-button @click="unSelect">{{ $t("UnSelect") }}</a-button>
+          <span>
+            <template v-if="hasSelected">
+              {{ $t("SelectCount", [selectRows.selectedRowKeys.length]) }}
+            </template>
+          </span>
+          <a-button danger @click="deleteMultiRecords">
+            {{ $t("Delete") }}
+          </a-button>
+        </div>
+      </div>
       <div class="operations-right flex gap-2">
         <a-button type="text" @click="refreshGrid">
           <template #icon>
             <ReloadOutlined />
           </template>
         </a-button>
-        <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
-          :loading="loading.loadingInputSearch" @search="onSearch" />
-        <router-link :to="{ name: 'ComputerRoomAdd' }">
-          <a-button type="primary">{{ $t("Add") }}</a-button>
-        </router-link>
+        <a-input v-model:value="searchText" :placeholder="$t('ComputerRoom.SearchListHint')" allow-clear
+          style="width: 200px" />
+
+        <a-button type="primary" @click="navigateAdd">{{ $t("Add") }}</a-button>
       </div>
     </div>
     <div class="content">
@@ -61,7 +72,7 @@
   <contextHolder />
 </template>
 <script setup>
-import { computed, onBeforeMount, reactive, ref, h } from "vue";
+import { computed, onBeforeMount, reactive, ref, h, watch } from "vue";
 import { useRouter } from "vue-router";
 import moment from "moment";
 import { Modal, message } from "ant-design-vue";
@@ -76,6 +87,7 @@ const loading = reactive({
   loadingTable: false,
   loadingInputSearch: false,
 });
+const searchText = ref("");
 const columns = [
   {
     title: $t("Computer.Name"),
@@ -95,18 +107,6 @@ const columns = [
     key: "computerRoomName",
     width: "100px",
   },
-  // {
-  //   title: "State",
-  //   dataIndex: "state",
-  //   key: "state",
-  //   width: "100px",
-  // },
-  // {
-  //   title: "StateTime",
-  //   dataIndex: "stateTime",
-  //   key: "stateTime",
-  //   width: "150px",
-  // },
   {
     title: $t("Computer.Condition"),
     dataIndex: "listError",
@@ -135,10 +135,13 @@ const pagination = computed(() => ({
   showSizeChanger: true,
   showTotal: (total) => `Total ${total} items`,
 }));
-const scrollConfig = ref({ x: 1200, y: 400 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 240px)" });
 let dataSource = ref([]);
 const selectRows = reactive({
   selectedRowKeys: [],
+});
+const hasSelected = computed(() => {
+  return selectRows.selectedRowKeys.length > 0
 });
 // ========== end state ==========
 
@@ -168,9 +171,16 @@ onBeforeMount(async () => {
     loading.loadingTable = false;
   }
 });
+watch(searchText, () => {
+  pagingParam.keySearch = searchText.value;
+  debounceSearch();
+});
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const debounceSearch = _.debounce(async () => {
+  await loadData();
+}, 600);
 const loadData = async () => {
   try {
     loading.loadingTable = true;
@@ -235,6 +245,10 @@ const onSearch = (searchValue) => {
   console.log("use value", searchValue);
 };
 
+const navigateAdd = () => {
+  router.push({ name: "ComputerAdd" });
+}
+
 /**
  * navigate sang form edit
  * @param item 
@@ -297,9 +311,40 @@ const refreshGrid = async () => {
 // const onAdd = () => {
 //   router.push({ name: "ComputerRoomAdd" });
 // };
+const deleteMultiRecords = () => {
+  modal.confirm({
+    title: "Cảnh báo",
+    icon: h(ExclamationCircleOutlined),
+    content: h("div", [
+      `Bạn có chắc chắn muốn xóa ${selectRows.selectedRowKeys.length} máy.`
+    ]),
+    okText: $t("Yes"),
+    okText: $t("Cancel"),
+    okType: "danger",
+    async onOk() {
+      try {
+        let rs = await computerService.deleteRange(selectRows.selectedRowKeys);
+        if (rs?.success && rs?.data) {
+          message.success($t("DeleteSuccess"));
+          pagingParam.pageNumber = 1;
+          selectRows.selectedRowKeys = [];
+          await loadData();
+        }
+      } catch (errors) {
+        message.error($t("UnknownError"));
+        console.log(errors);
+      }
+    },
+    onCancel() { },
+  });
+}
 // ========== end methods ==========
 </script>
 <style scoped>
+.container-content {
+  padding: 0 16px 16px 16px;
+}
+
 .table-operations {
   margin-bottom: 16px;
 }

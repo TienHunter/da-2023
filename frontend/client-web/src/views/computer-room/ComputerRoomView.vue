@@ -57,6 +57,7 @@ const activeKey = ref("ComputerRoomInfoView");
 <style lang="scss" scoped>
 .container-content {
   overflow: hidden !important;
+  padding: 0;
 
   ::v-deep {
     .ant-tabs-nav {

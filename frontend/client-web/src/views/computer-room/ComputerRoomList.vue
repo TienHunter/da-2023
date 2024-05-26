@@ -1,7 +1,19 @@
 <template>
   <div class="container-content">
     <div class="table-operations flex justify-between pt-4">
-      <div class="operations-left"></div>
+      <div class="operations-left">
+        <div v-if="hasSelected" class="flex items-center gap-4">
+          <a-button @click="unSelect">{{ $t("UnSelect") }}</a-button>
+          <span>
+            <template v-if="hasSelected">
+              {{ $t("SelectCount", [selectRows.selectedRowKeys.length]) }}
+            </template>
+          </span>
+          <a-button danger @click="deleteMultiRecords">
+            {{ $t("Delete") }}
+          </a-button>
+        </div>
+      </div>
       <div class="operations-right flex gap-2">
         <a-button type="text" @click="refreshGrid">
           <template #icon>
@@ -134,6 +146,9 @@ const scrollConfig = ref({ x: 1200, y: 400 });
 const selectRows = reactive({
   selectedRowKeys: [],
 });
+const hasSelected = computed(() => {
+  return selectRows.selectedRowKeys.length > 0
+});
 // ========== end state ==========
 
 // ========== start life cycle ==========
@@ -256,6 +271,37 @@ const onDelete = (record) => {
     onCancel() { },
   });
 };
+
+const deleteMultiRecords = () => {
+  modal.confirm({
+    title: "Cảnh báo",
+    icon: h(ExclamationCircleOutlined),
+    content: h("div", [
+      `Bạn có chắc chắn muốn xóa ${selectRows.selectedRowKeys.length} phòng máy đã chọn.`,
+      h("br"),
+      `Khi xóa phòng
+          máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
+          xóa đi.`,
+    ]),
+    okText: "Yes",
+    okType: "danger",
+    async onOk() {
+      try {
+        let rs = await computerRoomService.deleteRange(selectRows.selectedRowKeys);
+        if (rs?.success && rs?.data) {
+          message.success($t("DeleteSuccess"));
+          pagingParam.pageNumber = 1;
+          selectRows.selectedRowKeys = [];
+          await loadData();
+        }
+      } catch (errors) {
+        message.error($t("UnknownError"));
+        console.log(errors);
+      }
+    },
+    onCancel() { },
+  });
+}
 
 const refreshGrid = async () => {
   filteredInfo.value = null;

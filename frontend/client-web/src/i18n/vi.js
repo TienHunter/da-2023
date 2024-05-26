@@ -10,10 +10,17 @@ export default {
    DetailInfo: "Thông tin chi tiết",
    ViewDetail: "Xem chi tiết",
    Close: "Đóng",
+   UnSelect: "Bỏ chọn",
+   SelectAllComputerRoom: "Chọn tất cả phòng máy",
+   SelectCount: "Đã chọn {0} bản ghi",
+   Delete: "Xóa",
+   DeleteSuccess: "Xóa thành công",
    Validate: {
       Required: "Vui lòng nhập {0}",
       AlreadyExist: "{0} đã tồn tại"
    },
+   Action: "Chức năng",
+   Yes: "Đồng ý",
    auth: {
       Login: "Đăng nhập",
       UsernameHint: "Tài khoản hoặc email",
@@ -172,6 +179,15 @@ export default {
          Practive: "Thực hành",
          Exam: "Kiểm tra"
       }
+   },
+   Sidebar: {
+      Dashboard: "Tổng quan",
+      ComputerRoomManager: "Quản lý phòng máy",
+      ComputerManager: "Quản lý máy tính",
+      UserManager: "Quản lý người dùng",
+      SoftwareManager: "Quản lý phần mềm",
+      FileManager: "Quản lý file cài",
+      MonitorSessionManager: "Quản lý phiên giám sát"
    }
 
 }

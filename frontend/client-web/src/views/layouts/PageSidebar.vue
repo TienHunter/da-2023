@@ -5,43 +5,43 @@
       <a-menu-item key="Dashboard">
         <router-link :to="{ name: 'Dashboard' }">
           <pie-chart-outlined />
-          <span>Dashboard</span>
+          <span>{{ $t("Sidebar.Dashboard") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="ComputerRoom">
         <router-link :to="{ name: 'ComputerRoomList' }">
-          <desktop-outlined />
-          <span>ComputerRoom</span>
+          <HomeOutlined />
+          <span>{{ $t("Sidebar.ComputerRoomManager") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="Computer">
         <router-link :to="{ name: 'ComputerList' }">
           <desktop-outlined />
-          <span>Computer</span>
+          <span>{{ $t("Sidebar.ComputerManager") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="User">
         <router-link :to="{ name: 'UserList' }">
           <user-outlined />
-          <span>User manage</span>
+          <span>{{ $t("Sidebar.UserManager") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="Software">
         <router-link :to="{ name: 'SoftwareList' }">
           <ShoppingOutlined />
-          <span>Software Manage</span>
+          <span>{{ $t("Sidebar.SoftwareManager") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="File">
         <router-link :to="{ name: 'FileList' }">
           <file-outlined />
-          <span>File Manager</span>
+          <span>{{ $t("Sidebar.FileManager") }}</span>
         </router-link>
       </a-menu-item>
       <a-menu-item key="MonitorSession">
         <router-link :to="{ name: 'MonitorSessionList' }">
-          <file-outlined />
-          <span>Monitor session Manage</span>
+          <VideoCameraOutlined />
+          <span>{{ $t("Sidebar.MonitorSessionManager") }}</span>
         </router-link>
       </a-menu-item>
     </a-menu>

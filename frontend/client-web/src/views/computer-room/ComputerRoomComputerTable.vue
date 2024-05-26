@@ -38,12 +38,12 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round>
+              <a-button round @click="navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200">
+              <a-button round class="bg-red-200" @click="onDelete(record)">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -130,7 +130,7 @@ const columns = computed(() => {
       width: "100px",
     },
     {
-      title: "Action",
+      title: $t("Action"),
       key: "operation",
       fixed: "right",
       width: 100,
@@ -294,6 +294,10 @@ const onSelectChange = (selectedRowKeys) => {
   selectRows.selectedRowKeys = selectedRowKeys;
 };
 
+const navigateEdit = async (record) => {
+  router.push({ name: "ComputerEdit", params: { id: record.id } })
+}
+
 /**
  * xóa bản ghi
  */
@@ -302,25 +306,16 @@ const onDelete = (record) => {
     title: "Cảnh báo",
     icon: h(ExclamationCircleOutlined),
     content: h("div", [`Bạn có chắc chắn muốn xóa máy ${record.name}.`]),
-    okText: "Yes",
+    okText: $t("Yes"),
+    cancelText: $t("Cancel"),
     okType: "danger",
     async onOk() {
       try {
         let rs = await computerService.delete(record.id);
         if (rs?.success && rs?.data) {
           message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
-          if (dataSource.value.length > 1) {
-            let indexToDelete = dataSource.value.findIndex(
-              (item) => item.id === record.id
-            );
-            if (indexToDelete != -1) {
-              dataSource.value.splice(indexToDelete, 1);
-              pagingParam.total -= 1;
-            }
-          } else {
-            pagingParam.pageNumber = 1;
-            await loadData();
-          }
+          pagingParam.pageNumber = 1;
+          await loadData();
         }
       } catch (errors) {
         message.error($t("UnknownError"));

@@ -17,6 +17,10 @@ namespace ComputerManagerment.Repos.Implement
             
         }
 
+        public override async Task<List<ComputerRoom>> GetListByIdsAsync(List<Guid> ids)
+        {
+            return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
+        }
         public override async Task<(List<ComputerRoom>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             var query = _dbSet.AsQueryable();

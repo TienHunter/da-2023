@@ -12,15 +12,13 @@ namespace ComputerManagement.Api.Controllers.Web
         private readonly ICommandOptionService _commandOptionService = commandOptionService;
 
         [HttpPost("Upsert")]
-        public virtual async Task<IActionResult> UpsertCoomand([FromBody] CommandParam commandParam)
+        public virtual async Task<IActionResult> UpsertCommand([FromBody] CommandParam commandParam)
         {
             var rs = new ServiceResponse();
 
             await _commandOptionService.UpsertAsync(commandParam);
             rs.Data = true;
             return Ok(rs);
-
-
         }
     }
 }

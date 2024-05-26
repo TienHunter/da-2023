@@ -5,3 +5,4 @@ export { default as computerHistoryService } from "./services/computerHistorySer
 export { default as softwareService } from "./services/softwareService.js";
 export { default as fileService } from "./services/fileService.js";
 export { default as monitorSessionService } from "./services/monitorSessionService.js";
+export { default as commandOptionService } from "./services/commandOptionService.js";

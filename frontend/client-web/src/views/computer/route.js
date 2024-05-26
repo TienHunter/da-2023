@@ -1,6 +1,7 @@
 import ComputerList from "./ComputerList.vue";
 import ComputerView from "./ComputerView.vue";
 import ComputerEdit from "./ComputerEdit.vue";
+import ComputerAdd from "./ComputerAdd.vue";
 import { Permission, FormMode } from "../../constants";
 import ComputerDetailView from "./ComputerDetailView.vue";
 import ComputerHistoryView from "./ComputerHistoryView.vue";
@@ -37,6 +38,14 @@ const routes = [
             component: ComputerEdit,
             meta: {
                formMode: FormMode.Update
+            }
+         },
+         {
+            path: "add",
+            name: "ComputerAdd",
+            component: ComputerAdd,
+            meta: {
+               formMode: FormMode.AddMode
             }
          },
       ],

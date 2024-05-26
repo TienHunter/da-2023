@@ -15,6 +15,10 @@ namespace ComputerManagerment.Repos.Implement
 {
     public class ComputerRepo(AppDbContext dbContext) : BaseRepo<Computer>(dbContext), IComputerRepo
     {
+        public override async Task<List<Computer>> GetListByIdsAsync(List<Guid> ids)
+        {
+            return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
+        }
         public override async Task<Computer?> GetAsync(Guid id)
         {
             var rs =  await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);

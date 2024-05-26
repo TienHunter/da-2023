@@ -4,7 +4,31 @@
          <component :is="headerTitle" />
       </div>
       <div class="table-operations flex justify-between pt-4">
-         <div class="operations-left"></div>
+         <div class="operations-left">
+            <div v-if="hasSelected" class="flex items-center gap-2">
+               <a-button @click="unSelect">{{ $t("UnSelect") }}</a-button>
+               <a-checkbox v-model:checked="selectAllComputerRoom">{{ $t("SelectAllComputerRoom") }}</a-checkbox>
+               <a-dropdown :trigger="['click']">
+                  <template #overlay>
+                     <a-menu>
+                        <a-menu-item @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, true)">
+                           <CheckCircleOutlined />
+                           Tải/cập nhật vào lần sử dụng tiếp theo
+                        </a-menu-item>
+                        <a-menu-item @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, false)">
+                           <StopOutlined />
+                           Tắt tự động tải/ cập nhật
+                        </a-menu-item>
+                     </a-menu>
+                  </template>
+                  <a-button round>
+                     <template #icon>
+                        <MoreOutlined />
+                     </template>
+                  </a-button>
+               </a-dropdown>
+            </div>
+         </div>
          <div class="operations-right flex gap-2">
             <a-button type="text" @click="refreshGrid">
                <template #icon>
@@ -31,12 +55,12 @@
                   <div class="flex gap-2">
                      <a-dropdown :trigger="['click']">
                         <template #overlay>
-                           <a-menu @click="handleMenuClick">
-                              <a-menu-item key="1">
+                           <a-menu>
+                              <a-menu-item @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, true)">
                                  <CheckCircleOutlined />
                                  Tải/cập nhật vào lần sử dụng tiếp theo
                               </a-menu-item>
-                              <a-menu-item key="2">
+                              <a-menu-item @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, false)">
                                  <StopOutlined />
                                  Tắt tự động tải/ cập nhật
                               </a-menu-item>
@@ -59,14 +83,15 @@
 <script setup>
 import { computed, h, nextTick, onBeforeMount, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { computerRoomService } from "../../api";
+import { commandOptionService, computerRoomService } from "../../api";
 import util from "@/utils/util";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
+import { CommandOptionKey, CommonKey } from "@/constants";
 // ========== start state ==========
 const props = defineProps({
    masterId: {
-      type: Number,
+      type: String,
       default: 0,
       required: true
    },
@@ -88,6 +113,10 @@ const loading = reactive({
    loadingTable: false,
    loadingInputSearch: false,
 });
+const menuKey = {
+   SINGLE: "SINGLE",
+   MULTI: "MULTI"
+}
 const filteredInfo = ref();
 const sortedInfo = ref();
 const columns = computed(() => {
@@ -143,23 +172,16 @@ const pagination = computed(() => ({
 const dataSource = ref([]);
 const tableRef = ref(null);
 const scrollConfig = ref({
-   y: "400px"
+   y: "calc(100vh - 320px)"
 });
-watchEffect(() => {
-
-   if (tableRef.value && tableRef.value.$el) {
-      console.log(tableRef.value.$el);
-      // Lấy giá trị top của table
-      const tableTop = tableRef.value.$el.getBoundingClientRect().top;
-      // Tính toán giá trị y bằng cách trừ top của table từ 100vh
-      scrollConfig.value.y = `calc(100vh - ${tableTop}px - 16px)`;
-      console.log(scrollConfig.value.y);
-   }
-})
 
 const selectRows = reactive({
    selectedRowKeys: [],
 });
+const hasSelected = computed(() => {
+   return selectRows.selectedRowKeys.length > 0
+});
+const selectAllComputerRoom = ref(false);
 // ========== end state ==========
 
 // ========== start life cycle ==========
@@ -251,12 +273,79 @@ const refreshGrid = async () => {
    pagingParam.pageSize = 20;
    pagingParam.fieldSort = "UpdatedAt";
    pagingParam.sortAsc; false;
+   selectRows.selectedRowKeys = []
    await loadData();
 }
 
-const handleMenuClick = e => {
-   console.log('click', e);
+/**
+ * tạo commandOption và cập nhật
+ * @param record 
+ * @param key 
+ * @param value 
+ */
+const updateCommandOptionDowloadFile = async (record, key, value) => {
+   let conmandOption = null;
+   switch (key) {
+      case menuKey.SINGLE:
+         conmandOption = {
+            sourceIds: [record.id],
+            desId: props.masterId,
+            commandKey: CommandOptionKey.DowloadSoftware,
+            keyMapping: CommonKey.COMPUTER_ROOM,
+            commandValue: value
+         }
+         break;
+      case menuKey.MULTI:
+         if (selectAllComputerRoom.value) {
+            conmandOption = {
+               sourceIds: [],
+               desId: props.masterId,
+               commandKey: CommandOptionKey.DowloadSoftware,
+               keyMapping: CommonKey.ALL,
+               commandValue: value
+
+            }
+         } else {
+            conmandOption = {
+               sourceIds: selectRows.selectedRowKeys,
+               desId: props.masterId,
+               commandKey: CommandOptionKey.DowloadSoftware,
+               keyMapping: CommonKey.COMPUTER_ROOM,
+               commandValue: value
+
+            }
+         }
+      default:
+         break;
+   }
+   await updateCommandOption(conmandOption, key);
 };
+
+/**
+ * cập nhật command option
+ * @param commandOption 
+ */
+const updateCommandOption = async (commandOption, key) => {
+   try {
+      if (commandOption) {
+         let rs = await commandOptionService.upsertCommand(commandOption)
+         if (rs && rs.success) {
+            message.success($t("SaveSuccess"));
+            if (key == menuKey.MULTI) {
+               selectRows.selectedRowKeys = [];
+               selectAllComputerRoom.value = false;
+            }
+         }
+      }
+   } catch (error) {
+      console.log(error);
+      message.error($t("UnknownError"));
+   }
+}
+const unSelect = () => {
+   selectRows.selectedRowKeys = [];
+   selectAllComputerRoom.value = false;
+}
 // ========== end methods ==========
 </script>
 <style lang="scss" scoped>

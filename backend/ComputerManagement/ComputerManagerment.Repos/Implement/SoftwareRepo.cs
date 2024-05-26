@@ -12,6 +12,10 @@ namespace ComputerManagerment.Repos.Implement
 {
     public class SoftwareRepo(AppDbContext dbContext) : BaseRepo<SoftwareModel>(dbContext), ISoftwareRepo
     {
+        public override async Task<List<SoftwareModel>> GetListByIdsAsync(List<Guid> ids)
+        {
+            return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
+        }
         public override async Task<(List<SoftwareModel>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
             var query = _dbSet.AsQueryable();

@@ -7,3 +7,5 @@ export { default as UserState } from "./userState";
 export { default as FormatDateKey } from "./dateFormat";
 export { default as ComputerKey } from "./computerKey";
 export { default as MonitorType } from "./monitorType";
+export { default as CommandOptionKey } from "./commandOptionKey";
+export { default as CommonKey } from "./commonKey";

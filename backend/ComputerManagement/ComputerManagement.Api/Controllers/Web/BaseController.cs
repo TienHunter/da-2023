@@ -64,7 +64,7 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
         }
 
-        [HttpDelete("deletes")]
+        [HttpPost("deletes")]
         public virtual async Task<IActionResult> DeleteRange([FromBody] List<Guid> ids)
         {
             var rs = new ServiceResponse();

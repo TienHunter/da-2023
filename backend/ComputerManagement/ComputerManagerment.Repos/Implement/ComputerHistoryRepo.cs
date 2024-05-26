@@ -12,6 +12,10 @@ namespace ComputerManagerment.Repos.Implement
 {
     public class ComputerHistoryRepo(AppDbContext dbContext) : BaseRepo<ComputerHistory>(dbContext), IComputerHistoryRepo
     {
+        public override async Task<List<ComputerHistory>> GetListByIdsAsync(List<Guid> ids)
+        {
+            return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
+        }
         public async Task<(List<ComputerHistory>, int)> GetListByComputerIdAsync(int pageNumber, int pageSize, Guid computerId)
         {
             var query = _dbSet.AsQueryable();

@@ -68,7 +68,7 @@ class BaseService {
     * @returns 
     */
    async deleteRange(recordIds) {
-      return await instance.delete(`${this.getEndpoint()}/deletes`, recordIds);
+      return await instance.post(`${this.getEndpoint()}/deletes`, recordIds);
    }
 }
 export default BaseService;

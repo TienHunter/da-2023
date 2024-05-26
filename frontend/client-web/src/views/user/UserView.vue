@@ -121,4 +121,8 @@ onBeforeMount(async () => {
   }
 });
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.container-content {
+  padding: 0 16px 16px 16px;
+}
+</style>

@@ -9,15 +9,15 @@
             <a-input v-model:value="formState.macAddress" />
          </a-form-item>
          <a-form-item name="col" :label="$t('Computer.Col')">
-            <a-input-number v-model:value="formState.col" disabled=true />
+            <a-input-number v-model:value="formState.col" :disabled=true />
          </a-form-item>
          <a-form-item name="row" :label="$t('Computer.Row')">
-            <a-input-number v-model:value="formState.row" disabled=true />
+            <a-input-number v-model:value="formState.row" :disabled=true />
          </a-form-item>
 
          <a-form-item name="modifier" :label="$t('Computer.Condition')" class="collection-create-form_last-form-item">
             <a-select v-model:value="formState.listErrorId" mode="multiple" style="width: 100%"
-               placeholder="Tình trạng máy" :options="optionListErrorId" @change="handleChange"></a-select>
+               placeholder="Tình trạng máy" :options="optionListErrorId"></a-select>
          </a-form-item>
       </a-form>
    </a-modal>

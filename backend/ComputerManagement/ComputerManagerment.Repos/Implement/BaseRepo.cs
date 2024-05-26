@@ -55,21 +55,9 @@ namespace ComputerManagerment.Repos.Implement
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<T>> GetListByIdsAsync(List<Guid> ids)
+        public virtual async Task<List<T>> GetListByIdsAsync(List<Guid> ids)
         {
-            return await _dbSet.Where(entity => ids.Contains(this.GetIdFromEntity(entity))).ToListAsync();
-        }
-
-        private Guid GetIdFromEntity(T entity)
-        {
-            // Giả sử rằng mỗi thực thể có một thuộc tính ID có kiểu Guid.
-            // Thay thế GetIdFromEntity bằng cách lấy giá trị ID của thực thể cụ thể.
-            var property = typeof(T).GetProperty("ID"); // Thay "ID" bằng tên của thuộc tính ID thực sự
-            if (property != null && property.PropertyType == typeof(Guid))
-            {
-                return (Guid)property.GetValue(entity);
-            }
-            throw new ArgumentException("Thực thể không có thuộc tính ID hoặc không phải là kiểu Guid.");
+            throw new NotImplementedException();
         }
 
         public async Task<bool> DeleteRangeAsync(List<T> entities)

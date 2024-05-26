@@ -12,6 +12,10 @@ namespace ComputerManagerment.Repos.Implement
 {
     public class MonitorSessionRepo(AppDbContext dbContext) : BaseRepo<MonitorSession>(dbContext), IMonitorSessionRepo
     {
+        public override async Task<List<MonitorSession>> GetListByIdsAsync(List<Guid> ids)
+        {
+            return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
+        }
         public override async Task<MonitorSession> GetAsync(Guid id)
         {
             return await _dbSet.Include(c => c.ComputerRoom).Include(c=>c.User).FirstOrDefaultAsync(c=>c.Id == id);
