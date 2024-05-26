@@ -18,5 +18,17 @@ namespace ComputerManagerment.Repos.Interface
         /// <param name="sortAsc"></param>
         /// <returns></returns>
         Task<List<Computer>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, string keySearch, string fieldSort, bool sortAsc);
+
+        /// <summary>
+        /// lấy danh sách máy tính theo phần mềm
+        /// </summary>
+        /// <param name="softwareId"></param>
+        /// <param name="keySearch"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="fieldSort"></param>
+        /// <param name="sortAsc"></param>
+        /// <returns></returns>
+        Task<(List<Computer>, int)> GetListBySoftwareIdAsync(Guid softwareId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc);
     }
 }

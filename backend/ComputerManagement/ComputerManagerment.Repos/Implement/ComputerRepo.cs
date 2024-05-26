@@ -39,13 +39,13 @@ namespace ComputerManagerment.Repos.Implement
             switch (fieldSort?.ToLower())
             {
 
-                case "Name":
+                case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
-                case "UpdatedAt":
+                case "updatedat":
                     query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
                     break;
-                case "CreatedAt":
+                case "createdat":
                     query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
                     break;
 
@@ -84,13 +84,13 @@ namespace ComputerManagerment.Repos.Implement
             switch (fieldSort?.ToLower())
             {
 
-                case "Name":
+                case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
-                case "UpdatedAt":
+                case "updatedat":
                     query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
                     break;
-                case "CreatedAt":
+                case "createdat":
                     query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
                     break;
 
@@ -102,5 +102,48 @@ namespace ComputerManagerment.Repos.Implement
 
             return entities;
         }
+
+        public async Task<(List<Computer>, int)> GetListBySoftwareIdAsync(Guid softwareId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        {
+            var query = _dbSet.AsQueryable().Include(c => c.ComputerRoom).Include(c => c.ComputerSofewares.Where(cs => cs.SoftwareId == softwareId)).Where(c => true);
+            var entities = new List<Computer>();
+
+            if (!string.IsNullOrEmpty(keySearch))
+            {
+                query = query.Where(e => e.Name.Contains(keySearch));
+            }
+
+            switch (fieldSort?.ToLower())
+            {
+
+                case "name":
+                    query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
+                    break;
+                case "updateat":
+                    query = sortAsc ? query.OrderBy(e => e.UpdatedAt) : query.OrderByDescending(e => e.UpdatedAt);
+                    break;
+                case "createdat":
+                    query = sortAsc ? query.OrderBy(e => e.CreatedAt) : query.OrderByDescending(e => e.CreatedAt);
+                    break;
+
+                default:
+                    query = query.OrderByDescending(e => e.UpdatedAt);
+                    break;
+            }
+            var totalCount = await query.CountAsync();
+            if (pageNumber > 0 && pageSize > 0)
+            {
+                entities = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            }
+            else
+            {
+                entities = await query.ToListAsync();
+            }
+            return (entities, totalCount);
+        }
+
     }
 }

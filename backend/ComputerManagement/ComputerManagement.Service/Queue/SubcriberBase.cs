@@ -23,7 +23,7 @@ namespace ComputerManagement.Service.Queue
         {
             var policy = Policy
             .Handle<Exception>()
-            .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(500), (exception, timeSpan) =>
+            .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(100), (exception, timeSpan) =>
             {
                 Console.WriteLine($"Error occurred: {exception.Message}. Retrying in {timeSpan.TotalSeconds} seconds...");
             });

@@ -31,7 +31,6 @@ namespace ComputerManagement.BO.DTO
         public int CurrentActiveSoftware { get; set; }
         [JsonIgnore]
         public List<Computer> Computers { get; set; } = new List<Computer>();
-
         public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }

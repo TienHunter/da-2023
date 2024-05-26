@@ -38,5 +38,13 @@ namespace ComputerManagement.Service.Interface
         /// <param name="computerId"></param>
         /// <returns></returns>
         Task<bool> UpdateComputerConfigAsync(ComputerConfig computerConfig, Guid computerId);
+
+        /// <summary>
+        /// lấy danh sách máy có hiển thị thông tin tải,cài đăt, hoạt động của phần mềm
+        /// </summary>
+        /// <param name="softwareId"></param>
+        /// <param name="pagingParam"></param>
+        /// <returns></returns
+        Task<(List<ComputerDto>, int)> GetListBySoftwareIdAsync(Guid softwareId, PagingParam pagingParam);
     }
 }

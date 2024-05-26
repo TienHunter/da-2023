@@ -42,7 +42,7 @@
                      Thông tin phần mềm ở các máy
                   </span>
                </template>
-               <ComputerListBySoftware />
+               <ComputerListBySoftware :masterId="route.params.id" :masterData="route.meta.data" />
             </a-tab-pane>
 
          </a-tabs>

@@ -199,7 +199,7 @@ const onOk = async () => {
             emit('afterSave', formRef.value);
             visible.value = true;
          } else {
-            message.error($t("UnKnownError"))
+            message.error($t("UnknownError"))
          }
       } catch (error) {
          console.log(error);
@@ -207,7 +207,7 @@ const onOk = async () => {
             errorCode.value = error.Code;
             await formRef.value.validate();
          } else {
-            message.error($t("UnKnownError"))
+            message.error($t("UnknownError"))
          }
       }
    } catch (error) {

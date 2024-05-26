@@ -34,13 +34,7 @@
           <a-form-item :label="$t('ComputerRoom.MaxCapacity')" name="maxCapacity">
             <a-input-number v-model:value="formState.maxCapacity" />
           </a-form-item>
-          <a-form-item :label="$t('ComputerRoom.State')" name="state">
-            <a-select v-model:value="formState.state" :placeholder="$t('ComputerRoom.StateHint')">
-              <a-select-option :value="0">Hỏng</a-select-option>
-              <a-select-option :value="1">Tốt</a-select-option>
-              <a-select-option :value="2">Bảo trì</a-select-option>
-            </a-select>
-          </a-form-item>
+
         </a-form>
       </div>
     </div>
@@ -177,13 +171,6 @@ const rules = {
   maxCapacity: [
     {
       validator: checkMaxCapacity,
-      trigger: "change",
-    },
-  ],
-  state: [
-    {
-      required: true,
-      message: $t("ComputerRoom.Validate.StateRequired"),
       trigger: "change",
     },
   ],

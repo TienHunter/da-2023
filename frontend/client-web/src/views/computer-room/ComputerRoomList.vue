@@ -48,7 +48,7 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round>
+              <a-button round @click="navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
@@ -229,6 +229,9 @@ const onSearch = (searchValue) => {
   console.log("use value", searchValue);
 };
 
+const navigateEdit = (record) => {
+  router.push({ name: "ComputerRoomEdit", params: { id: record.id } });
+}
 /**
  * xóa bản ghi
  */

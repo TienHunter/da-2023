@@ -22,12 +22,13 @@
       <div class="content">
         <a-form ref="formRef" :model="formState" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-form-item :label="$t('ComputerRoom.Name')" name="computerRoomId">
-            <a-select v-model:value="formState.computerRoomId">
-              <template v-for="cr in listComputerRoom">
+            <a-select v-model:value="formState.computerRoomId" show-search :field-names="{ label: 'name', value: 'id' }"
+              :filter-option="filterOption" :options="listComputerRoom">
+              <!-- <template v-for="cr in listComputerRoom">
                 <a-select-option :value="cr.id">{{
                   cr.value
                 }}</a-select-option>
-              </template>
+              </template> -->
             </a-select>
           </a-form-item>
           <a-form-item :label="$t('Computer.Name')" name="name">
@@ -52,7 +53,7 @@
   </a-spin>
 </template>
 <script setup>
-import { reactive, ref, toRaw, onBeforeMount } from "vue";
+import { reactive, ref, toRaw, onBeforeMount, watch } from "vue";
 import {
   useRoute,
   onBeforeRouteUpdate,
@@ -105,17 +106,87 @@ const optionListErrorId = reactive([
     label: $t('Computer.ComputerError.Unknow')
   },
 ])
+
+const listComputerRoom = ref([]);
+const computerRoomSelect = ref(null);
+const errorCode = ref(null);
+const filterOption = (input, option) => {
+  return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
 const validateName = async (_rule, value) => {
   if (value === "") {
-    return Promise.reject($t("ComputerRoom.Validate.NameRequired"));
-  } else if (isCallCheck.value == true) {
-    isCallCheck.value = false;
-    return Promise.reject($t("ComputerRoom.Validate.NameConflic"));
-  } else {
+    return Promise.reject($t("Validate.Required", [$t("Computer.Name")]));
+  } else if (errorCode.value == ResponseCode.ConflicNameComputer) {
+    errorCode.value = 0;
+    return Promise.reject($t("Computer.Validate.ConflicNameComputer"));
+  }
+  else {
     return Promise.resolve();
   }
 };
-
+const validateMacAddress = async (_rule, value) => {
+  if (value === "") {
+    return Promise.reject($t("Validate.Required", [$t("Computer.MacAddress")]));
+  } else if (errorCode.value == ResponseCode.ConflicMacAddress) {
+    errorCode.value = 0;
+    return Promise.reject($t("Computer.Validate.ConflicMacAddressComputer"));
+  }
+  else {
+    return Promise.resolve();
+  }
+};
+const checkRow = async (_rule, value) => {
+  if (!value) {
+    return Promise.reject(
+      $t("Validate.Required", [$t("Computer.Row")])
+    );
+  }
+  if (!Number.isInteger(value)) {
+    return Promise.reject(
+      $t("Validate.IntegerType", [$t("Computer.Row")])
+    );
+  } else {
+    if (computerRoomSelect.value && (value < 1 || value > computerRoomSelect.value.row)) {
+      return Promise.reject(
+        $t("Validate.Range", [$t("Computer.Row"), 1, computerRoomSelect.value.row])
+      );
+    } else {
+      return Promise.resolve();
+    }
+  }
+};
+const checkCol = async (_rule, value) => {
+  if (!value) {
+    return Promise.reject(
+      $t("Validate.Required", [$t("Computer.Col")])
+    );
+  }
+  else if (!Number.isInteger(value)) {
+    return Promise.reject(
+      $t("Validate.IntegerType", [$t("Computer.Col")])
+    );
+  }
+  else if (errorCode.value == ResponseCode.ConflicRowColComputer) {
+    errorCode.value = 0;
+    return Promise.reject(
+      $t("Computer.Validate.ConflicRowColComputer")
+    );
+  } else if (errorCode.value == ResponseCode.InValidRowColComputer) {
+    errorCode.value = 0;
+    return Promise.reject(
+      $t("Computer.Validate.InValidRowColComputer")
+    );
+  }
+  else {
+    if (computerRoomSelect.value && (value < 1 || value > computerRoomSelect.value.col)) {
+      return Promise.reject(
+        $t("Validate.Range", [$t("Computer.Col"), 1, computerRoomSelect.value.col])
+      );
+    } else {
+      return Promise.resolve();
+    }
+  }
+};
 const rules = {
   computerRoomId: [
     {
@@ -134,25 +205,26 @@ const rules = {
   macAddress: [
     {
       required: true,
-      message: $t("ComputerRoom.Validate.MaxCapacityRequired"),
+      validator: validateMacAddress,
       trigger: "change",
     },
   ],
   row: [
     {
       required: true,
+      validator: checkRow,
       trigger: "change",
     },
   ],
   col: [
     {
       required: true,
+      validator: checkCol,
       trigger: "change",
     },
   ],
 };
 
-const listComputerRoom = ref([]);
 
 onBeforeMount(async () => {
   loading.isLoadingBeforeMount = true;
@@ -164,6 +236,13 @@ onBeforeMount(async () => {
     loading.isLoadingBeforeMount = false;
   }
 });
+
+/**
+ * gán lại computer room select
+ */
+watch(() => formState.computerRoomId, () => {
+  computerRoomSelect.value = listComputerRoom.value.find(cr => cr.id = formState.computerRoomId);
+})
 
 const onSubmit = async () => {
   let passValidate = false;
@@ -181,13 +260,11 @@ const onSubmit = async () => {
       }
     } catch (error) {
       console.log(error);
-      switch (error?.Code) {
-        case ResponseCode.ComputerRoomNameConflic:
-          isCallCheck.value = true;
-          await formRef.value.validateFields("name");
-          break;
-        default:
-          break;
+      if (error?.Code) {
+        errorCode.value = error.Code;
+        await formRef.value.validate();
+      } else {
+        message.error($t("UnknownError"))
       }
     }
   } catch (error) {
@@ -202,12 +279,7 @@ const getListComputerRoom = async () => {
   try {
     let rs = await computerRoomService.getList({});
     if (rs && rs.data && rs.data.list) {
-      listComputerRoom.value = rs.data.list.map(cr => {
-        return {
-          id: cr.id,
-          value: cr.name
-        }
-      })
+      listComputerRoom.value = rs.data.list
     }
   } catch (error) {
     console.log(error);

@@ -28,6 +28,7 @@ const ResponseCode = {
    ConflicMonitorSessionTime: 24,
    ConflicSoftwareName: 25,
    ConflicSoftwareProcess: 26,
+   InValidRowColComputer: 27
 
 }
 export default ResponseCode;

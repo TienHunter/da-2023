@@ -96,14 +96,14 @@ const onOk = async () => {
             message.success($t("SaveSuccess"));
             emit('afterSave', formRef.value);
          } else {
-            message.error($t("UnKnownError"))
+            message.error($t("UnknownError"))
          }
       } catch (error) {
          if (error?.Code) {
             errorCode.value = error.Code;
             await formRef.value.validate();
          } else {
-            message.error($t("UnKnownError"))
+            message.error($t("UnknownError"))
          }
       }
    } catch (error) {

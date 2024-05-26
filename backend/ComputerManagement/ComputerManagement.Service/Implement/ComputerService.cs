@@ -25,7 +25,7 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<ComputerDto> GetComputerByMacAddress(string macAddress)
         {
-            var computer = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).Include(c =>c.ComputerRoom).FirstOrDefaultAsync() ?? throw new BaseException
+            var computer = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).Include(c => c.ComputerRoom).FirstOrDefaultAsync() ?? throw new BaseException
             {
                 StatusCode = HttpStatusCode.NotFound,
                 Code = ServiceResponseCode.NotFoundComputer,
@@ -39,10 +39,11 @@ namespace ComputerManagement.Service.Implement
             var computerExist = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).FirstOrDefaultAsync();
             base.CheckNullModel(computerExist);
             var computerState = await _computerStateRepo.GetQueryable().Where(cs => cs.ComputerId == computerExist.Id).FirstOrDefaultAsync();
-            if(computerState != null)
+            if (computerState != null)
             {
                 return await _computerStateRepo.UpdateAsync(computerState);
-            }else
+            }
+            else
             {
                 computerState = new ComputerState
                 {
@@ -52,7 +53,7 @@ namespace ComputerManagement.Service.Implement
                 };
                 return await _computerStateRepo.AddAsync(computerState);
             }
-            
+
 
             // có thể bắn emit lên client để cập nhật lại state computer
         }
@@ -71,6 +72,14 @@ namespace ComputerManagement.Service.Implement
                                                 StatusCode = HttpStatusCode.NotFound,
                                                 Code = ServiceResponseCode.NotFoundComputerRoom
                                             };
+            if (computer.Col <= 0 || computer.Col > computerRoom.Col || computer.Row <= 0 || computer.Row > computerRoom.Row)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InValidRowColComputer
+                };
+            }
             if (computerRoom.CurrentCapacity + 1 > computerRoom.MaxCapacity)
             {
                 throw new BaseException
@@ -79,6 +88,7 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.MaxCapacityComputerRoom
                 };
             }
+
             computerRoom.CurrentCapacity += 1;
 
 
@@ -111,6 +121,8 @@ namespace ComputerManagement.Service.Implement
         public override async Task ValidateBeforeAddAsync(Computer computer)
         {
             await base.ValidateBeforeAddAsync(computer);
+
+
             // check conflic mac address
             var computerByMac = await _computerRepo.GetQueryable().Where(c => c.MacAddress == computer.MacAddress).FirstOrDefaultAsync();
             if (computerByMac != null)
@@ -132,6 +144,7 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.ConflicRowColComputer
                 };
             }
+
         }
 
         public override async Task<(List<ComputerDto>, int)> GetListAsync(PagingParam pagingParam)
@@ -144,7 +157,7 @@ namespace ComputerManagement.Service.Implement
             var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
             foreach (var item in computers)
             {
-                if(item?.ComputerState?.LastUpdate < DateTime.Now.AddMinutes(-3))
+                if (item?.ComputerState?.LastUpdate < DateTime.Now.AddMinutes(-3))
                 {
                     item.ComputerState.State = false;
                 }
@@ -174,6 +187,13 @@ namespace ComputerManagement.Service.Implement
 
             var rs = await _computerRepo.UpdateAsync(computerExist);
             return rs;
+        }
+
+        public async Task<(List<ComputerDto>, int)> GetListBySoftwareIdAsync(Guid softwareId, PagingParam pagingParam)
+        {
+            var (entities, totalCount) = await _computerRepo.GetListBySoftwareIdAsync(softwareId, pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
+            var dtos = _mapper.Map<List<ComputerDto>>(entities);
+            return (dtos, totalCount);
         }
     }
 }

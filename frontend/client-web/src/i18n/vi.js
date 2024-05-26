@@ -12,12 +12,16 @@ export default {
    Close: "Đóng",
    UnSelect: "Bỏ chọn",
    SelectAllComputerRoom: "Chọn tất cả phòng máy",
+   SelectAll: "Chọn tất cả",
    SelectCount: "Đã chọn {0} bản ghi",
    Delete: "Xóa",
    DeleteSuccess: "Xóa thành công",
    Validate: {
       Required: "Vui lòng nhập {0}",
-      AlreadyExist: "{0} đã tồn tại"
+      AlreadyExist: "{0} đã tồn tại",
+      InValid: "{0 không hợp lệ",
+      Range: "{0} trong khoảng {1} - {2}",
+      IntegerType: "{0} là kiểu số nguyên",
    },
    Action: "Chức năng",
    Yes: "Đồng ý",
@@ -115,6 +119,8 @@ export default {
       DeleteSuccess: "Xóa máy {0} ở phòng máy {1} thành công",
       State: "Trạng thái",
       StateTime: "Cập nhật trạng thái lần cuối",
+      IsDowloaded: "Đã tải",
+      IsInstalled: "Đã cài đặt",
       ConditionKey: {
          Perfect: "Hoàn hảo",
          Good: "Tốt",
@@ -132,7 +138,9 @@ export default {
       Validate: {
          ConflicNameComputer: "Tên máy đã tồn tại trong phòng máy",
          ConflicMacAddressComputer: "Địa chỉ mac address bị trùng",
-         ConflicRowColComputer: "Vị trí không hợp lệ"
+         ConflicRowColComputer: "Vị trí đã dược sử dụng",
+         InValidRowColComputer: "Vị trí không hợp lệ"
+
       }
    },
 

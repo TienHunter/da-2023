@@ -43,7 +43,7 @@ const routes = [
          {
             path: "add",
             name: "ComputerAdd",
-            component: ComputerAdd,
+            component: ComputerEdit,
             meta: {
                formMode: FormMode.AddMode
             }
