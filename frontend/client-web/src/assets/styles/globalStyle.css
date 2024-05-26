@@ -29,9 +29,7 @@ body {
 
 .container-content {
   position: relative;
-  padding: 16px;
-  padding-top: 0;
-  overflow: auto;
+  height: 100%
 }
 
 .toast-message {

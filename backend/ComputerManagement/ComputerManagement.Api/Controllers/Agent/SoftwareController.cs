@@ -25,7 +25,7 @@ namespace ComputerManagement.Api.Controllers.Agent
         }
 
         /// <summary>
-        /// lấy danh sách phần mềm theo id
+        /// lấy danh sách phần mềm theo ids
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetListByListId")]
@@ -33,6 +33,18 @@ namespace ComputerManagement.Api.Controllers.Agent
         {
             var rs = new ServiceResponse();
             rs.Data = await _softwareService.GetListByListIdsAsync(ids);
+            return Ok(rs);
+        }
+
+        /// <summary>
+        /// lấy phần mềm theo id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _softwareService.GetAsync(id);
             return Ok(rs);
         }
     }

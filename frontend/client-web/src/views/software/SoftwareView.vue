@@ -55,15 +55,11 @@ const route = useRoute();
 const activeKey = ref("SoftwareDetail");
 </script>
 <style lang="scss" scoped>
+.container-content {
+   overflow: hidden !important;
+}
+
 ::v-deep {
-   .container-content {
-      overflow: hidden !important;
-
-
-
-
-   }
-
    .ant-tabs-content-holder {
       overflow-y: auto
    }

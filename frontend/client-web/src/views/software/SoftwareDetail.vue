@@ -396,18 +396,16 @@ const dowliadFile = async (fileName) => {
 // ========== end lifecycle ==========
 </script>
 <style lang="scss" scoped>
-::v-deep {
-  .container-content {
-    height: 100%;
-    overflow-y: auto;
+.container-content {
+  height: 100%;
+  overflow-y: auto;
 
-    .tool-bars {
-      z-index: 1;
-      background-color: #f5f5f5;
-      border-bottom: 1px solid rgba(5, 5, 5, 0.06);
-    }
-
-
+  .tool-bars {
+    z-index: 1;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid rgba(5, 5, 5, 0.06);
   }
+
+
 }
 </style>

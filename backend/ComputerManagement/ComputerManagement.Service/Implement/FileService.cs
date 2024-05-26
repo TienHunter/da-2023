@@ -117,15 +117,10 @@ namespace ComputerManagement.Service.Implement
             var rs = false;
             var (softwareId, version, contentType) = this.ParseFileName(fileName);
             // check cờ trong db 
-            var software = await _softwareRepo.GetAsync(softwareId);
-            if(software != null && software.IsUpdate)
+            var fileNameLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).Select(f => f.FileName).FirstOrDefaultAsync();
+            if(!string.IsNullOrEmpty(fileNameLatestBySoftwareId) && fileNameLatestBySoftwareId != fileName)
             {
-                // lấy file cập nhật mới nhất
-                var fileLatest = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.UpdatedAt).FirstOrDefaultAsync();
-                if(fileLatest != null && fileLatest.FileName != fileName)
-                {
-                    rs= true;
-                }
+                rs = true;
             }
             return rs;
         }

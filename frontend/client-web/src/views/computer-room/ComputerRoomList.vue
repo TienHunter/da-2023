@@ -271,6 +271,10 @@ const refreshGrid = async () => {
 </script>
 <style lang="scss" scoped>
 .container-content {
+  position: relative;
+  padding: 16px;
+  padding-top: 0px;
+
   .table-operations {
     margin-bottom: 16px;
   }

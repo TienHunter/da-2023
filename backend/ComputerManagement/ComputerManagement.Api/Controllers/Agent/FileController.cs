@@ -58,9 +58,9 @@ namespace ComputerManagement.Api.Controllers.Agent
         /// <summary>
         /// lấy file version cao nhất theo softwareId
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="softwareId"></param>
         /// <returns></returns>
-        [HttpGet("GetFileByFileName/{softwareId}")]
+        [HttpGet("GetFileLatestBySoftwareId/{softwareId}")]
         public async Task<IActionResult> GetFileVersionLatestBySoftwareId([FromRoute][Required] Guid softwareId)
         {
             // do something
