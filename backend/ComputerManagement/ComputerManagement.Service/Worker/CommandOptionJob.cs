@@ -32,7 +32,7 @@ namespace ComputerManagement.Service.Worker
             {
                 var dbContext = _contextFactory.CreateDbContext();
                 var listener = new SubcribeCommandOption(dbContext);
-                listener.ReceiveFromQueue(_rbConfig);
+                //listener.ReceiveFromQueue(_rbConfig);
 
                 // Giả sử bạn cần một khoảng delay hoặc hành động lặp lại
                 await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);

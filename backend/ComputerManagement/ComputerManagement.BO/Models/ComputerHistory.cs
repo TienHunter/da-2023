@@ -17,8 +17,10 @@ namespace ComputerManagement.BO.Models
         public string Message { get; set; }
         public DateTime LogTime { get; set; }
         public ComputerLevelLog Level { get; set; }
-        [ForeignKey("Computer")]
         public Guid ComputerId { get; set; }
-        public Computer Computer { get; set; } = null;
+        public Guid ComputerRoomId { get; set; }
+        public Guid MonitorSessionId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

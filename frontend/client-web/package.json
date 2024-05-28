@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@microsoft/signalr": "^8.0.0",
     "ant-design-vue": "^4.1.2",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",

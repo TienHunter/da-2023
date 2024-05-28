@@ -1,10 +1,19 @@
-﻿using ComputerManagement.BO.DTO;
+﻿using AutoMapper;
+using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Constants;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
+using ComputerManagement.Service.Hubs;
 using ComputerManagement.Service.Interface;
+using ComputerManagement.Service.Websocket;
 using ComputerManagerment.Repos.Implement;
 using ComputerManagerment.Repos.Interface;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,42 +23,46 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
 {
-    public class ComputerHistoryService(IServiceProvider serviceProvider, IComputerHistoryRepo computerHistoryRepo) : BaseService<ComputerHistoryDto, ComputerHistory>(serviceProvider, computerHistoryRepo), IComputerHistoryService
+    public class ComputerHistoryService(IServiceProvider serviceProvider, IComputerHistoryRepo computerHistoryRepo, MonitorSessionHub monitorSessionHub) : BaseService<ComputerHistoryDto, ComputerHistory>(serviceProvider, computerHistoryRepo), IComputerHistoryService
     {
         private readonly IComputerHistoryRepo _computerHistoryRepo = computerHistoryRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
+        private readonly MonitorSessionHub _monitorSessionHub = monitorSessionHub;
+
         public override async Task<Guid> AddAsync(ComputerHistoryDto computerHistoryDto)
         {
-            var computerHistory = _mapper.Map<ComputerHistory>(computerHistoryDto);
-            var newGuid = await this.BeforeAddAsync(computerHistory);
-            computerHistory.Id = Guid.NewGuid();
-            var isSaveSuccess = false;
-            // validate before add
-            await this.ValidateBeforeAddAsync(computerHistory);
+            computerHistoryDto.Id = Guid.NewGuid();
+            computerHistoryDto.CreatedAt = DateTime.Now;
+            computerHistoryDto.UpdatedAt = DateTime.Now;
 
-            _ = await _computerRepo.GetAsync(computerHistory.ComputerId)
-                                            ?? throw new BaseException
-                                            {
-                                                StatusCode = HttpStatusCode.NotFound,
-                                                Code = ServiceResponseCode.NotFoundComputer
-                                            };
+            var computerHistory = _mapper.Map<ComputerHistory>(computerHistoryDto);
+
 
             var isSuccess = await _computerHistoryRepo.AddAsync(computerHistory);
             if (isSuccess)
             {
-                return newGuid;
-            }else
-            {
-                throw new BaseException();
+                // Tạo Task đẩy vào socket
+                await this.CreateAndRunTaskAsync(async () =>
+                {
+
+                    var messageSocket = new MessageSocket
+                    {
+                        Message = JsonConvert.SerializeObject(computerHistoryDto),
+                        ActionType = SocketKey.ADD_HISTORY,
+                    };
+
+                    await _monitorSessionHub.SendMessage(JsonConvert.SerializeObject(messageSocket));
+                });
             }
+            return computerHistoryDto.Id;
         }
 
-        public async Task<(List<ComputerHistoryDto>, int)> GetListByComputerIdAsync(Guid computerId, PagingParam pagingParam)
+        public async Task<List<ComputerHistoryDto>> GetAllByMonitorSessionId(Guid sessionId)
         {
-            (List<ComputerHistory> computerHistories, int total) = await _computerHistoryRepo.GetListByComputerIdAsync(pagingParam.PageNumber, pagingParam.PageSize, computerId);
+            List<ComputerHistory> computerHistories = await _computerHistoryRepo.GetQueryable().Where(ch => ch.MonitorSessionId == sessionId).OrderByDescending(ch => ch.LogTime).ToListAsync();
             var dtos = _mapper.Map<List<ComputerHistoryDto>>(computerHistories);
 
-            return (dtos, total);
+            return dtos;
         }
     }
 }

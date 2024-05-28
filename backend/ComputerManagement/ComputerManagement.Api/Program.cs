@@ -19,10 +19,14 @@ using ComputerManagement.Service.Interface;
 using Newtonsoft.Json;
 using ComputerManagement.Service.Worker;
 using ComputerManagement.Service.Queue;
+using ComputerManagement.Service.Websocket;
+using Microsoft.AspNetCore.WebSockets;
+using ComputerManagement.Service.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -94,9 +98,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
     });
 
+// socket 
 // add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // add di
+builder.Services.AddSingleton<ShareDb>();
+builder.Services.AddSingleton<MonitorSessionHub>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<ContextData>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -132,6 +139,7 @@ builder.Services.AddScoped<ICommandOptionRepo, CommandOptionRepo>();
 builder.Services.AddScoped<IComputerSoftwareRepo, ComputerSoftwareRepo>();
 builder.Services.AddScoped<IComputerSoftwareService, ComputerSoftwareService>();
 
+
 builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
 builder.Services.AddCors(options =>
@@ -139,15 +147,16 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CorsPolicy",
         policy =>
         {
-            policy.AllowAnyHeader();
-            policy.AllowAnyMethod();
-            policy.AllowAnyOrigin();
+            policy.WithOrigins("http://localhost:8080")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 
 });
 
 var app = builder.Build();
-app.UseCors("CorsPolicy");
+
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
     var scopedFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
@@ -170,5 +179,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.MapHub<MonitorSessionHub>("/monitor-session");
+app.UseCors("CorsPolicy");
 app.Run();

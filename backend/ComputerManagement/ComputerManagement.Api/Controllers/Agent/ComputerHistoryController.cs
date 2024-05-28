@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace ComputerManagement.Api.Controllers.Agent
 {
 
-    public partial class ComputerHistoryController(IComputerHistoryService computerHistoryService) : BaseController<ComputerHistoryDto, ComputerHistory>(computerHistoryService)
+    [Route("api-agent/[controller]")]
+    [ApiController]
+    public partial class ComputerHistoryController(IComputerHistoryService computerHistoryService): BaseController<ComputerHistoryDto, ComputerHistory>(computerHistoryService)
     {
         private readonly IComputerHistoryService _computerHistoryService = computerHistoryService;
 

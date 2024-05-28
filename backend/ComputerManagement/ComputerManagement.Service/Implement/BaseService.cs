@@ -6,6 +6,7 @@ using ComputerManagement.Common.Configs;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
+using ComputerManagement.Service.Websocket;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

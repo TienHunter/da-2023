@@ -7,8 +7,8 @@ class ComputerHistoryService extends baseService {
       // Các định nghĩa riêng của lớp con...
    }
 
-   async getListByComputerId(computerId, paging) {
-      return await instance.post(`${this.getEndpoint()}/GetListByComputerId/${computerId}`, paging);
+   async getAllByMonitorSessionId(sessionId) {
+      return await instance.post(`${this.getEndpoint()}/GetAllByMonitorSessionId/${sessionId}`);
    }
 }
 export default new ComputerHistoryService();

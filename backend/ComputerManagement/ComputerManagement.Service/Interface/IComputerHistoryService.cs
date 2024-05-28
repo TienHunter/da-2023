@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Interface
 {
-    public interface IComputerHistoryService : IBaseService<ComputerHistoryDto, ComputerHistory>
+    public interface IComputerHistoryService: IBaseService<ComputerHistoryDto, ComputerHistory>
     {
-        Task<(List<ComputerHistoryDto>, int)> GetListByComputerIdAsync(Guid computerId,PagingParam pagingParam);
+
+        /// <summary>
+        /// lấy tất cả lịch sử theo phiên giám sát
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <returns></returns>
+        Task<List<ComputerHistoryDto>> GetAllByMonitorSessionId(Guid sessionId);
     }
 }

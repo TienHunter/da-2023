@@ -15,12 +15,24 @@ namespace ComputerManagement.BO.DTO
         public Guid Id { get; set; }
         [Required]
         public string Message { get; set; }
+
         [Required]
         public DateTime LogTime { get; set; }
+
         [Required]
         public ComputerLevelLog Level { get; set; }
+
         [Required]
         public Guid ComputerId { get; set; }
-        public Computer? Computer { get; set; } = null;
+
+        [Required]
+        public Guid ComputerRoomId { get; set; }
+
+        [Required]
+        public Guid MonitorSessionId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

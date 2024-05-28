@@ -19,45 +19,56 @@ import { computerHistoryService } from "@/api";
 import { FormatDateKey } from "@/constants";
 import { message } from "ant-design-vue";
 import _ from "lodash";
+import * as signalR from "@microsoft/signalr";
 import moment from "moment";
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 // ========== start property ==========
 const route = useRoute();
 const datas = ref([]);
-const paging = {
-  pageNumber: 1,
-  pageSize: 10,
-};
+const dataClones = ref([]);
+
 // ========== end property ==========
 
 // ========== start lifecycle ==========
-onBeforeMount(async () => {
-  // lắng nghe socket
 
-  // lấy danh sách
-  try {
-    let rs = await computerHistoryService.getListByComputerId(
-      route.params.id,
-      paging
-    );
-    if (rs?.success && rs?.data) {
-      datas.value.push(
-        ..._.cloneDeep(
-          rs.data.list.map((item) => {
-            item.logTime = item.logTime
-              ? moment(item.logTime).format(FormatDateKey.Default)
-              : "";
-            return item;
-          })
-        )
+onMounted(() => {
+  // lắng nghe socket
+  const conn = signalR.HubConnectionBuilder().withUrl("https://localhost:44328/monitor-session")
+    .build();
+  conn.start()
+    .then((ms) => {
+      console.log("SignalR connection established:", ms);
+      connection.invoke("Connect", route.params.id)
+    })
+    .catch((error) => {
+      console.error("Error establishing SignalR connection:", error);
+    });
+  conn.on("ReceviceMessageConnect", (message) => {
+    console.log("ReceviceMessageConnect:", message);
+  })
+  conn.on("ReceviceMessage", (message) => {
+    console.log("ReceviceMessage:", message);
+  })
+
+
+}),
+  onBeforeMount(async () => {
+    // lấy danh sách
+    try {
+      let rs = await computerHistoryService.getAllByMonitorSessionId(
+        route.params.id
       );
+      if (rs?.success && rs?.data) {
+        data.value = rs.data;
+        dataClones.value = _.cloneDeep(rs.data);
+
+      }
+    } catch (error) {
+      console.log(error);
+      message.error($t("UnknownError"));
     }
-  } catch (error) {
-    console.log(error);
-    message.error($t("UnknownError"));
-  }
-});
+  });
 // ========== end lifecycle ==========
 
 // ========== start methods ==========

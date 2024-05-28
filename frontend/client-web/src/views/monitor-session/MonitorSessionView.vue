@@ -36,7 +36,7 @@
                      Lịch sử truy cập
                   </span>
                </template>
-
+               <HisttoryAccess :data="monitorSessionData" />
             </a-tab-pane>
 
          </a-tabs>
@@ -48,7 +48,7 @@ import { onBeforeMount, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import MonitorSessionInfoView from "./MonitorSessionInfoView.vue";
 import ComputerRoomComputerList from "../computer-room/ComputerRoomComputerList.vue";
-
+import HisttoryAccess from "./HisttoryAccess.vue";
 // ========== start state ========== 
 const router = useRouter();
 const route = useRoute();
