@@ -9,3 +9,4 @@ export { default as ComputerKey } from "./computerKey";
 export { default as MonitorType } from "./monitorType";
 export { default as CommandOptionKey } from "./commandOptionKey";
 export { default as CommonKey } from "./commonKey";
+export { default as ComputerLevelLog } from "./computerLevelLog";

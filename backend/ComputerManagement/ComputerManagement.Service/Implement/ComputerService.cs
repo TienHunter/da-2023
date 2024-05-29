@@ -41,6 +41,8 @@ namespace ComputerManagement.Service.Implement
             var computerState = await _computerStateRepo.GetQueryable().Where(cs => cs.ComputerId == computerExist.Id).FirstOrDefaultAsync();
             if (computerState != null)
             {
+                computerState.State = true;
+                computerState.LastUpdate = DateTime.Now;
                 return await _computerStateRepo.UpdateAsync(computerState);
             }
             else
@@ -53,7 +55,6 @@ namespace ComputerManagement.Service.Implement
                 };
                 return await _computerStateRepo.AddAsync(computerState);
             }
-
 
             // có thể bắn emit lên client để cập nhật lại state computer
         }
@@ -135,7 +136,7 @@ namespace ComputerManagement.Service.Implement
                 throw new BaseException { StatusCode = HttpStatusCode.Conflict, Code = ServiceResponseCode.ConflicNameComputer };
             }
             // check postion computer
-            var computerByRowCol = await _computerRepo.GetQueryable().Where(c => c.Row == computer.Row && c.Col == computer.Col).FirstOrDefaultAsync();
+            var computerByRowCol = await _computerRepo.GetQueryable().Where(c => c.Row == computer.Row && c.Col == computer.Col && c.ComputerRoomId == computer .ComputerRoomId).FirstOrDefaultAsync();
             if (computerByRowCol != null)
             {
                 throw new BaseException

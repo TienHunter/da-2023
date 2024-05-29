@@ -8,7 +8,7 @@ namespace ComputerManagement.BO.DTO
 {
     public class MessageSocket
     {
-        public string Message { get; set; }
+        public object Message { get; set; }
         public string ActionType { get; set; }
     }
 }

@@ -33,8 +33,7 @@ namespace ComputerManagement.BO.DTO
         /// <summary>
         /// trạng thái máy tính
         /// </summary>
-        [JsonIgnore]
-        public ComputerState? ComputerState { get; set; }
+        public ComputerState? ComputerState { get; set; } = null;
         /// <summary>
         /// tình trạng máy
         /// </summary>

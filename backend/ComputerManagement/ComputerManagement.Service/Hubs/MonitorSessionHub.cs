@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using ComputerManagement.BO.DTO;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace ComputerManagement.Service.Hubs
             await Clients.Group(key).SendAsync("ReceviceMessageConnect", "Connect establed");
         }
 
-        public async Task SendMessage(string msg)
+        public async Task SendMessage(MessageSocket msg)
         {
             if (_shared.connections.TryGetValue(Context.ConnectionId, out string key)) {
                 await Clients.Group(key).SendAsync("ReceviceMessage", msg);

@@ -15,11 +15,10 @@
                   <div>
                     <a-badge :count="dataRender[row][col]['listErrorId']?.length" :overflow-count="10" class="pointer"
                       @click="quickViewComputer(dataRender[row][col]['id'])">
-                      <a-avatar shape="square" size="large" class="bg-green-500">
-                        <template #icon>
-                          <LaptopOutlined :class="dataRender[row][col]['state'] ? 'bg-blue-500' : 'bg-gray-500'" />
-                        </template>
-                      </a-avatar>
+
+                      <LaptopOutlined class="text-6xl"
+                        :class="{ 'text-blue-500': dataRender[row][col]?.computerState?.['state'], 'text-gray-500': !dataRender[row][col]?.computerState?.['state'] }" />
+
                     </a-badge>
                   </div>
                   <div class="font-bold pt-2 text-2xl">
@@ -30,12 +29,14 @@
                   </div>
                 </template>
                 <template v-else>
-                  <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)"
-                    :disabled="!props.isEditAble">
-                    <template #icon>
-                      <PlusOutlined />
-                    </template>
-                  </a-button>
+                  <div class="flex items-center justify-center">
+                    <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)"
+                      :disabled="!props.isEditAble">
+                      <template #icon>
+                        <PlusOutlined />
+                      </template>
+                    </a-button>
+                  </div>
                 </template>
               </div>
 

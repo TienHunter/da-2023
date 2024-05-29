@@ -1,100 +1,193 @@
 <template>
   <div class="container">
-    <a-list item-layout="horizontal" :data-source="datas">
-     <template #renderItem="{ item }">
-       <a-list-item>
-        <div class="content flex justify-between w-full" >
-          <div class="left flex gap-2">
-            <span class="font-bold">{{ moment(item.logTime).format(FormatDateKey.Default) }}</span>
-             <span>{{ item.message }}</span>
-          </div>
-          <div class="right">
-              <WarningFilled v-if="item.level==2" class=" text-orange-500"/>
-              <CheckCircleFilled v-if="item.level==1" class=" text-green-500"/>
-            </div>
-        </div>
+    <div class="toolbar flex justify-between py-4">
+      <div class="left flex gap-4">
+        <a-select v-model:value="filters.computers" mode="multiple" style="min-width: 160px;max-width:360px"
+          placeholder="Chọn máy tính" :field-names="{ label: 'name', value: 'id' }" :filter-option="filterOption"
+          :options="listComputers" @change="handleChangeSelectComputer"></a-select>
 
-       </a-list-item>
-     </template>
-   </a-list>
+        <a-select v-model:value="filters.level" :field-names="{ label: 'value', value: 'id' }" style="width:160px;"
+          placeholder="Chọn cấp độ" :options="listLevels" @change="handleChangeSelectLevel"></a-select>
+      </div>
+      <div class="right">
+        <a-input v-model:value="filters.searchValue" placeholder="Nhập từ khóa" allow-clear style="width: 200px" />
+      </div>
+    </div>
+    <div class="content">
+      <a-list item-layout="horizontal" :data-source="dataClones">
+        <template #renderItem="{ item }">
+          <a-list-item>
+            <div class=" flex justify-between w-full">
+              <div class="left flex gap-2">
+                <span class="font-bold">{{ moment(item.logTime).format(FormatDateKey.Default) }}</span>
+                <span>{{ item.message }}</span>
+              </div>
+              <div class="right">
+                <WarningFilled v-if="item.level == 2" class=" text-orange-500" />
+                <CheckCircleFilled v-if="item.level == 1" class=" text-green-500" />
+              </div>
+            </div>
+
+          </a-list-item>
+        </template>
+      </a-list>
+    </div>
+
   </div>
- </template>
- <script setup>
- import { computerHistoryService } from "@/api";
- import { FormatDateKey } from "@/constants";
+</template>
+<script setup>
+import { computerHistoryService, computerService } from "@/api";
+import { ComputerLevelLog, FormatDateKey } from "@/constants";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
- import { message } from "ant-design-vue";
- import _ from "lodash";
- import moment from "moment";
- import { onBeforeMount, onMounted, ref } from "vue";
- import { useRoute } from "vue-router";
- // ========== start property ==========
- const props = defineProps({
-   data: {
-      type: Object,
-      default: null
-   }
+import { message } from "ant-design-vue";
+import _, { filter } from "lodash";
+import moment from "moment";
+import { onBeforeMount, onMounted, reactive, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+// ========== start property ==========
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null
+  }
 })
- const route = useRoute();
- const datas = ref([]);
- const dataClones = ref([]);
- 
- // ========== end property ==========
- 
- // ========== start lifecycle ==========
- 
- onMounted(() => {
-   // lắng nghe socket
-   const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/monitor-session").configureLogging(LogLevel.Information).build();
-   conn.start()
-     .then(() => {
-       console.log("SignalR connection established:");
-       conn.invoke("Connect", props.data.id)
-     })
-     .catch((error) => {
-       console.error("Error establishing SignalR connection:", error);
-     });
-   conn.on("ReceviceMessageConnect", (message) => {
-     console.log("ReceviceMessageConnect:", message);
-   })
-   conn.on("ReceviceMessage", (message) => {
-     try {
-      const rs = JSON.parse(message);
-      if(rs.Message) {
-        const ha = JSON.parse(rs.Message)
-        console.log(ha);
-        datas.value.unshift(ha);
-        dataClones.value.unshift(ha);
+const route = useRoute();
+const datas = ref([]);
+const dataClones = ref([]);
+const filters = reactive({
+  computers: [],
+  level: null,
+  searchValue: ""
+});
+const listComputers = ref([]);
+const listLevels = ref([
+  {
+    id: null,
+    value: "Không chọn"
+  },
+  {
+    id: ComputerLevelLog.Allow,
+    value: "Cho phép"
+  },
+  {
+    id: ComputerLevelLog.Warning,
+    value: "Cảnh báp"
+  },
+  {
+    id: ComputerLevelLog.Serious,
+    value: "nghiêm trọng"
+  }
+]);
+// ========== end property ==========
+
+// ========== start lifecycle ==========
+
+onMounted(() => {
+  // lắng nghe socket
+  const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/monitor-session").configureLogging(LogLevel.Information).build();
+  conn.start()
+    .then(() => {
+      console.log("SignalR connection established:");
+      conn.invoke("Connect", props.data.id)
+    })
+    .catch((error) => {
+      console.error("Error establishing SignalR connection:", error);
+    });
+  conn.on("ReceviceMessageConnect", (message) => {
+    console.log("ReceviceMessageConnect:", message);
+  })
+  conn.on("ReceviceMessage", (res) => {
+    try {
+      if (res && res.message) {
+        datas.value.unshift(res.message)
+        filterData(res.message);
       }
-      console.log(rs);
-     } catch (error) {
-      
-     }
-   })
- 
- 
- }),
-   onBeforeMount(async () => {
-     // lấy danh sách
-     try {
-       let rs = await computerHistoryService.getAllByMonitorSessionId(
-         props?.data?.id
-       );
-       if (rs?.success && rs?.data) {
-          datas.value = rs.data;
-         dataClones.value = _.cloneDeep(rs.data);
- 
-       }
-     } catch (error) {
-       console.log(error);
-       message.error($t("UnknownError"));
-     }
-   });
- // ========== end lifecycle ==========
- 
- // ========== start methods ==========
- // Your code here
- // ========== end methods ==========
- </script>
- <style lang="scss" scoped></style>
- 
+
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
+
+}),
+  onBeforeMount(async () => {
+    // lấy danh sách
+    try {
+      await loadData();
+      await loadComputers();
+    } catch (error) {
+      console.log(error);
+      message.error($t("UnknownError"));
+    }
+  });
+
+watch(() => filters.searchValue, () => {
+  debounceSearch()
+})
+// ========== end lifecycle ==========
+
+// ========== start methods ==========
+const debounceSearch = _.debounce(() => {
+  filterData();
+}, 600);
+const loadData = async () => {
+  try {
+    let rs = await computerHistoryService.getAllByMonitorSessionId(
+      props?.data?.id
+    );
+    if (rs?.success && rs?.data) {
+      datas.value = rs.data;
+      dataClones.value = _.cloneDeep(rs.data);
+
+    }
+  } catch (error) {
+    console.log(error);
+    message.error($t("UnknownError"));
+  }
+}
+const loadComputers = async () => {
+  try {
+    if (props?.data?.computerRoomId) {
+      const rs = await computerService.getListByComputerRoomId(props.data.computerRoomId, {});
+      if (rs?.data) {
+        listComputers.value = rs.data;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+const handleChangeSelectComputer = (val) => {
+  filterData();
+}
+const filterOption = (input, option) => {
+  return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+const handleChangeSelectLevel = (val) => {
+  filterData();
+}
+const filterData = (item) => {
+  debugger
+  if (item && checkFilter(item)) {
+    dataClones.value.unshift(item);
+  }
+  dataClones.value = _.cloneDeep(datas.value.filter(i => checkFilter(i)));
+}
+const checkFilter = (i) => {
+  debugger;
+  if (i) {
+    return (!filters.computers.length || filters.computers.includes(i.id)) && (!filters.level || filters.level == i.level) && (!filters.searchValue || i.message.includes(filters.searchValue.trim()))
+  }
+  return false;
+}
+// ========== end methods ==========
+</script>
+<style lang="scss" scoped>
+.container {
+  .content {
+    height: calc(100vh - 240px);
+    overflow: auto;
+  }
+
+}
+</style>

@@ -47,11 +47,11 @@ namespace ComputerManagement.Service.Implement
 
                     var messageSocket = new MessageSocket
                     {
-                        Message = JsonConvert.SerializeObject(computerHistoryDto),
+                        Message = computerHistoryDto,
                         ActionType = SocketKey.ADD_HISTORY,
                     };
 
-                    await _monitorSessionHub.SendMessage(JsonConvert.SerializeObject(messageSocket));
+                    await _monitorSessionHub.SendMessage(messageSocket);
                 });
             }
             return computerHistoryDto.Id;
@@ -59,7 +59,7 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<List<ComputerHistoryDto>> GetAllByMonitorSessionId(Guid sessionId)
         {
-            List<ComputerHistory> computerHistories = await _computerHistoryRepo.GetQueryable().Where(ch => ch.MonitorSessionId == sessionId).OrderByDescending(ch => ch.LogTime).ToListAsync();
+            List<ComputerHistory> computerHistories = await _computerHistoryRepo.GetQueryable().Where(ch => ch.MonitorSessionId == sessionId).OrderByDescending(ch => ch.UpdatedAt).OrderByDescending(ch => ch.LogTime).ToListAsync();
             var dtos = _mapper.Map<List<ComputerHistoryDto>>(computerHistories);
 
             return dtos;
