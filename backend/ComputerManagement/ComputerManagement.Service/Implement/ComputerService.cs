@@ -1,6 +1,7 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.Lib.Interface;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Constants;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
@@ -36,6 +37,7 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<bool> UpdateStateByMacAddressAsync(string macAddress)
         {
+            var isSuccess = false;
             var computerExist = await _computerRepo.GetQueryable().Where(c => c.MacAddress == macAddress).FirstOrDefaultAsync();
             base.CheckNullModel(computerExist);
             var computerState = await _computerStateRepo.GetQueryable().Where(cs => cs.ComputerId == computerExist.Id).FirstOrDefaultAsync();
@@ -43,7 +45,7 @@ namespace ComputerManagement.Service.Implement
             {
                 computerState.State = true;
                 computerState.LastUpdate = DateTime.Now;
-                return await _computerStateRepo.UpdateAsync(computerState);
+                isSuccess =  await _computerStateRepo.UpdateAsync(computerState);
             }
             else
             {
@@ -53,10 +55,25 @@ namespace ComputerManagement.Service.Implement
                     State = true,
                     LastUpdate = DateTime.Now,
                 };
-                return await _computerStateRepo.AddAsync(computerState);
+                isSuccess = await _computerStateRepo.AddAsync(computerState);
             }
-
             // có thể bắn emit lên client để cập nhật lại state computer
+            if(isSuccess)
+            {
+                // Tạo Task đẩy vào socket
+                await this.CreateAndRunTaskAsync(async () =>
+                {
+
+                    var messageSocket = new MessageSocket
+                    {
+                        Message = computerState,
+                        ActionType = SocketKey.UPDATE_STATE_COMPUTER,
+                    };
+
+                    await _monitorSessionHub.SendMessage(messageSocket);
+                });
+            }
+            return isSuccess;
         }
 
         public override async Task<Guid> AddAsync(ComputerDto computerDto)

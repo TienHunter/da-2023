@@ -316,6 +316,10 @@ const refreshGrid = async () => {
   pagingParam.sortAsc; false;
   await loadData();
 }
+
+const unSelect = () => {
+  selectRows.selectedRowKeys = []
+}
 // ========== end methods ==========
 </script>
 <style lang="scss" scoped>

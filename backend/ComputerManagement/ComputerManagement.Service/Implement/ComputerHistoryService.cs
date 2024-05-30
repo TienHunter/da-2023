@@ -23,11 +23,10 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
 {
-    public class ComputerHistoryService(IServiceProvider serviceProvider, IComputerHistoryRepo computerHistoryRepo, MonitorSessionHub monitorSessionHub) : BaseService<ComputerHistoryDto, ComputerHistory>(serviceProvider, computerHistoryRepo), IComputerHistoryService
+    public class ComputerHistoryService(IServiceProvider serviceProvider, IComputerHistoryRepo computerHistoryRepo) : BaseService<ComputerHistoryDto, ComputerHistory>(serviceProvider, computerHistoryRepo), IComputerHistoryService
     {
         private readonly IComputerHistoryRepo _computerHistoryRepo = computerHistoryRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
-        private readonly MonitorSessionHub _monitorSessionHub = monitorSessionHub;
 
         public override async Task<Guid> AddAsync(ComputerHistoryDto computerHistoryDto)
         {

@@ -37,7 +37,7 @@ import { useRouter } from 'vue-router';
 // ========== start state ========== 
 const props = defineProps({
    id: {
-      type: Number
+      type: String,
    }
 });
 

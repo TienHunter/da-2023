@@ -16,6 +16,8 @@ export default {
    SelectCount: "Đã chọn {0} bản ghi",
    Delete: "Xóa",
    DeleteSuccess: "Xóa thành công",
+   On: "Bật",
+   Off: "Tắt",
    Validate: {
       Required: "Vui lòng nhập {0}",
       AlreadyExist: "{0} đã tồn tại",

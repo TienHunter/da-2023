@@ -9,7 +9,7 @@
       <div class="content p-4 rounded-lg border-solid border-2 border-black">
         <a-row :gutter="[24, 24]" class="">
           <template v-for="row in computerRoom.row" :key="row">
-            <a-col v-for="col in computerRoom.col" :key="col" :span="24 / computerRoom.col">
+            <a-col v-for="(col, index) in computerRoom.col" :key="col" :span="24 / computerRoom.col">
               <div class="flex flex-col items-center justify-center">
                 <template v-if="dataRender[row] && dataRender[row][col]">
                   <div>
@@ -58,7 +58,7 @@
   <contextHolder />
 </template>
 <script setup>
-import { computed, h, onBeforeMount, onUnmounted, reactive, ref, onBeforeUnmount } from "vue";
+import { computed, h, onBeforeMount, onUnmounted, reactive, ref, onBeforeUnmount, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { computerRoomService, computerService } from "../../api";
 import util from "@/utils/util";
@@ -66,9 +66,10 @@ import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
-import { FormatDateKey } from "@/constants";
+import { ActionTypeSocket, FormatDateKey } from "@/constants";
 import ComputerQuickAddModal from "../computer/ComputerQuickAddModal.vue";
 import ComputerQuickViewModal from "../computer/ComputerQuickViewModal.vue";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 // ========== start state ==========
 const props = defineProps({
   computerRoomId: {
@@ -77,6 +78,10 @@ const props = defineProps({
     required: true,
   },
   isEditAble: {
+    type: Boolean,
+    default: false
+  },
+  useSocket: {
     type: Boolean,
     default: false
   }
@@ -94,10 +99,7 @@ const computerRoom = ref({});
 const showTotal = computed(
   () => `Total ${dataSource.value?.length || 0}/${computerRoom.value?.maxCapacity || 0}`
 );
-const pagingParam = reactive({
-  fieldSort: "UpdatedAt",
-  sortAsc: false,
-});
+
 const interval = ref(null);
 
 const computerPropAdd = reactive({
@@ -122,11 +124,6 @@ onBeforeMount(async () => {
 
     await loadData();
     handleDataRender();
-
-    // interval.value = setInterval(async () => {
-    //   await loadData();
-    //   handleDataRender();
-    // }, 3000); // Thực hiện mỗi 3 giây
   } catch (error) {
     console.log(error);
     message.error($t("UnknownError"))
@@ -134,30 +131,106 @@ onBeforeMount(async () => {
 
 });
 
+onMounted(() => {
+  onUseSocket();
+
+  // chạy mỗi 5 phút
+  interval.value = setInterval(async () => {
+    autoUpdateState();
+  }, 60000);
+})
 onBeforeUnmount(() => {
   clearInterval(interval.value); // Xóa interval khi component bị hủy
 })
+// watch(
+//   () => dataSource.value,
+//   () => {
+//     handleDataRender();
+//   },
+//   { deep: true }
+// );
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const onUseSocket = () => {
+
+  // còn phiêm thì mới mở socket
+  if (props.useSocket) {
+    // lắng nghe socket
+    const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/ws").configureLogging(LogLevel.Information).withAutomaticReconnect().build();
+    conn.start()
+      .then(() => {
+        console.log("SignalR connection established:");
+        // kết nối theo id computerRoom
+        conn.invoke("Connect", props.computerRoomId)
+      })
+      .catch((error) => {
+        console.error("Error establishing SignalR connection:", error);
+      });
+    conn.on("ReceviceMessageConnect", (message) => {
+      console.log("ReceviceMessageConnect:", message);
+    })
+    conn.on("ReceviceMessage", (res) => {
+      try {
+        switch (res.actionType) {
+          case ActionTypeSocket.UPDATE_STATE_COMPUTER:
+            updateComputerState(res.message)
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+  }
+
+}
+
+/**
+ * cập nhật state cho máy tính
+ */
+const updateComputerState = (item) => {
+  debugger;
+  console.log(item);
+  if (item) {
+    let computer = dataSource.value?.find(c => c.id == item.computerId)
+    if (computer) {
+      computer.computerState = item;
+    }
+
+  }
+}
+
+const autoUpdateState = () => {
+  console.log("workers update state");
+  dataSource.value.forEach(element => {
+    if (element && element.computerState && element.computerState.lastUpdate) {
+      try {
+        let latestUpdate = moment(element.computerState.lastUpdate);
+        let now = moment();
+
+        const differenceInMinutes = now.diff(latestUpdate, 'minutes');
+        if (differenceInMinutes > 5) {
+          element.computerState.state = false;
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+}
+
 const loadData = async () => {
   try {
     let rs = await computerService.getListByComputerRoomId(
       props.computerRoomId,
-      pagingParam
+      {}
     );
     if (rs.success && rs.data) {
-      let datas = rs.data.map((item) => {
-        const { colorComputerState, textComputerState } =
-          util.getViewComputerState(item.state);
-        item.colorComputerState = colorComputerState;
-        item.textComputerState = textComputerState;
-        item.stateTime = item.stateTime
-          ? moment(item.stateTime).format(FormatDateKey.Default)
-          : "";
-        return item;
-      });
-      dataSource.value = _.cloneDeep(datas);
+      dataSource.value = _.cloneDeep(rs.data);
     }
   } catch (error) {
     console.log(error);
@@ -172,7 +245,7 @@ const handleDataRender = () => {
     }
   }
   dataSource.value.forEach(element => {
-    dataRender.value[element.row][element.col] = _.cloneDeep(element);
+    dataRender.value[element.row][element.col] = element;
   });
 }
 
@@ -191,18 +264,8 @@ const onDelete = (record) => {
         let rs = await computerService.delete(record.id);
         if (rs?.success && rs?.data) {
           message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
-          if (dataSource.value.length > 1) {
-            let indexToDelete = dataSource.value.findIndex(
-              (item) => item.id === record.id
-            );
-            if (indexToDelete != -1) {
-              dataSource.value.splice(indexToDelete, 1);
-              pagingParam.total -= 1;
-            }
-          } else {
-            pagingParam.pageNumber = 1;
-            await loadData();
-          }
+          await loadData();
+
         }
       } catch (errors) {
         message.error($t("UnknownError"));

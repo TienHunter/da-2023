@@ -27,7 +27,7 @@
               Danh sách máy
             </span>
           </template>
-          <ComputerRoomComputerList :computerRoomId="route.params.id" />
+          <ComputerRoomComputerList :computerRoomId="route.params.id" :use-socket="true" />
         </a-tab-pane>
         <a-tab-pane key="ComputerRoomMonitorSessionList">
           <template #tab>

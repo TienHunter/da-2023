@@ -19,10 +19,14 @@
           </template>
           <template v-else-if="column.key === 'state'">
             <span>
-              <a-tag :color="record.colorComputerState">
-                {{ record.textComputerState }}
+              <a-tag :color="record?.computerState?.state ? 'green' : 'orange'">
+                {{ record?.computerState?.state ? $t("On") : $t("Off") }}
               </a-tag>
             </span>
+          </template>
+          <template v-else-if="column.key === 'stateTime'">
+            {{ record?.computerState?.lastUpdate ?
+              moment(record?.computerState?.lastUpdate).format(FormatDateKey.Default) : "-" }}
           </template>
           <template v-else-if="column.key === 'listError'">
             <div v-for="(tag, index) in record.listError" class="p-1" :key="index">
@@ -58,7 +62,7 @@
   <contextHolder />
 </template>
 <script setup>
-import { computed, h, onBeforeMount, reactive, ref } from "vue";
+import { computed, h, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { computerService } from "../../api";
 import util from "@/utils/util";
@@ -66,7 +70,8 @@ import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
-import { ComputerKey, FormatDateKey } from "@/constants";
+import { ActionTypeSocket, ComputerKey, FormatDateKey } from "@/constants";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 // ========== start state ==========
 
 const props = defineProps({
@@ -76,6 +81,10 @@ const props = defineProps({
     required: true
   },
   isEditAble: {
+    type: Boolean,
+    default: false
+  },
+  useSocket: {
     type: Boolean,
     default: false
   }
@@ -191,15 +200,97 @@ const pagingParam = reactive({
   fieldSort: "UpdatedAt",
   sortAsc: false,
 });
+const interval = ref(null);
 // ========== end state ==========
 
 // ========== start life cycle ==========
 onBeforeMount(async () => {
   await loadData();
 });
+
+onMounted(() => {
+  onUseSocket();
+
+  // chạy mỗi 5 phút
+  interval.value = setInterval(async () => {
+    autoUpdateState();
+  }, 60000);
+})
+onBeforeUnmount(() => {
+  clearInterval(interval.value); // Xóa interval khi component bị hủy
+})
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const onUseSocket = () => {
+
+  // còn phiêm thì mới mở socket
+  if (props.useSocket) {
+    // lắng nghe socket
+    const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/ws").configureLogging(LogLevel.Information).withAutomaticReconnect().build();
+    conn.start()
+      .then(() => {
+        console.log("SignalR connection established:");
+        // kết nối theo id computerRoom
+        conn.invoke("Connect", props.computerRoomId)
+      })
+      .catch((error) => {
+        console.error("Error establishing SignalR connection:", error);
+      });
+    conn.on("ReceviceMessageConnect", (message) => {
+      console.log("ReceviceMessageConnect:", message);
+    })
+    conn.on("ReceviceMessage", (res) => {
+      try {
+        switch (res.actionType) {
+          case ActionTypeSocket.UPDATE_STATE_COMPUTER:
+            updateComputerState(res.message)
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+  }
+}
+
+/**
+ * cập nhật state cho máy tính
+ */
+const updateComputerState = (item) => {
+  debugger;
+  console.log(item);
+  if (item) {
+    let computer = dataSource.value?.find(c => c.id == item.computerId)
+    if (computer) {
+      computer.computerState = item;
+    }
+
+  }
+}
+
+const autoUpdateState = () => {
+  console.log("workers update state");
+  dataSource.value.forEach(element => {
+    if (element && element.computerState && element.computerState.lastUpdate) {
+      try {
+        let latestUpdate = moment(element.computerState.lastUpdate);
+        let now = moment();
+
+        const differenceInMinutes = now.diff(latestUpdate, 'minutes');
+        if (differenceInMinutes > 5) {
+          element.computerState.state = false;
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+}
 const loadData = async () => {
   try {
     loading.loadingTable = true;
@@ -209,14 +300,6 @@ const loadData = async () => {
     );
     if (rs.success && rs.data) {
       let datas = rs.data.map((item) => {
-        const { colorComputerState, textComputerState } =
-          util.getViewComputerState(item.state);
-        item.colorComputerState = colorComputerState;
-        item.textComputerState = textComputerState;
-        item.stateTime = item.stateTime
-          ? moment(item.stateTime).format(FormatDateKey.Default)
-          : "";
-
         item.listError = item?.listErrorId?.length > 0 ? item.listErrorId.map(errorId => {
           const { label, color } = handleRenderComputerError(errorId);
           return {

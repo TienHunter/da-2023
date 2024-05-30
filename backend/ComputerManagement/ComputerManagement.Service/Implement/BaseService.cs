@@ -5,6 +5,7 @@ using ComputerManagement.BO.Models;
 using ComputerManagement.Common.Configs;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
+using ComputerManagement.Service.Hubs;
 using ComputerManagement.Service.Interface;
 using ComputerManagement.Service.Websocket;
 using ComputerManagerment.Repos.Interface;
@@ -31,6 +32,7 @@ namespace ComputerManagement.Service.Implement
         protected readonly IUnitOfWork _uow;
         protected readonly ContextData _contextData;
         protected readonly IEmailService _emailService;
+        protected readonly MonitorSessionHub _monitorSessionHub;
         #endregion
 
         public BaseService(IServiceProvider serviceProvider, IBaseRepo<TModel> baseRepo)
@@ -41,6 +43,8 @@ namespace ComputerManagement.Service.Implement
             _uow = serviceProvider.GetService(typeof(IUnitOfWork)) as IUnitOfWork;
             _contextData = serviceProvider.GetService(typeof(ContextData)) as ContextData;
             _emailService = serviceProvider.GetService(typeof(IEmailService)) as IEmailService;
+
+            _monitorSessionHub = serviceProvider.GetService(typeof(MonitorSessionHub)) as MonitorSessionHub;
 
         }
 
@@ -136,7 +140,7 @@ namespace ComputerManagement.Service.Implement
         {
             if (model == null)
             {
-                var nameCode = "NotFound" + nameof(TModel);
+                var nameCode = "NotFound" + typeof(TModel).Name;
                 if (Enum.TryParse(typeof(ServiceResponseCode), nameCode, out object enumValue))
                 {
                     ServiceResponseCode code = (ServiceResponseCode)enumValue;

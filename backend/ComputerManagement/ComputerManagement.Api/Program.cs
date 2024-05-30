@@ -147,6 +147,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CorsPolicy",
         policy =>
         {
+            policy.WithOrigins("*")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
             policy.WithOrigins("http://localhost:8080")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -173,12 +176,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<AuthMiddleware>();
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<MonitorSessionHub>("/monitor-session");
-app.UseCors("CorsPolicy");
+app.MapHub<MonitorSessionHub>("/ws");
+
 app.Run();

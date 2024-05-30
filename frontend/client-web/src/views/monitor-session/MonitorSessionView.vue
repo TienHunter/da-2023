@@ -27,7 +27,8 @@
                      Danh sách máy
                   </span>
                </template>
-               <ComputerRoomComputerList :computerRoomId="monitorSessionData.computerRoomId" />
+               <ComputerRoomComputerList :computerRoomId="monitorSessionData.computerRoomId"
+                  :useSocket="isHasSession" />
             </a-tab-pane>
             <a-tab-pane key="ComputerRoomMonitorSessionList">
                <template #tab>
@@ -36,7 +37,7 @@
                      Lịch sử truy cập
                   </span>
                </template>
-               <HisttoryAccess :data="monitorSessionData" />
+               <HisttoryAccess :data="monitorSessionData" :isHasSession="isHasSession" />
             </a-tab-pane>
 
          </a-tabs>
@@ -49,6 +50,7 @@ import { useRoute, useRouter } from "vue-router";
 import MonitorSessionInfoView from "./MonitorSessionInfoView.vue";
 import ComputerRoomComputerList from "../computer-room/ComputerRoomComputerList.vue";
 import HisttoryAccess from "./HisttoryAccess.vue";
+import moment from "moment";
 // ========== start state ========== 
 const router = useRouter();
 const route = useRoute();
@@ -57,11 +59,19 @@ const loading = reactive({
    spinning: false
 })
 const monitorSessionData = ref({});
+const isHasSession = ref(false);
 // ========== end state ==========
 
 // ========== start lifecycle ========== 
 onBeforeMount(() => {
    monitorSessionData.value = route.meta.data;
+   if (monitorSessionData.value && monitorSessionData.value.endDate) {
+      const endTimeSession = moment(monitorSessionData.value.endDate);
+      const nowTime = moment();
+      if (!endTimeSession.isAfter(nowTime)) {
+         isHasSession.value = true;
+      }
+   }
    console.log(monitorSessionData.value);
 })
 // ========== end lifecycle ==========

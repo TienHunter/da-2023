@@ -8,10 +8,12 @@
     </div>
     <div class="content">
       <template v-if="typeView">
-        <ComputerRoomComputerGrid :computerRoomId="props.computerRoomId" :isEditAble="true" />
+        <ComputerRoomComputerGrid :computerRoomId="props.computerRoomId" :isEditAble="true"
+          :useSocket="props.useSocket" />
       </template>
       <template v-else>
-        <ComputerRoomComputerTable :computerRoomId="props.computerRoomId" :isEditAble="true" />
+        <ComputerRoomComputerTable :computerRoomId="props.computerRoomId" :isEditAble="true"
+          :useSocket="props.useSocket" />
       </template>
     </div>
   </div>
@@ -28,6 +30,10 @@ const props = defineProps({
     type: String,
     default: "",
     required: true
+  },
+  useSocket: {
+    type: Boolean,
+    default: false
   }
 });
 const router = useRouter();

@@ -37,7 +37,7 @@
 </template>
 <script setup>
 import { computerHistoryService, computerService } from "@/api";
-import { ComputerLevelLog, FormatDateKey } from "@/constants";
+import { ActionTypeSocket, ComputerLevelLog, FormatDateKey } from "@/constants";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { message } from "ant-design-vue";
 import _, { filter } from "lodash";
@@ -49,6 +49,10 @@ const props = defineProps({
   data: {
     type: Object,
     default: null
+  },
+  isHasSession: {
+    type: Boolean,
+    default: false
   }
 })
 const route = useRoute();
@@ -83,32 +87,7 @@ const listLevels = ref([
 // ========== start lifecycle ==========
 
 onMounted(() => {
-  // lắng nghe socket
-  const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/monitor-session").configureLogging(LogLevel.Information).build();
-  conn.start()
-    .then(() => {
-      console.log("SignalR connection established:");
-      conn.invoke("Connect", props.data.id)
-    })
-    .catch((error) => {
-      console.error("Error establishing SignalR connection:", error);
-    });
-  conn.on("ReceviceMessageConnect", (message) => {
-    console.log("ReceviceMessageConnect:", message);
-  })
-  conn.on("ReceviceMessage", (res) => {
-    try {
-      if (res && res.message) {
-        datas.value.unshift(res.message)
-        filterData(res.message);
-      }
-
-    } catch (error) {
-      console.log(error);
-    }
-  })
-
-
+  onUseSocket();
 }),
   onBeforeMount(async () => {
     // lấy danh sách
@@ -127,6 +106,44 @@ watch(() => filters.searchValue, () => {
 // ========== end lifecycle ==========
 
 // ========== start methods ==========
+const onUseSocket = () => {
+
+  // còn phiêm thì mới mở socket
+  if (props.isHasSession) {
+    // lắng nghe socket
+    const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/ws").configureLogging(LogLevel.Information).withAutomaticReconnect().build();
+    conn.start()
+      .then(() => {
+        console.log("SignalR connection established:");
+        // kết nối theo id session
+        conn.invoke("Connect", props.data.id)
+        // kết nối theo id computerRoom
+        conn.invoke("Connect", props.data.computerRoomId)
+      })
+      .catch((error) => {
+        console.error("Error establishing SignalR connection:", error);
+      });
+    conn.on("ReceviceMessageConnect", (message) => {
+      console.log("ReceviceMessageConnect:", message);
+    })
+    conn.on("ReceviceMessage", (res) => {
+      try {
+        switch (res.actionType) {
+          case ActionTypeSocket.ADD_HISTORY:
+            addHistoryFromSocket(res.message)
+            break;
+          default:
+            break;
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+  }
+
+}
 const debounceSearch = _.debounce(() => {
   filterData();
 }, 600);
@@ -167,18 +184,22 @@ const handleChangeSelectLevel = (val) => {
   filterData();
 }
 const filterData = (item) => {
-  debugger
   if (item && checkFilter(item)) {
     dataClones.value.unshift(item);
   }
   dataClones.value = _.cloneDeep(datas.value.filter(i => checkFilter(i)));
 }
 const checkFilter = (i) => {
-  debugger;
   if (i) {
     return (!filters.computers.length || filters.computers.includes(i.id)) && (!filters.level || filters.level == i.level) && (!filters.searchValue || i.message.includes(filters.searchValue.trim()))
   }
   return false;
+}
+const addHistoryFromSocket = (item) => {
+  if (item) {
+    datas.value.unshift(item);
+    filterData(item);
+  }
 }
 // ========== end methods ==========
 </script>

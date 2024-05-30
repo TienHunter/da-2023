@@ -9,5 +9,6 @@ namespace ComputerManagement.Common.Constants
     public static class SocketKey
     {
         public const string ADD_HISTORY = "ADD_HISTORY";
+        public const string UPDATE_STATE_COMPUTER = "UPDATE_STATE_COMPUTER";
     }
 }
