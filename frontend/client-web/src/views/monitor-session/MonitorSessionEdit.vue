@@ -21,25 +21,35 @@
             </div>
          </div>
          <div class="content">
-            <a-form ref="formRef" :model="formState" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
-               <a-form-item :label="$t('ComputerRoom.Name')" name="name">
-                  <a-input v-model:value="formState.name" />
+            <a-form ref="formRef" :model="formState" :rules="rules" v-bind="formItemLayout">
+               <a-form-item :label="$t('MonitorSession.ComputerRoomName')" name="computerRoomId">
+                  <a-select v-model:value="formState.computerRoomId" show-search placeholder="Nhập tên phòng máy"
+                     :field-names="{ label: 'name', value: 'id' }" :filter-option="filterOption"
+                     :options="listComputerRoom" />
                </a-form-item>
-               <a-form-item :label="$t('ComputerRoom.Col')" name="col">
-                  <a-input-number v-model:value="formState.col" />
+               <a-form-item :label="$t('MonitorSession.MonitorTypeLabel')" name="monitorType">
+                  <a-select v-model:value="formState.monitorType" show-search placeholder="Chọn loại giám sát"
+                     :options="dataMonitorTypes" />
                </a-form-item>
-               <a-form-item :label="$t('ComputerRoom.Row')" name="row">
-                  <a-input-number v-model:value="formState.row" />
+               <a-form-item :label="$t('MonitorSession.Date')" name="date">
+                  <a-date-picker v-model:value="formState.date" :format="FormatDateKey.DateDefault"
+                     :disabledDate="disabledDate" />
                </a-form-item>
-               <a-form-item :label="$t('ComputerRoom.MaxCapacity')" name="maxCapacity">
-                  <a-input-number v-model:value="formState.maxCapacity" />
+               <a-form-item :label="$t('MonitorSession.Session')" name="timeRange">
+                  <a-time-range-picker v-model:value="formState.timeRange" format="HH:mm" />
                </a-form-item>
-               <a-form-item :label="$t('ComputerRoom.State')" name="state">
-                  <a-select v-model:value="formState.state" :placeholder="$t('ComputerRoom.StateHint')">
-                     <a-select-option :value="0">Hỏng</a-select-option>
-                     <a-select-option :value="1">Tốt</a-select-option>
-                     <a-select-option :value="2">Bảo trì</a-select-option>
-                  </a-select>
+               <a-form-item v-for="(domain, index) in formState.domains" :key="index"
+                  v-bind="index > 0 ? formItemLayoutWithOutLabel : {}"
+                  :label="index === 0 ? $t('MonitorSession.Domain') : ''" :name="['domains', index]">
+                  <a-input v-model:value="formState.domains[index]" style="width: 60%; margin-right: 8px" />
+                  <MinusCircleOutlined v-if="formState.domains.length > 0" class="dynamic-delete-button"
+                     @click="removeDomain(domain, index)" />
+               </a-form-item>
+               <a-form-item v-bind="formItemLayoutWithOutLabel">
+                  <a-button type="dashed" @click="addDomain">
+                     <PlusOutlined />
+                     {{ $t("MonitorSession.AddDomain") }}
+                  </a-button>
                </a-form-item>
             </a-form>
          </div>
@@ -54,181 +64,178 @@ import {
    onBeforeRouteLeave,
    useRouter,
 } from "vue-router";
-import { computerRoomService } from "@/api";
-import { ResponseCode, FormMode } from "../../constants";
+import { computerRoomService, monitorSessionService } from "@/api";
+import { ResponseCode, FormMode, MonitorType, LocalStorageKey, FormatDateKey } from "../../constants";
 import { message } from "ant-design-vue";
+import dayjs from "dayjs";
+import { localStore } from "@/utils";
 const route = useRoute();
 const router = useRouter();
 const formRef = ref();
-const labelCol = {
-   span: 5,
+const formItemLayout = {
+   labelCol: {
+      xs: {
+         span: 24,
+      },
+      sm: {
+         span: 6,
+      },
+   },
+   wrapperCol: {
+      xs: {
+         span: 24,
+      },
+      sm: {
+         span: 12,
+      },
+   },
 };
-const wrapperCol = {
-   span: 13,
+const formItemLayoutWithOutLabel = {
+   wrapperCol: {
+      xs: {
+         span: 24,
+         offset: 0,
+      },
+      sm: {
+         span: 12,
+         offset: 6,
+      },
+   },
 };
-let formState = reactive({
-   name: "",
-   row: 10,
-   col: 4,
-   maxCapacity: 40,
-   state: 1,
+let formState = ref({
+   computerRoomId: "",
+   monitorType: MonitorType.Practive,
+   date: dayjs(),
+   timeRange: [],
+   domains: [],
+   ownerId: localStore.getItem(LocalStorageKey.userInfor)?.id,
 });
 const loading = reactive({
    isLoadingSave: false,
    isLoadingBeforeMount: false,
 });
 const isCallCheck = ref(false);
-const validateName = async (_rule, value) => {
-   if (value === "") {
-      return Promise.reject($t("ComputerRoom.Validate.NameRequired"));
-   } else if (isCallCheck.value == true) {
-      isCallCheck.value = false;
-      return Promise.reject($t("ComputerRoom.Validate.NameConflic"));
+const filterOption = (input, option) => {
+   return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+const listComputerRoom = ref([]);
+const dataMonitorTypes = ref([
+   {
+      value: MonitorType.Practive,
+      label: $t("MonitorSession.MonitorType.Practive")
+   },
+   {
+      value: MonitorType.Exam,
+      label: $t("MonitorSession.MonitorType.Exam")
+   }
+])
+
+const validateTimeRange = async (_rule, value) => {
+   if (!formState.value?.timeRange.length) {
+      return Promise.reject($t("Validate.Required", [$t("MonitorSession.Session")]));
    } else {
       return Promise.resolve();
    }
-};
-const checkRow = async (_rule, value) => {
-   if (!value) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.Row")])
-      );
-   }
-   if (!Number.isInteger(value)) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.IntegerType", [$t("ComputerRoom.Row")])
-      );
-   } else {
-      if (value < 1 || value > 10) {
-         return Promise.reject(
-            $t("ComputerRoom.Validate.Range", [$t("ComputerRoom.Row"), 1, 10])
-         );
-      } else {
-         return Promise.resolve();
-      }
-   }
-};
-const checkCol = async (_rule, value) => {
-   if (!value) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.Col")])
-      );
-   }
-   if (!Number.isInteger(value)) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.IntegerType", [$t("ComputerRoom.Col")])
-      );
-   } else {
-      if (value < 1 || value > 10) {
-         return Promise.reject(
-            $t("ComputerRoom.Validate.Range", [$t("ComputerRoom.Col"), 1, 10])
-         );
-      } else {
-         return Promise.resolve();
-      }
-   }
-};
-const checkMaxCapacity = async (_rule, value) => {
-   if (!value) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.Required", [$t("ComputerRoom.MaxCapacity")])
-      );
-   }
-   if (!Number.isInteger(value)) {
-      return Promise.reject(
-         $t("ComputerRoom.Validate.IntegerType", [
-            $t("ComputerRoom.MaxCapacity"),
-         ])
-      );
-   } else {
-      if (value < 1 || value > 100) {
-         return Promise.reject(
-            $t("ComputerRoom.Validate.Range", [
-               $t("ComputerRoom.MaxCapacity"),
-               1,
-               100,
-            ])
-         );
-      } else {
-         return Promise.resolve();
-      }
-   }
-};
+}
+
 const rules = {
-   name: [
+   computerRoomId: [
       {
          required: true,
-         validator: validateName,
+         message: $t("Validate.Required", [$t("MonitorSession.Date")]),
          trigger: "change",
       },
    ],
-   row: [
-      {
-         validator: checkRow,
-         trigger: "change",
-      },
-   ],
-   col: [
-      {
-         validator: checkCol,
-         trigger: "change",
-      },
-   ],
-   maxCapacity: [
-      {
-         validator: checkMaxCapacity,
-         trigger: "change",
-      },
-   ],
-   state: [
+   date: [
       {
          required: true,
-         message: $t("ComputerRoom.Validate.StateRequired"),
+         message: $t("Validate.Required", [$t("MonitorSession.MonitorTypeLabel")]),
          trigger: "change",
       },
    ],
+   monitorType: [
+      {
+         required: true,
+         message: $t("Validate.Required", [$t("MonitorSession.MonitorTypeLabel")]),
+         trigger: "change",
+      },
+   ],
+   timeRange: [
+      {
+         required: true,
+         validator: validateTimeRange,
+         trigger: "change",
+      },
+   ]
 };
 
 onBeforeMount(async () => {
-   if (route.meta.formMode === FormMode.Update) {
-      loading.isLoadingBeforeMount = true;
-      try {
-         let computer = await computerRoomService.getById(route.params.id);
-         if (computer?.success && computer?.data) {
-            formState = reactive(computer.data);
+   loading.isLoadingBeforeMount = true;
+   try {
+      await getListComputerRoom();
+      if (route.meta.formMode === FormMode.Update) {
+         let ms = await monitorSessionService.getById(route.params.id);
+         if (ms?.success && ms?.data) {
+            formState.value = ms.data;
          }
-      } catch (error) {
-         switch (error?.Code) {
-            case ResponseCode.NotFoundComputerRoom:
-               message.error($t("ComputerRoom.Validate.NotFound"));
-               break;
-            default:
-               message.error($t("UnknownError"));
-               break;
-         }
-         router.push({ name: "ComputerRoomList" });
-      } finally {
-         loading.isLoadingBeforeMount = false;
       }
+   } catch (error) {
+      switch (error?.Code) {
+         case ResponseCode.NotFoundComputerRoom:
+            message.error($t("ComputerRoom.Validate.NotFound"));
+            break;
+         default:
+            message.error($t("UnknownError"));
+            break;
+      }
+      router.push({ name: "MonitorSessionList" });
+   } finally {
+      loading.isLoadingBeforeMount = false;
    }
+
 });
 
+const getListComputerRoom = async () => {
+   try {
+      let rs = await computerRoomService.getList({});
+      if (rs && rs.data && rs.data.list) {
+         listComputerRoom.value = rs.data.list
+      }
+   } catch (error) {
+      console.log(error);
+   }
+}
+const disabledDate = current => {
+   // Can not select days before today and today
+   return current && current < dayjs().endOf('day');
+};
+const removeDomain = (item, index) => {
+   if (formState.value.domains.length > index && index >= 0) {
+      formState.value.domains.splice(index, 1);
+   }
+};
+const addDomain = () => {
+   formState.value.domains.push("");
+};
 const onSubmit = async (key) => {
    let passValidate = false;
    try {
       loading.isLoadingSave = true;
       await formRef.value.validate();
-      passValidate = true;
+      let dateTmp = dayjs(formState.value.date);
+
+      formState.value.startDate = dateTmp.set('hour', formState.value.timeRange[0].get('hour')).set('minute', formState.value.timeRange[0].get('minute')).set('second', 0).format();
+      formState.value.endDate = dateTmp.set('hour', formState.value.timeRange[1].get('hour')).set('minute', formState.value.timeRange[1].get('minute')).set('second', 0).format();
       try {
          let rs =
             route.meta.formMode === FormMode.Update
-               ? await computerRoomService.update(formState, route.params.id)
-               : await computerRoomService.add(formState);
+               ? await monitorSessionService.update(formState.value, route.params.id)
+               : await monitorSessionService.add(formState.value);
          if (rs?.success && rs?.data) {
             message.success($t("SaveSuccess"));
             if (key == 1) {
                router.push({
-                  name: "ComputerRoomView",
+                  name: "MonitorSessionView",
                   params: { id: rs.data },
                });
             } else {
@@ -255,3 +262,36 @@ const resetForm = () => {
    formRef.value.resetFields();
 };
 </script>
+<style class="scss" scoped>
+.collection-create-form_last-form-item {
+   margin-bottom: 0;
+}
+
+.container-content {
+   position: relative;
+
+   .list-session {
+      background-color: white;
+      padding: 24px;
+      overflow: auto
+   }
+
+   .dynamic-delete-button {
+      cursor: pointer;
+      position: relative;
+      top: 4px;
+      font-size: 24px;
+      color: #999;
+      transition: all 0.3s;
+   }
+
+   .dynamic-delete-button:hover {
+      color: #777;
+   }
+
+   .dynamic-delete-button[disabled] {
+      cursor: not-allowed;
+      opacity: 0.5;
+   }
+}
+</style>

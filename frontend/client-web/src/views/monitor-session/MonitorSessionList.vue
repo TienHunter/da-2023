@@ -9,9 +9,7 @@
                </template>
             </a-button>
             <a-input v-model:value="searchText" placeholder="Tìm kiếm" allow-clear style="width: 200px" />
-            <router-link :to="{ name: 'ComputerRoomAdd' }">
-               <a-button type="primary">{{ $t("Add") }}</a-button>
-            </router-link>
+            <a-button type="primary" @click="navigateAdd()">{{ $t("Add") }}</a-button>
          </div>
       </div>
       <div class="content">
@@ -268,31 +266,20 @@ const onDelete = (record) => {
       title: "Cảnh báo",
       icon: h(ExclamationCircleOutlined),
       content: h("div", [
-         `Bạn có chắc chắn muốn xóa phòng máy ${record.name}.`,
+         `Bạn có chắc chắn muốn xóa phiên giám sát ở phòng máy ${record.computerRoomName} `,
          h("br"),
-         `Khi xóa phòng
-           máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
-           xóa đi.`,
+         `Thời gian: ${record.startDate} - ${record.endDate}`,
       ]),
       okText: "Yes",
       okType: "danger",
       async onOk() {
          try {
-            let rs = await computerRoomService.delete(record.id);
+            let rs = await monitorSessionService.delete(record.id);
             if (rs?.success && rs?.data) {
-               message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
-               if (dataSource.value.length > 1) {
-                  let indexToDelete = dataSource.value.findIndex(
-                     (item) => item.id === record.id
-                  );
-                  if (indexToDelete != -1) {
-                     dataSource.value.splice(indexToDelete, 1);
-                     pagingParam.total -= 1;
-                  }
-               } else {
-                  pagingParam.pageNumber = 1;
-                  await loadData();
-               }
+               message.success($t("DeleteSuccess"));
+               pagingParam.pageNumber = 1;
+               await loadData();
+
             }
          } catch (errors) {
             message.error($t("UnknownError"));
@@ -312,6 +299,10 @@ const refreshGrid = async () => {
    pagingParam.fieldSort = "UpdatedAt";
    pagingParam.sortAsc; false;
    await loadData();
+}
+
+const navigateAdd = () => {
+   router.push({ name: "MonitorSessionAdd" })
 }
 // ========== end methods ==========
 </script>
