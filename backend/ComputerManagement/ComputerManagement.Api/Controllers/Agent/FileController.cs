@@ -24,9 +24,10 @@ namespace ComputerManagement.Api.Controllers.Agent
         {
             // do something
 
-            var fileBytes = await _fileService.GetFileByFileName(filename);
 
-            return File(fileBytes, "application/octet-stream");
+            var (bytes, contentType) = await _fileService.GetFileByFileName(filename);
+
+            return File(bytes, contentType);
         }
 
         /// <summary>

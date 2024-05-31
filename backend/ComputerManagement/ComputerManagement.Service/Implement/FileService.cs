@@ -97,8 +97,9 @@ namespace ComputerManagement.Service.Implement
             return await _fileRepo.DeleteAsync(fileExist);
         }
 
-        public async Task<byte[]> GetFileByFileName(string fileName)
+        public async Task<(byte[], string?)> GetFileByFileName(string fileName)
         {
+            var fileSource = await _fileRepo.GetQueryable().Where(x => x.FileName == fileName).FirstOrDefaultAsync();
             var filePath = Path.Combine(_fileConfig.StoreFile,fileName);
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath))
             {
@@ -108,8 +109,9 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.NotFoundFile
                 };
             }
-
-            return await File.ReadAllBytesAsync(filePath);
+            var bytes = await File.ReadAllBytesAsync(filePath);
+            var contentType = !string.IsNullOrEmpty(fileSource?.ContentType) ? fileSource.ContentType : "application/octet-stream";
+            return (bytes, contentType);
         }
 
         public async Task<bool> CheckUpdateAsync(string fileName)

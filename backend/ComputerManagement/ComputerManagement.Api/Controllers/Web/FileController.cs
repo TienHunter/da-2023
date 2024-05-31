@@ -58,9 +58,9 @@ namespace ComputerManagement.Api.Controllers.Web
         {
             // do something
             
-            var fileBytes = await _fileService.GetFileByFileName(filename);
+            var (bytes, contentType) = await _fileService.GetFileByFileName(filename);
 
-            return File(fileBytes, "application/octet-stream");
+            return File(bytes, contentType);
         }
     }
 }

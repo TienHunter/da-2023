@@ -29,7 +29,7 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        Task<byte[]> GetFileByFileName(string fileName);
+        Task<(byte[], string?)> GetFileByFileName(string fileName);
 
         /// <summary>
         /// kiểm tra có update phần mềm ở agent không
