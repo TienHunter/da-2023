@@ -16,5 +16,11 @@ namespace ComputerManagement.Service.Interface
         /// <param name="optionName"></param>
         /// <returns></returns>
         Task<ConfigOptionDto> GetByOptionNameAsync(string optionName);
+
+        /// <summary>
+        /// lấy danh sách option cho agent
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ConfigOptionDto>> GetOptionForAgentAsync();
     }
 }

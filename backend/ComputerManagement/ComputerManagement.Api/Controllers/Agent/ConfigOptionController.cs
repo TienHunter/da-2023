@@ -23,5 +23,14 @@ namespace ComputerManagement.Api.Controllers.Agent
 
         }
 
+        [HttpGet("GetOptionForAgent")]
+        public async Task<IActionResult> GetOptionForAgent()
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _configOptionService.GetOptionForAgentAsync();
+            return Ok(rs);
+
+        }
+
     }
 }

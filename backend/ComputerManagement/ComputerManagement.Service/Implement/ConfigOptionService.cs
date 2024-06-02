@@ -23,6 +23,12 @@ namespace ComputerManagement.Service.Implement
             return _mapper.Map<ConfigOptionDto>(configOption);
         }
 
+        public async Task<List<ConfigOptionDto>> GetOptionForAgentAsync()
+        {
+            var rs = await _configOptionRepo.GetQueryable().Where(co => co.IsAgent).ToListAsync();
+            return _mapper.Map<List<ConfigOptionDto>>(rs);
+        }
+
         public override async Task ValidateBeforeAddAsync(ConfigOption configOption)
         {
             await base.ValidateBeforeAddAsync(configOption);
