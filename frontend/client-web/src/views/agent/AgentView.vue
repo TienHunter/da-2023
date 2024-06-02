@@ -34,7 +34,6 @@ const visible = ref(false);
 const confirmLoading = ref(false);
 const errorCode = ref(0);
 const formState = ref({
-   softwareId: props.data.softwareId,
 });
 const modalMode = FormMode.Add;
 const validateFile = async (_rule, value) => {
