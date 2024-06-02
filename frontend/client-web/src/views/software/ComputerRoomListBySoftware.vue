@@ -11,13 +11,25 @@
                <a-dropdown :trigger="['click']">
                   <template #overlay>
                      <a-menu>
-                        <a-menu-item @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, true)">
+                        <a-menu-item
+                           @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, CommandOptionKey.CHECK_DOWLOAD_SOFTWARE, true)">
                            <CheckCircleOutlined />
-                           Tải/cập nhật vào lần sử dụng tiếp theo
+                           Bật tự dộng tải/cập nhật file cài đặt
                         </a-menu-item>
-                        <a-menu-item @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, false)">
+                        <a-menu-item
+                           @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, CommandOptionKey.CHECK_DOWLOAD_SOFTWARE, false)">
                            <StopOutlined />
-                           Tắt tự động tải/ cập nhật
+                           Tắt tự động tải/ cập nhật file cài
+                        </a-menu-item>
+                        <a-menu-item
+                           @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, CommandOptionKey.CHECK_INSTALL_SOFTWARE, true)">
+                           <CheckCircleOutlined />
+                           Bật tự động kiểm tra phần mềm đã được cài đặt
+                        </a-menu-item>
+                        <a-menu-item
+                           @click="updateCommandOptionDowloadFile(null, menuKey.MULTI, CommandOptionKey.CHECK_INSTALL_SOFTWARE, false)">
+                           <StopOutlined />
+                           Tắt tự động kiểm tra phần mềm đã được cài đặt
                         </a-menu-item>
                      </a-menu>
                   </template>
@@ -56,13 +68,25 @@
                      <a-dropdown :trigger="['click']">
                         <template #overlay>
                            <a-menu>
-                              <a-menu-item @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, true)">
+                              <a-menu-item
+                                 @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, CommandOptionKey.CHECK_DOWLOAD_SOFTWARE, true)">
                                  <CheckCircleOutlined />
-                                 Tải/cập nhật vào lần sử dụng tiếp theo
+                                 Bật tự dộng tải/cập nhật file cài đặt
                               </a-menu-item>
-                              <a-menu-item @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, false)">
+                              <a-menu-item v-has-permission="`${UserRole.Admin}`"
+                                 @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, CommandOptionKey.CHECK_DOWLOAD_SOFTWARE, false)">
                                  <StopOutlined />
-                                 Tắt tự động tải/ cập nhật
+                                 Tắt tự động tải/ cập nhật file cài
+                              </a-menu-item>
+                              <a-menu-item
+                                 @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, CommandOptionKey.CHECK_INSTALL_SOFTWARE, true)">
+                                 <CheckCircleOutlined />
+                                 Bật tự động kiểm tra phần mềm đã được cài đặt
+                              </a-menu-item>
+                              <a-menu-item
+                                 @click="updateCommandOptionDowloadFile(record, menuKey.SINGLE, CommandOptionKey.CHECK_INSTALL_SOFTWARE, false)">
+                                 <StopOutlined />
+                                 Tắt tự động kiểm tra phần mềm đã được cài đặt
                               </a-menu-item>
                            </a-menu>
                         </template>
@@ -87,7 +111,8 @@ import { commandOptionService, computerRoomService } from "../../api";
 import util from "@/utils/util";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
-import { CommandOptionKey, CommonKey } from "@/constants";
+import { CommandOptionKey, CommonKey, LocalStorageKey, UserRole } from "@/constants";
+import { localStore } from "@/utils";
 // ========== start state ==========
 const props = defineProps({
    masterId: {
@@ -283,14 +308,19 @@ const refreshGrid = async () => {
  * @param key 
  * @param value 
  */
-const updateCommandOptionDowloadFile = async (record, key, value) => {
+const updateCommandOptionDowloadFile = async (record, key, keyOption, value) => {
+   const userInfor = localStore.getItem(LocalStorageKey.userInfor);
+   if (!(userInfor && userInfor.roleID == UserRole.Admin)) {
+      message.warning($t("NotPermission"));
+      return;
+   }
    let conmandOption = null;
    switch (key) {
       case menuKey.SINGLE:
          conmandOption = {
             sourceIds: [record.id],
             desId: props.masterId,
-            commandKey: CommandOptionKey.DowloadSoftware,
+            commandKey: keyOption,
             keyMapping: CommonKey.COMPUTER_ROOM,
             commandValue: value
          }
@@ -300,7 +330,7 @@ const updateCommandOptionDowloadFile = async (record, key, value) => {
             conmandOption = {
                sourceIds: [],
                desId: props.masterId,
-               commandKey: CommandOptionKey.DowloadSoftware,
+               commandKey: keyOption,
                keyMapping: CommonKey.ALL,
                commandValue: value
 
@@ -309,7 +339,7 @@ const updateCommandOptionDowloadFile = async (record, key, value) => {
             conmandOption = {
                sourceIds: selectRows.selectedRowKeys,
                desId: props.masterId,
-               commandKey: CommandOptionKey.DowloadSoftware,
+               commandKey: keyOption,
                keyMapping: CommonKey.COMPUTER_ROOM,
                commandValue: value
 

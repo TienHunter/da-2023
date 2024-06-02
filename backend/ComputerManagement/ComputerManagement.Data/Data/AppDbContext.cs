@@ -22,12 +22,13 @@ namespace ComputerManagement.Data
         public DbSet<ComputerRoom> ComputerRooms { get; set; }
         public DbSet<Computer> Computers { get; set; }
         public DbSet<User> ScheduleBookRoom { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ComputerHistory> ComputerHistory { get; set; }
         public DbSet<SoftwareModel> SoftwareModel { get; set; }
         public DbSet<FileModel> FileModel { get; set; }
         public DbSet<MonitorSession> MonitorSession { get; set; }
         public DbSet<CommandOption> CommandOption { get; set; }
+        public DbSet<ConfigOption> ConfigOption { get; set; }
+        public DbSet<AgentModel> Agent { get; set; }
 
     }
 }

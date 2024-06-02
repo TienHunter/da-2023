@@ -32,4 +32,8 @@
 		<ProjectReference Include="..\ComputerManagement.Data\ComputerManagement.Data.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Attributes\" />
+	</ItemGroup>
+
 </Project>

@@ -68,7 +68,7 @@ onBeforeMount(() => {
    if (monitorSessionData.value && monitorSessionData.value.endDate) {
       const endTimeSession = moment(monitorSessionData.value.endDate);
       const nowTime = moment();
-      if (!endTimeSession.isAfter(nowTime)) {
+      if (endTimeSession.isAfter(nowTime)) {
          isHasSession.value = true;
       }
    }

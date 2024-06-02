@@ -42,12 +42,13 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round @click="navigateEdit(record)">
+              <a-button round v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200" @click="onDelete(record)">
+              <a-button round class="bg-red-200" v-has-permission="`${UserRole.Admin}`"
+                v-passPermissionClick="() => onDelete(record)">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -70,7 +71,7 @@ import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
-import { ActionTypeSocket, ComputerKey, FormatDateKey } from "@/constants";
+import { ActionTypeSocket, ComputerKey, FormatDateKey, UserRole } from "@/constants";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 // ========== start state ==========
 

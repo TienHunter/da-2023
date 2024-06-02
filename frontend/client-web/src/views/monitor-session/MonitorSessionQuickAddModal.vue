@@ -32,10 +32,6 @@
                </a-button>
             </a-form-item>
          </a-form>
-         <a-divider type="vertical" style="width: 2px;height: auto; background-color: #7cb305" />
-         <div class="list-session flex-shrink-0">
-
-         </div>
       </div>
 
    </a-modal>

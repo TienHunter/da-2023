@@ -41,7 +41,7 @@ namespace ComputerManagement.Service.Queue
                     var commandOptions = JsonConvert.DeserializeObject<List<CommandOption>>(obj.Message);
                     switch (obj.ActionType)
                     {
-                        case QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE:
+                        case QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE:
                             this.UpserttCommandOption(commandOptions);
                             break;
                     }
@@ -75,6 +75,7 @@ namespace ComputerManagement.Service.Queue
                     // update
                     commandExist.CommandValue = commandOption.CommandValue;
                     commandExist.UpdatedAt = DateTime.Now;
+                    commandOption.UpdatedBy = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE;
                     await commandOptionRepo.UpdateAsync(commandExist);
                 }
                 else
@@ -82,6 +83,8 @@ namespace ComputerManagement.Service.Queue
                     commandOption.Id = Guid.NewGuid();
                     commandOption.CreatedAt = DateTime.Now;
                     commandOption.UpdatedAt = DateTime.Now;
+                    commandOption.CreatedBy = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE;
+                    commandOption.UpdatedBy = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE;
 
                     await commandOptionRepo.AddAsync(commandOption);
                 }

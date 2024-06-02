@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComputerManagement.BO.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,5 +73,12 @@ namespace ComputerManagerment.Repos.Interface
         /// <param name="entities"></param>
         /// <returns></returns>
         Task<bool> DeleteRangeAsync(List<T> entities);
+
+        /// <summary>
+        /// lấy thông tin user theo id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<User> GetUserByIdAsync(Guid userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,8 +16,13 @@ namespace ComputerManagement.BO.DTO
         public ComputerDto? Computer { get; set; }
         [Required]
         public Guid SoftwareId { get; set; }
-        [Required]
-        public string SoftwareName { get; set; }
+        public SoftwareDto? Software { get; set; }
+
+
+        /// <summary>
+        /// đã tải file cài đặt chưa
+        /// </summary>
+        public bool IsDowloadFile { get; set; }
         /// <summary>
         /// phần mềm đã được cài đặt chưa
         /// </summary>

@@ -9,6 +9,7 @@ import App from './App.vue'
 import router from "./routers";
 import i18n from "./i18n";
 import { registerGlobalComponents } from "./utils/import";
+import { hasPermission, passPermissionClick } from './directives';
 const app = createApp(App);
 registerGlobalComponents(app);
 app.use(router);
@@ -26,4 +27,7 @@ message.config({
    rtl: true,
    prefixCls: "toast-message",
 });
+// Đăng ký directive toàn cục
+app.directive('has-permission', hasPermission);
+app.directive('passPermissionClick', passPermissionClick);
 app.mount("#app");

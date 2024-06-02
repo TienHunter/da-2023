@@ -12,11 +12,13 @@
                </router-link>
             </div>
             <div class="toolbars-right flex gap-2">
-               <a-button type="primary" ghost @click="onSubmit(1)" :loading="loading.isLoadingSave">{{ $t("Save")
+               <a-button type="primary" ghost v-has-permission="`${UserRole.Admin}`"
+                  v-passPermissionClick="() => onSubmit(1)" :loading="loading.isLoadingSave">{{ $t("Save")
                   }}</a-button>
-               <a-button type="primary" @click="onSubmit(2)">{{
-                  $t("SaveAndAdd")
-               }}</a-button>
+               <a-button type="primary" v-has-permission="`${UserRole.Admin}`"
+                  v-passPermissionClick="() => onSubmit(2)">{{
+                     $t("SaveAndAdd")
+                  }}</a-button>
                <a-button @click="resetForm">{{ $t("Cancel") }}</a-button>
             </div>
          </div>
@@ -54,7 +56,7 @@ import {
    useRouter,
 } from "vue-router";
 import { computerRoomService, softwareService } from "@/api";
-import { ResponseCode, FormMode } from "../../constants";
+import { ResponseCode, FormMode, UserRole } from "../../constants";
 import { message } from "ant-design-vue";
 import _ from "lodash";
 const route = useRoute();

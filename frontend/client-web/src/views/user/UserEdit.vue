@@ -12,7 +12,8 @@
           </router-link>
         </div>
         <div class="toolbars-right flex gap-2">
-          <a-button type="primary" ghost @click="onSubmit" :loading="loading.isLoadingSave">{{ $t("Save") }}</a-button>
+          <a-button type="primary" ghost :loading="loading.isLoadingSave" v-has-permission="`${UserRole.Admin}`"
+            v-passPermissionClick="() => onSubmit()">{{ $t("Save") }}</a-button>
           <a-button>{{ $t("Cancel") }}</a-button>
         </div>
       </div>
@@ -64,7 +65,7 @@ import {
   useRouter,
 } from "vue-router";
 import { computerRoomService, userService } from "@/api";
-import { ResponseCode, FormMode } from "../../constants";
+import { ResponseCode, FormMode, UserRole } from "../../constants";
 import { message } from "ant-design-vue";
 import _ from "lodash";
 const route = useRoute();
@@ -125,7 +126,7 @@ const onSubmit = async () => {
     } catch (error) {
       console.log(error);
       switch (error?.Code) {
-        case ResponseCode.ComputerRoomNameConflic:
+        case ResponseCode.ConflicComputerRoomName:
           break;
         default:
           break;

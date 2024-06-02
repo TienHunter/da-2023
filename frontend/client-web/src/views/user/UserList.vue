@@ -5,9 +5,6 @@
       <div class="operations-right flex gap-2">
         <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
           :loading="loading.loadingInputSearch" @search="onSearch" />
-        <router-link :to="{ name: 'ComputerRoomAdd' }">
-          <a-button type="primary">{{ $t("Add") }}</a-button>
-        </router-link>
       </div>
     </div>
     <div class="content">
@@ -35,7 +32,8 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round :disabled="userContext?.id == record.id" @click="navigateEdit(record)">
+              <a-button round :disabled="userContext?.id == record.id" v-has-permission="`${UserRole.Admin}`"
+                v-passPermissionClick="() => navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
@@ -51,12 +49,12 @@
                 </a-button>
                 <template #overlay>
                   <a-menu>
-                    <a-menu-item v-if="record.state != UserState.Active"
-                      @click="changeStateUser(UserState.Active, record)">
+                    <a-menu-item v-if="record.state != UserState.Active" v-has-permission="`${UserRole.Admin}`"
+                      v-passPermissionClick="() => changeStateUser(UserState.Active, record)">
                       {{ $t("User.UserState.Active") }}
                     </a-menu-item>
-                    <a-menu-item v-if="record.state != UserState.Revoke"
-                      @click="changeStateUser(UserState.Revoke, record)">
+                    <a-menu-item v-if="record.state != UserState.Revoke" v-has-permission="`${UserRole.Admin}`"
+                      v-passPermissionClick="() => changeStateUser(UserState.Revoke, record)">
                       {{ $t("User.UserState.Revoke") }}
                     </a-menu-item>
                   </a-menu>
@@ -75,7 +73,7 @@ import { useRouter } from "vue-router";
 import _ from "lodash";
 import { computerRoomService, userService } from "../../api";
 import util from "@/utils/util";
-import { LocalStorageKey, UserState } from "@/constants";
+import { LocalStorageKey, UserRole, UserState } from "@/constants";
 import { localStore } from "@/utils";
 import { message } from "ant-design-vue";
 // ========== start state ==========

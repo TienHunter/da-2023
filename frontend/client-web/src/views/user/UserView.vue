@@ -11,9 +11,10 @@
         </router-link>
       </div>
       <div class="toolbars-right flex gap-2">
-        <router-link :to="{ name: 'UserEdit', params: { id: route.params.id } }">
-          <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
-        </router-link>
+
+        <a-button type="primary" ghost v-has-permission="`${UserRole.Admin}`"
+          v-passPermissionClick="() => navigateEdit()">{{
+            $t("Edit") }}</a-button>
       </div>
     </div>
     <div class="content">
@@ -58,7 +59,7 @@ import { ref, reactive, onBeforeMount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import _ from "lodash";
 import { message } from "ant-design-vue";
-import { ResponseCode } from "@/constants";
+import { ResponseCode, UserRole } from "@/constants";
 import { util } from "@/utils";
 const route = useRoute();
 const router = useRouter();
@@ -120,6 +121,10 @@ onBeforeMount(async () => {
     loading.isLoadingBeforeMount = false;
   }
 });
+
+const navigateEdit = () => {
+  router.push({ name: "UserEdit", params: { id: route.params.id } });
+}
 </script>
 <style lang="scss" scoped>
 .container-content {

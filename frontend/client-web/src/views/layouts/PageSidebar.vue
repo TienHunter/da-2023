@@ -44,6 +44,18 @@
           <span>{{ $t("Sidebar.MonitorSessionManager") }}</span>
         </router-link>
       </a-menu-item>
+      <a-menu-item key="ConfigOption">
+        <router-link :to="{ name: 'ConfigOptionList' }">
+          <SettingOutlined />
+          <span>{{ $t("Sidebar.ConfigOptionManager") }}</span>
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="Agent">
+        <router-link :to="{ name: 'Agent' }">
+          <SettingOutlined />
+          <span>{{ $t("Sidebar.AgentManager") }}</span>
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>

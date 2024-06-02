@@ -11,7 +11,7 @@ const ResponseCode = {
    EmailConflict: 7,
    NotFoundUser: 8,
    NotFoundComputer: 9,
-   ComputerRoomNameConflic: 10,
+   ConflicComputerRoomName: 10,
    NotFoundComputerRoom: 11,
    UserPending: 12,
    UserRevoked: 13,
@@ -28,7 +28,16 @@ const ResponseCode = {
    ConflicMonitorSessionTime: 24,
    ConflicSoftwareName: 25,
    ConflicSoftwareProcess: 26,
-   InValidRowColComputer: 27
+   InValidRowColComputer: 27,
+   /// <summary>
+   /// trùng config option name
+   /// </summary>
+   ConflicOptionName: 28,
+
+   /// <summary>
+   /// không thể sửa option name hệ thông
+   /// </summary>
+   CantEditOptionNameSystem: 29,
 
 }
 export default ResponseCode;

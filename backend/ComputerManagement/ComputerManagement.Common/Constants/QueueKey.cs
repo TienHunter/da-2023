@@ -13,7 +13,7 @@ namespace ComputerManagement.Common.Constants
         #endregion
 
         #region queue action
-        public const string UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE = "UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE";
+        public const string UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE = "UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE";
         #endregion
     }
 }

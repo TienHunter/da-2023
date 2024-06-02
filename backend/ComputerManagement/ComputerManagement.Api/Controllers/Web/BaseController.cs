@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO.DTO;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ namespace ComputerManagement.Controllers.Web
 {
     [Route("api-web/[controller]")]
     [ApiController]
+    [Authorize]
     public abstract partial class BaseController<TDto, TModel> : ControllerBase
     {
         protected IBaseService<TDto, TModel> _baseService;
@@ -43,6 +45,7 @@ namespace ComputerManagement.Controllers.Web
         [HttpPost("")]
         public virtual async Task<IActionResult> Add([FromBody] TDto dto)
         {
+            await _baseService.CheckPermission(new List<UserRole> { UserRole.Admin });
             var rs = new ServiceResponse();
             rs.Data = await _baseService.AddAsync(dto);
             return Ok(rs);
@@ -51,6 +54,7 @@ namespace ComputerManagement.Controllers.Web
         [HttpPut("update/{id}")]
         public virtual async Task<IActionResult> Update([FromBody] TDto dto, [FromRoute] Guid id)
         {
+            await _baseService.CheckPermission(new List<UserRole> { UserRole.Admin });
             var rs = new ServiceResponse();
             rs.Data = await _baseService.UpdateAsync(dto,id);
             return Ok(rs);
@@ -59,6 +63,7 @@ namespace ComputerManagement.Controllers.Web
         [HttpDelete("delete/{id}")]
         public virtual async Task<IActionResult> Delete( [FromRoute] Guid id)
         {
+            await _baseService.CheckPermission(new List<UserRole> { UserRole.Admin });
             var rs = new ServiceResponse();
             rs.Data = await _baseService.DeleteAsync(id);
             return Ok(rs);
@@ -67,6 +72,7 @@ namespace ComputerManagement.Controllers.Web
         [HttpPost("deletes")]
         public virtual async Task<IActionResult> DeleteRange([FromBody] List<Guid> ids)
         {
+            await _baseService.CheckPermission(new List<UserRole> { UserRole.Admin });
             var rs = new ServiceResponse();
             rs.Data = await _baseService.DeleteRangeAsync(ids);
             return Ok(rs);

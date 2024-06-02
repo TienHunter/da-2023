@@ -213,5 +213,31 @@ namespace ComputerManagement.Service.Implement
             var dtos = _mapper.Map<List<ComputerDto>>(entities);
             return (dtos, totalCount);
         }
+
+        public override async Task<bool> DeleteAsync(Guid id)
+        {
+            var entityExist = await _computerRepo.GetAsync(id);
+            this.CheckNullModel(entityExist);
+            var computerRoomId = entityExist.ComputerRoomId;
+            var rs = await _computerRepo.DeleteAsync(entityExist);
+
+            if (rs)
+            {
+                // do after delete
+                await this.CreateAndRunTaskAsync(async () =>
+                {
+                    // cập nhật lại currentCapacity cho computer room
+                    var computerRoom = await _computerRoomRepo.GetQueryable().Where(cr => cr.Id == computerRoomId).FirstOrDefaultAsync();
+                    if(computerRoom != null)
+                    {
+                        computerRoom.CurrentCapacity  = computerRoom.CurrentCapacity > 0 ? computerRoom.CurrentCapacity - 1 : 0;
+                    }
+                    _ = await _computerRoomRepo.UpdateAsync(computerRoom);
+                });
+
+            }
+
+            return rs;
+        }
     }
 }

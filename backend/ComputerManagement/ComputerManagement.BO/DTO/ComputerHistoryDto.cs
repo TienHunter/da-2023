@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.BO.DTO
 {
-    public class ComputerHistoryDto
+    public class ComputerHistoryDto : BaseDto
     {
-        public Guid Id { get; set; }
         [Required]
         public string Message { get; set; }
 

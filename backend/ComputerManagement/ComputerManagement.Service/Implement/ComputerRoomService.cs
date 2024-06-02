@@ -39,7 +39,7 @@ namespace ComputerManagement.Service.Implement
                 throw new BaseException
                 {
                     StatusCode = HttpStatusCode.Conflict,
-                    Code = ServiceResponseCode.ComputerRoomNameConflic
+                    Code = ServiceResponseCode.ConflicComputerRoomName
                 };
             }
         }

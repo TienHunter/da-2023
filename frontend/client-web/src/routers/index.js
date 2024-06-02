@@ -7,6 +7,8 @@ import routeFile from "../views/file-manager/route.js";
 import routeSoftware from "../views/software/route.js";
 import routeUser from "../views/user/route.js";
 import routeMonitorSession from "../views/monitor-session/route.js";
+import routeConfigOption from "../views/config-option/route.js";
+import routeAgent from "../views/agent/route.js";
 import HelloWorld from "../components/HelloWorld.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
 import localStore from "../utils/localStore.js";
@@ -20,14 +22,15 @@ const routes = [
    ...routeFile,
    ...routeSoftware,
    ...routeMonitorSession,
+   ...routeConfigOption,
+   ...routeAgent,
    {
       path: "/:pathMatch(.*)*",
-      name: "NotFound",
-      meta: {
-         title: "Không tìm thấy",
-         layout: "auth",
+      redirect: to => {
+
+         return { name: "Dashboard" }
       },
-      component: HelloWorld,
+
    },
 ];
 

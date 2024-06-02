@@ -82,6 +82,7 @@ const isShowModalChangePassword = ref(false);
 // ========== start lifecycle ========== 
 onBeforeMount(() => {
   user.value = localStore.getItem(LocalStorageKey.userInfor);
+  console.log("render");
 })
 // ========== end lifecycle ==========
 

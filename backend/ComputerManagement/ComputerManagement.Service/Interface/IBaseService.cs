@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO.DTO;
+using ComputerManagement.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,5 +122,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="dto"></param>
         /// <returns></returns>
         Task HandleDataBeforeMapAddAsync(TDto dto);
+
+        /// <summary>
+        /// check permission thực hiện chức năng
+        /// </summary>
+        /// <param name="permissionKeys"></param>
+        /// <returns></returns>
+        Task CheckPermission(List<UserRole> permissionKeys);
     }
 }

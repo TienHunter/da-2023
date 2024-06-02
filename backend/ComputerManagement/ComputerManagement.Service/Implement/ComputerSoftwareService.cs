@@ -18,25 +18,35 @@ namespace ComputerManagement.Service.Implement
     {
         private readonly IComputerSoftwareRepo _computerSoftwareRepo = computerSoftwareRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
-        public async Task<bool> UpsertAsync(ComputerSoftwareDto csDto)
+
+        public async Task<List<ComputerSoftwareDto>> GetListByComputerIdAsync(Guid computerId, PagingParam pagingParam)
+        {
+            var rs = await _computerSoftwareRepo.GetListByComputerIdAsync(computerId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
+          
+            return _mapper.Map<List<ComputerSoftwareDto>>(rs);
+        }
+
+        public async Task<bool> UpsertAsync(ComputerSoftwareDto csDto, string flag)
         {
             var rs = false;
             var computerSoftwareExist = await _computerSoftwareRepo.GetQueryable().Where(cs => cs.ComputerId == csDto.ComputerId && cs.SoftwareId == csDto.SoftwareId).FirstOrDefaultAsync();
             if(computerSoftwareExist != null)
             {
+                computerSoftwareExist.IsDowloadFile = flag == "dowload" ? csDto.IsDowloadFile : computerSoftwareExist.IsDowloadFile;
+                computerSoftwareExist.IsInstalled = flag == "install" ? csDto.IsInstalled : computerSoftwareExist.IsInstalled;
                 // update
                 await this.BeforeUpdateAsync(computerSoftwareExist);
                 rs = await _computerSoftwareRepo.UpdateAsync(computerSoftwareExist);
             }else
             {
-                // insert
-                // check exist computer
-                _ = await _computerRepo.GetQueryable().Where(c => c.Id == csDto.ComputerId).FirstOrDefaultAsync() ?? throw new BaseException
+                // insert  
+                var computerSoftware = new ComputerSoftware
                 {
-                    StatusCode = HttpStatusCode.NotFound,
-                    Code = ServiceResponseCode.NotFoundComputer
-                };   
-                var computerSoftware = _mapper.Map<ComputerSoftware>(csDto);
+                    ComputerId = csDto.ComputerId,
+                    SoftwareId = csDto.SoftwareId,
+                    IsDowloadFile = flag == "dowload" ? csDto.IsDowloadFile : false,
+                    IsInstalled = flag == "install" ? csDto.IsInstalled : false,
+                };
                 await this.BeforeAddAsync(computerSoftware);
                 rs = await _computerSoftwareRepo.AddAsync(computerSoftware);
             }

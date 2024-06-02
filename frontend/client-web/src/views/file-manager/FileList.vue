@@ -217,7 +217,7 @@ const onDelete = (record) => {
       try {
         let rs = await fileService.delete(record.id);
         if (rs?.success && rs?.data) {
-          message.success($t("fileService.DeleteSuccess", [record.fileName]));
+          message.success($t("File.DeleteSuccess", [record.fileName]));
           if (dataSource.value.length > 1) {
             let indexToDelete = dataSource.value.findIndex(
               (item) => item.id === record.id

@@ -22,6 +22,36 @@ namespace ComputerManagement.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ComputerManagement.BO.Models.AgentModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUpdate")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("agent");
+                });
+
             modelBuilder.Entity("ComputerManagement.BO.Models.CommandOption", b =>
                 {
                     b.Property<Guid>("Id")
@@ -142,6 +172,9 @@ namespace ComputerManagement.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
@@ -157,6 +190,9 @@ namespace ComputerManagement.Data.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -217,15 +253,14 @@ namespace ComputerManagement.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDowloadFile")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsInstalled")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("SoftwareId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SoftwareName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -236,6 +271,8 @@ namespace ComputerManagement.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ComputerId");
+
+                    b.HasIndex("SoftwareId");
 
                     b.ToTable("computer_software");
                 });
@@ -254,6 +291,50 @@ namespace ComputerManagement.Data.Migrations
                     b.HasKey("ComputerId");
 
                     b.ToTable("computer_state");
+                });
+
+            modelBuilder.Entity("ComputerManagement.BO.Models.ConfigOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Desc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAgent")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OptionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("OptionValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionName")
+                        .IsUnique();
+
+                    b.ToTable("config_option");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.FileModel", b =>
@@ -343,39 +424,6 @@ namespace ComputerManagement.Data.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("monitor_session");
-                });
-
-            modelBuilder.Entity("ComputerManagement.BO.Models.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ExpireTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("refresh_token");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ScheduleBookRoom", b =>
@@ -527,12 +575,20 @@ namespace ComputerManagement.Data.Migrations
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerSoftware", b =>
                 {
                     b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
-                        .WithMany("ComputerSofewares")
+                        .WithMany("ComputerSoftwares")
                         .HasForeignKey("ComputerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ComputerManagement.BO.Models.SoftwareModel", "Software")
+                        .WithMany()
+                        .HasForeignKey("SoftwareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Computer");
+
+                    b.Navigation("Software");
                 });
 
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerState", b =>
@@ -595,7 +651,7 @@ namespace ComputerManagement.Data.Migrations
 
             modelBuilder.Entity("ComputerManagement.BO.Models.Computer", b =>
                 {
-                    b.Navigation("ComputerSofewares");
+                    b.Navigation("ComputerSoftwares");
 
                     b.Navigation("ComputerState")
                         .IsRequired();

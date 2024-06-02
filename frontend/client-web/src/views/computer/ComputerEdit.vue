@@ -12,8 +12,9 @@
           </router-link>
         </div>
         <div class="toolbars-right flex gap-2">
-          <a-button type="primary" ghost @click="onSubmit" :loading="loading.isLoadingSave">{{ $t("Save") }}</a-button>
-          <a-button type="primary" @click="onSubmit">{{
+          <a-button type="primary" ghost :loading="loading.isLoadingSave" v-has-permission="`${UserRole.Admin}`"
+            v-passPermissionClick="() => onSubmit(1)">{{ $t("Save") }}</a-button>
+          <a-button type="primary" v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => onSubmit(2)">{{
             $t("SaveAndAdd")
           }}</a-button>
           <a-button @click="resetForm">{{ $t("Cancel") }}</a-button>
@@ -63,7 +64,7 @@ import {
 import { computerRoomService, computerService } from "@/api";
 import { ResponseCode, FormMode } from "../../constants";
 import { message } from "ant-design-vue";
-import { ComputerKey } from "@/constants";
+import { ComputerKey, UserRole } from "@/constants";
 const route = useRoute();
 const router = useRouter();
 const formRef = ref();
@@ -263,7 +264,7 @@ watch(() => formState.value.computerRoomId, () => {
   computerRoomSelect.value = listComputerRoom.value.find(cr => cr.id = formState.value.computerRoomId);
 })
 
-const onSubmit = async () => {
+const onSubmit = async (key) => {
   let passValidate = false;
   try {
     loading.isLoadingSave = true;
@@ -272,10 +273,15 @@ const onSubmit = async () => {
     try {
       let rs = route.meta.formMode === FormMode.Update ? await computerService.update(formState.value, route.params.id) : await computerService.add(formState.value);
       if (rs?.success && rs?.data) {
-        router.push({
-          name: "ComputerView",
-          params: { id: rs.data },
-        });
+        if (key == 2) {
+          resetFormState();
+        } else {
+          router.push({
+            name: "ComputerView",
+            params: { id: rs.data },
+          });
+        }
+
       }
     } catch (error) {
       console.log(error);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerManagement.Controllers.Web
 {
-    [Authorize]
+    
     public class ComputerRoomController(IComputerRoomService computerRoomService) : BaseController<ComputerRoomDto, ComputerRoom>(computerRoomService)
     {
         private readonly IComputerRoomService _computerRoomService = computerRoomService;
@@ -23,7 +23,6 @@ namespace ComputerManagement.Controllers.Web
                 Total = totalCount
             };
             return Ok(rs);
-
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.DTO.MonitorSession;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Controllers.Web;
 using ComputerManagement.Service.Implement;
 using ComputerManagement.Service.Interface;
@@ -27,5 +28,12 @@ namespace ComputerManagement.Api.Controllers.Web
             return Ok(rs);
 
         }
+        public override async Task<IActionResult> Add([FromBody] MonitorSessionDto dto)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _monitorSessionService.AddAsync(dto);
+            return Ok(rs);
+        }
+
     }
 }

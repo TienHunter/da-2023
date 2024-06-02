@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
 {
-    public class CommandOptionService(IServiceProvider serviceProvider, ICommandOptionRepo commandOptionRepo) : BaseService<CommandOption, CommandOption>(serviceProvider, commandOptionRepo), ICommandOptionService
+    public class CommandOptionService(IServiceProvider serviceProvider, ICommandOptionRepo commandOptionRepo) : BaseService<CommandOptionDto, CommandOption>(serviceProvider, commandOptionRepo), ICommandOptionService
     {
         private readonly ICommandOptionRepo _commandOptionRepo = commandOptionRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
@@ -34,8 +34,9 @@ namespace ComputerManagement.Service.Implement
         {
             switch(commandParam.CommandKey)
             {
-                case CommandOptionKey.DowloadSoftware:
-                    await UpsertDowloadSoftwareAsync(commandParam);
+                case CommandOptionKey.CHECK_INSTALL_SOFTWARE:
+                case CommandOptionKey.CHECK_DOWLOAD_SOFTWARE:
+                    await UpsertDowloadInstallSoftwareAsync(commandParam);
                     break;
                 default:
                     break;
@@ -47,7 +48,7 @@ namespace ComputerManagement.Service.Implement
         /// </summary>
         /// <param name="commandParam"></param>
         /// <returns></returns>
-        private async Task UpsertDowloadSoftwareAsync(CommandParam commandParam)
+        private async Task UpsertDowloadInstallSoftwareAsync(CommandParam commandParam)
         {
             var listComputerId = new List<Guid>();
 
@@ -95,7 +96,7 @@ namespace ComputerManagement.Service.Implement
                         var messageQueue = new MessageQueue
                         {
                             Message = JsonConvert.SerializeObject(batch),
-                            ActionType = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_SOFTWARE
+                            ActionType = QueueKey.UPSERT_COMMAND_OPTON_DOWLOAD_INSTALL_SOFTWARE
                         };
                         _ = QueueFactory.EnQueue(rbConfig, QueueKey.COMMAND_OPTION, JsonConvert.SerializeObject(messageQueue));
                     }

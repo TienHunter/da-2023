@@ -7,12 +7,12 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Hubs;
 using ComputerManagement.Service.Interface;
-using ComputerManagement.Service.Websocket;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
 {
-    public abstract class BaseService<TDto, TModel> : IBaseService<TDto, TModel>
+    public abstract class BaseService<TDto, TModel> : IBaseService<TDto, TModel> where TDto : BaseDto where TModel : BaseModel 
     {
 
         #region Fields
@@ -70,36 +70,36 @@ namespace ComputerManagement.Service.Implement
         public virtual async Task<Guid> BeforeAddAsync(TModel model)
         {
             var newId = Guid.NewGuid();
-            if (model is BaseModel)
-            {
-                var baseModel = model as BaseModel;
 
-                baseModel.Id = newId;
-                baseModel.CreatedBy = _contextData.Fullname;
-                baseModel.CreatedAt = DateTime.Now;
-                baseModel.UpdatedBy = _contextData.Fullname;
-                baseModel.UpdatedAt = DateTime.Now;
+            var baseModel = model as BaseModel;
+            baseModel.Id = newId;
+            baseModel.CreatedBy = _contextData.Fullname;
+            baseModel.CreatedAt = DateTime.Now;
+            baseModel.UpdatedBy = _contextData.Fullname;
+            baseModel.UpdatedAt = DateTime.Now;
 
-            }
             return newId;
 
         }
         public virtual async Task BeforeUpdateAsync(TModel model)
         {
-            if (model is BaseModel)
-            {
-                var baseModel = model as BaseModel;
-                baseModel.UpdatedBy = _contextData.Fullname;
-                baseModel.UpdatedAt = DateTime.Now;
-
-            }
+            var baseModel = model as BaseModel;
+            baseModel.UpdatedBy = _contextData.Fullname;
+            baseModel.UpdatedAt = DateTime.Now;
         }
 
         public virtual async Task<bool> DeleteAsync(Guid id)
         {
             var entityExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(entityExist);
-            return await _baseRepo.DeleteAsync(entityExist);
+            var rs = await _baseRepo.DeleteAsync(entityExist);
+
+            if (rs)
+            {
+                // do after delete
+            }
+
+            return rs;
         }
 
         public virtual async Task<TDto> GetAsync(Guid id)
@@ -117,6 +117,7 @@ namespace ComputerManagement.Service.Implement
 
         public virtual async Task<Guid> UpdateAsync(TDto dto, Guid id)
         {
+            dto.Id = id;
             var modelExist = await _baseRepo.GetAsync(id);
             this.CheckNullModel(modelExist);
             await ValidateBeforeMapUpdateAsync(dto, modelExist);
@@ -192,7 +193,7 @@ namespace ComputerManagement.Service.Implement
 
         public virtual async Task ValidateBeforeDeleteRangeAsync(List<TModel> models)
         {
-            
+
         }
 
         public async Task<bool> DeleteRangeAsync(List<Guid> ids)
@@ -206,7 +207,7 @@ namespace ComputerManagement.Service.Implement
 
         public virtual async Task HandleDataBeforeMapAddAsync(TDto dto)
         {
-           
+
         }
 
         /// <summary>
@@ -221,14 +222,57 @@ namespace ComputerManagement.Service.Implement
                 try
                 {
                     await function().ConfigureAwait(false);
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }finally
+                }
+                finally
                 {
 
                 }
             });
+        }
+
+        public async Task CheckPermission(List<UserRole> permissionKeys)
+        {
+            var isPassPermission = permissionKeys.Count != 0;
+            var userId = Guid.Empty;
+            if (isPassPermission)
+            {
+                userId = _contextData?.UserID ?? Guid.Empty;
+                if (userId == Guid.Empty)
+                {
+                    isPassPermission = false;
+                }
+                else
+                {
+                    var user = await _baseRepo.GetUserByIdAsync(userId);
+                    if (user == null)
+                    {
+                        isPassPermission = false;
+                    }
+                    else
+                    {
+                        if (permissionKeys.Contains(user.RoleID))
+                        {
+                            isPassPermission = true;
+                        }
+                        else
+                        {
+                            isPassPermission = false;
+                        }
+                    }
+                }
+            }
+            if (!isPassPermission)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.Forbidden,
+                    Code = ServiceResponseCode.Forbidden
+                };
+            }
         }
     }
 }

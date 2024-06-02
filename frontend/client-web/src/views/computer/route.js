@@ -6,6 +6,7 @@ import { Permission, FormMode } from "../../constants";
 import ComputerDetailView from "./ComputerDetailView.vue";
 import ComputerHistoryView from "./ComputerHistoryView.vue";
 import ComputerNoteView from "./ComputerNoteView.vue";
+import { computerService } from "@/api";
 const routes = [
    {
       path: "/computer",
@@ -31,6 +32,25 @@ const routes = [
             path: ":id/view",
             name: "ComputerView",
             component: ComputerView,
+            beforeEnter: async (to, from, next) => {
+               let isSuccess = false;
+               try {
+                  const rs = await computerService.getById(to.params.id);
+                  if (rs && rs.success && rs.data) {
+                     to.meta.data = rs.data
+                     isSuccess = true;
+                     next();
+                  } else {
+                     next({ name: "ComputerList" });
+                  }
+               } catch (error) {
+                  console.log(error);
+                  message.error($t("UnknownError"));
+                  next({ name: "ComputerList" });
+               } finally {
+
+               }
+            }
          },
          {
             path: ":id/edit",

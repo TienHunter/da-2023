@@ -53,6 +53,6 @@ namespace ComputerManagement.BO.Models
         [ForeignKey("ComputerRoom")]
         public Guid ComputerRoomId { get; set; }
         public virtual ComputerRoom ComputerRoom { get; set; }
-        public virtual ICollection<ComputerSoftware> ComputerSofewares { get; set; } = new List<ComputerSoftware>();
+        public virtual ICollection<ComputerSoftware> ComputerSoftwares { get; set; } = new List<ComputerSoftware>();
     }
 }

@@ -9,5 +9,6 @@ namespace ComputerManagement.Common.Configs
     public class FileConfig
     {
         public string StoreFile { get; set; }
+        public string StoreFileProof { get; set; }
     }
 }

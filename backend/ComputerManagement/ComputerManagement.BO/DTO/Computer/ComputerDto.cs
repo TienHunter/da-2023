@@ -11,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.BO.DTO
 {
-    public class ComputerDto
+    public class ComputerDto:BaseDto
     {
-        public Guid Id { get; set; }
         [Required]
         public string MacAddress { get; set; }
         [Required]
@@ -47,12 +46,6 @@ namespace ComputerManagement.BO.DTO
         [Required]
         public Guid ComputerRoomId { get; set; }
         public ComputerRoomDto? ComputerRoom { get; set; } = null;
-
-        [JsonIgnore]
-        public ComputerSoftwareDto? ComputerSoftwares { get; set; } = null;
-        public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public List<ComputerSoftwareDto>? ComputerSoftwares { get; set; } = null;
     }
 }

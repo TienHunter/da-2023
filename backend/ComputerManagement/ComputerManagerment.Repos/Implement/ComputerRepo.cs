@@ -105,7 +105,7 @@ namespace ComputerManagerment.Repos.Implement
 
         public async Task<(List<Computer>, int)> GetListBySoftwareIdAsync(Guid softwareId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
-            var query = _dbSet.AsQueryable().Include(c => c.ComputerRoom).Include(c => c.ComputerSofewares.Where(cs => cs.SoftwareId == softwareId)).Where(c => true);
+            var query = _dbSet.AsQueryable().Include(c => c.ComputerRoom).Include(c => c.ComputerSoftwares.Where(cs => cs.SoftwareId == softwareId)).Where(c => true);
             var entities = new List<Computer>();
 
             if (!string.IsNullOrEmpty(keySearch))

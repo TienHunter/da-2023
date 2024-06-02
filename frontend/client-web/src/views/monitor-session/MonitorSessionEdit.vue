@@ -245,7 +245,7 @@ const onSubmit = async (key) => {
       } catch (error) {
          console.log(error);
          switch (error?.Code) {
-            case ResponseCode.ComputerRoomNameConflic:
+            case ResponseCode.ConflicComputerRoomName:
                isCallCheck.value = true;
                await formRef.value.validateFields("name");
                break;

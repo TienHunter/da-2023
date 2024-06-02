@@ -9,9 +9,6 @@
               {{ $t("SelectCount", [selectRows.selectedRowKeys.length]) }}
             </template>
           </span>
-          <a-button danger @click="deleteMultiRecords">
-            {{ $t("Delete") }}
-          </a-button>
         </div>
       </div>
       <div class="operations-right flex gap-2">
@@ -23,7 +20,8 @@
         <a-input v-model:value="searchText" :placeholder="$t('ComputerRoom.SearchListHint')" allow-clear
           style="width: 200px" />
 
-        <a-button type="primary" @click="navigateAdd">{{ $t("Add") }}</a-button>
+        <a-button type="primary" v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => navigateAdd()">{{
+          $t("Add") }}</a-button>
       </div>
     </div>
     <div class="content">
@@ -53,12 +51,13 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round @click="navigateEdit(record)">
+              <a-button round v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => navigateEdit(record)">
                 <template #icon>
                   <EditOutlined />
                 </template>
               </a-button>
-              <a-button round class="bg-red-200" @click="onDelete(record)">
+              <a-button round class="bg-red-200" v-has-permission="`${UserRole.Admin}`"
+                v-passPermissionClick="() => onDelete(record)">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -79,7 +78,7 @@ import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { computerRoomService, computerService } from "../../api";
 import util from "@/utils/util";
-import { ComputerKey, FormatDateKey } from "@/constants";
+import { ComputerKey, FormatDateKey, UserRole } from "@/constants";
 // ========== start state ==========
 const router = useRouter();
 const [modal, contextHolder] = Modal.useModal();
@@ -311,33 +310,33 @@ const refreshGrid = async () => {
 // const onAdd = () => {
 //   router.push({ name: "ComputerRoomAdd" });
 // };
-const deleteMultiRecords = () => {
-  modal.confirm({
-    title: "Cảnh báo",
-    icon: h(ExclamationCircleOutlined),
-    content: h("div", [
-      `Bạn có chắc chắn muốn xóa ${selectRows.selectedRowKeys.length} máy.`
-    ]),
-    okText: $t("Yes"),
-    okText: $t("Cancel"),
-    okType: "danger",
-    async onOk() {
-      try {
-        let rs = await computerService.deleteRange(selectRows.selectedRowKeys);
-        if (rs?.success && rs?.data) {
-          message.success($t("DeleteSuccess"));
-          pagingParam.pageNumber = 1;
-          selectRows.selectedRowKeys = [];
-          await loadData();
-        }
-      } catch (errors) {
-        message.error($t("UnknownError"));
-        console.log(errors);
-      }
-    },
-    onCancel() { },
-  });
-}
+// const deleteMultiRecords = () => {
+//   modal.confirm({
+//     title: "Cảnh báo",
+//     icon: h(ExclamationCircleOutlined),
+//     content: h("div", [
+//       `Bạn có chắc chắn muốn xóa ${selectRows.selectedRowKeys.length} máy.`
+//     ]),
+//     okText: $t("Yes"),
+//     okText: $t("Cancel"),
+//     okType: "danger",
+//     async onOk() {
+//       try {
+//         let rs = await computerService.deleteRange(selectRows.selectedRowKeys);
+//         if (rs?.success && rs?.data) {
+//           message.success($t("DeleteSuccess"));
+//           pagingParam.pageNumber = 1;
+//           selectRows.selectedRowKeys = [];
+//           await loadData();
+//         }
+//       } catch (errors) {
+//         message.error($t("UnknownError"));
+//         console.log(errors);
+//       }
+//     },
+//     onCancel() { },
+//   });
+// }
 // ========== end methods ==========
 </script>
 <style scoped>

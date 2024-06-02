@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerManagement.Api.Controllers.Agent
 {
-    public class CommandOptionController(ICommandOptionService commandOptionService) : BaseController<CommandOption, CommandOption>(commandOptionService)
+    public class CommandOptionController(ICommandOptionService commandOptionService) : BaseController<CommandOptionDto, CommandOption>(commandOptionService)
     {
         private readonly ICommandOptionService _commandOptionService = commandOptionService;
 

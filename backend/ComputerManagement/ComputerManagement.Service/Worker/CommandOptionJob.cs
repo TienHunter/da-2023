@@ -28,15 +28,9 @@ namespace ComputerManagement.Service.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
                 var dbContext = _contextFactory.CreateDbContext();
                 var listener = new SubcribeCommandOption(dbContext);
-                //listener.ReceiveFromQueue(_rbConfig);
-
-                // Giả sử bạn cần một khoảng delay hoặc hành động lặp lại
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-            }
+                listener.ReceiveFromQueue(_rbConfig);
         }
     }
 }

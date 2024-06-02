@@ -5,9 +5,10 @@
          <div class="operations-right flex gap-2">
             <a-input-search v-model:value="pagingParam.keySearch" placeholder="input search text" style="width: 200px"
                :loading="loading.loadingInputSearch" @search="onSearch" />
-            <router-link :to="{ name: 'SoftwareAdd' }">
-               <a-button type="primary">{{ $t("Add") }}</a-button>
-            </router-link>
+
+            <a-button type="primary" v-has-permission="`${UserRole.Admin}`"
+               v-passPermissionClick="() => navigateAdd()">{{ $t("Add") }}</a-button>
+
          </div>
       </div>
       <div class="content">
@@ -37,12 +38,14 @@
                </template>
                <template v-else-if="column.key === 'operation'">
                   <div class="flex gap-2">
-                     <a-button round @click="navigatorEdit(record)">
+                     <a-button round v-has-permission="`${UserRole.Admin}`"
+                        v-passPermissionClick="() => navigatorEdit(record)">
                         <template #icon>
                            <EditOutlined />
                         </template>
                      </a-button>
-                     <a-button round class="bg-red-200" @click="onDelete(record)">
+                     <a-button round class="bg-red-200" v-has-permission="`${UserRole.Admin}`"
+                        v-passPermissionClick="() => onDelete(record)">
                         <template #icon>
                            <DeleteOutlined />
                         </template>
@@ -246,6 +249,10 @@ const onDelete = (record) => {
       onCancel() { },
    });
 };
+
+const navigateAdd = () => {
+   router.push({ name: "SoftwareAdd" });
+}
 // ========== end methods ==========
 </script>
 <style lang="scss">

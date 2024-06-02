@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.BO.DTO
 {
-    public class ComputerRoomDto
+    public class ComputerRoomDto : BaseDto
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
 
         /// <summary>
@@ -30,11 +29,7 @@ namespace ComputerManagement.BO.DTO
         public int CurrentInstalledSoftware { get; set; }
         public int CurrentActiveSoftware { get; set; }
         [JsonIgnore]
-        public List<Computer> Computers { get; set; } = new List<Computer>();
-        public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public List<ComputerDto> Computers { get; set; } = new List<ComputerDto>();
 
     }
 }

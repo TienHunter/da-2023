@@ -6,7 +6,6 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Hubs;
 using ComputerManagement.Service.Interface;
-using ComputerManagement.Service.Websocket;
 using ComputerManagerment.Repos.Implement;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.SignalR;

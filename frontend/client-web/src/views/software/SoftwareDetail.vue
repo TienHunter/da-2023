@@ -4,7 +4,8 @@
       <div class="tool-bars__left">
       </div>
       <div class="tool-bars__right">
-        <a-button type="primary" @click="navigateEdit">{{ $t("Edit") }}</a-button>
+        <a-button type="primary" v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => navigateEdit()">{{
+          $t("Edit") }}</a-button>
       </div>
     </div>
     <div class="content pt-4">
@@ -46,7 +47,8 @@
           </div>
           <div class="detail-toolbars__right">
             <!-- to do -->
-            <a-button type="primary" @click="openFileQuickAddModal">
+            <a-button type="primary" v-has-permission="`${UserRole.Admin}`"
+              v-passPermissionClick="() => openFileQuickAddModal()">
               <template #icon>
                 <PlusOutlined />
               </template>
@@ -61,12 +63,7 @@
           }" :data-source="dataFiles" :pagination="false" :scroll="scrollConfig" :loading="loading.loadingTable"
             @change="handleTableChange">
             <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'name'">
-                <router-link :to="{ name: 'SoftwareView', params: { id: record.id } }">
-                  {{ record.name }}
-                </router-link>
-              </template>
-              <template v-else-if="column.key === 'softwareName'">
+              <template v-if="column.key === 'softwareName'">
                 {{ record?.software?.name }}
               </template>
               <template v-else-if="column.key === 'fileSize'">
@@ -115,7 +112,7 @@ import { useRoute, useRouter } from "vue-router";
 import _ from "lodash";
 import moment from "moment";
 import { Modal, message } from "ant-design-vue";
-import { FormatDateKey } from "@/constants";
+import { FormatDateKey, UserRole } from "@/constants";
 import { fileService, softwareService } from "@/api";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import FileQuickAddModal from "../file-manager/FileQuickAddModal.vue";
@@ -216,7 +213,7 @@ const columnFiles = [
     width: "150px",
   },
   {
-    title: "Action",
+    title: $t("Action"),
     dataIndex: "operation",
     key: "operation",
     width: "100px",

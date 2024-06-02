@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.BO.DTO
 {
-    public class UserDto
+    public class UserDto : BaseDto
     {
         public Guid Id { get; set; }
         public string Username { get; set; }

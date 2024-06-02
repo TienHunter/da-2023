@@ -1,4 +1,5 @@
 ﻿
+using ComputerManagement.BO.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,8 +15,15 @@ namespace ComputerManagement.BO.Models
         [ForeignKey("Computer")]
         public Guid ComputerId { get; set;}
         public Computer Computer { get; set;}
+
+        [ForeignKey("SoftwareModel")]
         public Guid SoftwareId { get; set;}
-        public string SoftwareName { get; set;}
+        public SoftwareModel? Software { get; set; }
+
+        /// <summary>
+        /// đã tải file cài đặt chưa
+        /// </summary>
+        public bool IsDowloadFile { get; set; }
         /// <summary>
         /// phần mềm đã được cài đặt chưa
         /// </summary>

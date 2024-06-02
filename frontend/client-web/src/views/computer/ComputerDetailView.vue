@@ -3,9 +3,9 @@
     <div class="toolbars flex justify-between">
       <div class="toolbar-left"></div>
       <div class="toolbar-right">
-        <router-link :to="{ name: 'ComputerEdit', params: { id: route.params.id } }">
-          <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
-        </router-link>
+        <a-button type="primary" ghost v-has-permission="`${UserRole.Admin}`"
+          v-passPermissionClick="() => navigateEdit()">{{ $t("Edit") }}</a-button>
+
       </div>
     </div>
     <a-row :gutter="[16, 24]">
@@ -41,7 +41,7 @@ import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import _ from "lodash";
 import { message } from "ant-design-vue";
-import { ResponseCode, FormatDateKey, ComputerKey } from "@/constants";
+import { ResponseCode, FormatDateKey, ComputerKey, UserRole } from "@/constants";
 import { util } from "@/utils";
 const route = useRoute();
 const router = useRouter();
@@ -120,5 +120,9 @@ onBeforeMount(async () => {
     loading.isLoadingBeforeMount = false;
   }
 });
+
+const navigateEdit = () => {
+  router.push({ name: "ComputerEdit", params: { id: route.params.id } })
+}
 </script>
 <style></style>

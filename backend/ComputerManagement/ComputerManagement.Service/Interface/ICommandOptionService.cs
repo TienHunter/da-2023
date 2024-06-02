@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Interface
 {
-    public interface ICommandOptionService : IBaseService<CommandOption, CommandOption>
+    public interface ICommandOptionService : IBaseService<CommandOptionDto, CommandOption>
     {
         /// <summary>
         /// upsert lệnh vào db qua queue

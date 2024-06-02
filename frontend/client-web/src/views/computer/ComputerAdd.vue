@@ -12,8 +12,9 @@
           </router-link>
         </div>
         <div class="toolbars-right flex gap-2">
-          <a-button type="primary" ghost @click="onSubmit" :loading="loading.isLoadingSave">{{ $t("Save") }}</a-button>
-          <a-button type="primary" @click="onSubmit">{{
+          <a-button type="primary" ghost :loading="loading.isLoadingSave" v-has-permission="`${UserRole.Admin}`"
+            v-passPermissionClick="() => onSubmit(1)">{{ $t("Save") }}</a-button>
+          <a-button type="primary" v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => onSubmit(2)">{{
             $t("SaveAndAdd")
           }}</a-button>
           <a-button @click="resetForm">{{ $t("Cancel") }}</a-button>
@@ -61,7 +62,7 @@ import {
   useRouter,
 } from "vue-router";
 import { computerRoomService, computerService } from "@/api";
-import { ResponseCode, FormMode } from "../../constants";
+import { ResponseCode, FormMode, UserRole } from "../../constants";
 import { message } from "ant-design-vue";
 import { ComputerKey } from "@/constants";
 const route = useRoute();
@@ -244,19 +245,22 @@ watch(() => formState.computerRoomId, () => {
   computerRoomSelect.value = listComputerRoom.value.find(cr => cr.id = formState.computerRoomId);
 })
 
-const onSubmit = async () => {
-  let passValidate = false;
+const onSubmit = async (key) => {
   try {
     loading.isLoadingSave = true;
     await formRef.value.validate();
-    passValidate = true;
     try {
       let rs = await computerService.add(formState);
       if (rs?.success && rs?.data) {
-        router.push({
-          name: "ComputerView",
-          params: { id: rs.data },
-        });
+        if (key == 2) {
+          resetForm();
+        } else {
+          router.push({
+            name: "ComputerView",
+            params: { id: rs.data },
+          });
+        }
+
       }
     } catch (error) {
       console.log(error);

@@ -12,9 +12,10 @@
           </router-link>
         </div>
         <div class="toolbars-right flex gap-2">
-          <a-button type="primary" ghost @click="onSubmit(1)" :loading="loading.isLoadingSave">{{ $t("Save")
+          <a-button type="primary" ghost :loading="loading.isLoadingSave" v-has-permission="`${UserRole.Admin}`"
+            v-passPermissionClick="() => onSubmit(1)">{{ $t("Save")
             }}</a-button>
-          <a-button type="primary" @click="onSubmit(2)">{{
+          <a-button type="primary" v-has-permission="`${UserRole.Admin}`" v-passPermissionClick="() => onSubmit(2)">{{
             $t("SaveAndAdd")
           }}</a-button>
           <a-button @click="resetForm">{{ $t("Cancel") }}</a-button>
@@ -49,7 +50,7 @@ import {
   useRouter,
 } from "vue-router";
 import { computerRoomService } from "@/api";
-import { ResponseCode, FormMode } from "../../constants";
+import { ResponseCode, FormMode, UserRole } from "../../constants";
 import { message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -225,7 +226,7 @@ const onSubmit = async (key) => {
     } catch (error) {
       console.log(error);
       switch (error?.Code) {
-        case ResponseCode.ComputerRoomNameConflic:
+        case ResponseCode.ConflicComputerRoomName:
           isCallCheck.value = true;
           await formRef.value.validateFields("name");
           break;

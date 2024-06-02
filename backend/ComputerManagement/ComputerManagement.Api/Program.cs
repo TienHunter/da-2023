@@ -19,7 +19,6 @@ using ComputerManagement.Service.Interface;
 using Newtonsoft.Json;
 using ComputerManagement.Service.Worker;
 using ComputerManagement.Service.Queue;
-using ComputerManagement.Service.Websocket;
 using Microsoft.AspNetCore.WebSockets;
 using ComputerManagement.Service.Hubs;
 var builder = WebApplication.CreateBuilder(args);
@@ -139,6 +138,12 @@ builder.Services.AddScoped<ICommandOptionRepo, CommandOptionRepo>();
 builder.Services.AddScoped<IComputerSoftwareRepo, ComputerSoftwareRepo>();
 builder.Services.AddScoped<IComputerSoftwareService, ComputerSoftwareService>();
 
+builder.Services.AddScoped<IConfigOptionRepo, ConfigOptionRepo>();
+builder.Services.AddScoped<IConfigOptionService, ConfigOptionService>();
+
+builder.Services.AddScoped<IAgentRepo, AgentRepo>();
+builder.Services.AddScoped<IAgentService, AgentService>();
+
 
 builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
@@ -178,12 +183,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<AuthMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AuthMiddleware>();
+app.UseMiddleware<AuthMiddleware>();
 app.MapControllers();
 app.MapHub<MonitorSessionHub>("/ws");
 

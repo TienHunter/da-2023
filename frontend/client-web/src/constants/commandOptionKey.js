@@ -1,3 +1,4 @@
 export default {
-   DowloadSoftware: "DowloadSoftware",
+   CHECK_DOWLOAD_SOFTWARE: "CHECK_DOWLOAD_SOFTWARE",
+   CHECK_INSTALL_SOFTWARE: "CHECK_INSTALL_SOFTWARE",
 }

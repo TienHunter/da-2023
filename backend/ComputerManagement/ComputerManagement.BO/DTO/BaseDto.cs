@@ -8,7 +8,7 @@ namespace ComputerManagement.BO.DTO
 {
     public class BaseDto
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set;}
     }

@@ -30,8 +30,8 @@
                 </template>
                 <template v-else>
                   <div class="flex items-center justify-center">
-                    <a-button type="dashed" shape="cycle" @click="openQuickAddComputerModal(col, row)"
-                      :disabled="!props.isEditAble">
+                    <a-button type="dashed" shape="cycle" v-has-permission="`${UserRole.Admin}`"
+                      v-passPermissionClick="() => openQuickAddComputerModal(col, row)" :disabled="!props.isEditAble">
                       <template #icon>
                         <PlusOutlined />
                       </template>
@@ -66,7 +66,7 @@ import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import moment from "moment";
-import { ActionTypeSocket, FormatDateKey } from "@/constants";
+import { ActionTypeSocket, FormatDateKey, UserRole } from "@/constants";
 import ComputerQuickAddModal from "../computer/ComputerQuickAddModal.vue";
 import ComputerQuickViewModal from "../computer/ComputerQuickViewModal.vue";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";

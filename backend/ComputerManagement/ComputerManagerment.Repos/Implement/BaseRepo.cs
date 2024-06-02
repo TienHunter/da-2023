@@ -1,4 +1,5 @@
 ﻿using ComputerManagement.BO;
+using ComputerManagement.BO.Models;
 using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,11 @@ namespace ComputerManagerment.Repos.Implement
         {
             _dbSet.RemoveRange(entities);
             return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            return await _dbContext.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
         }
     }
 }

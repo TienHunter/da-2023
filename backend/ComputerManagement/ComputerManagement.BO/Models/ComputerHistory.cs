@@ -10,17 +10,13 @@ using System.Threading.Tasks;
 namespace ComputerManagement.BO.Models
 {
     [Table("computer_history")]
-    public class ComputerHistory
+    public class ComputerHistory : BaseModel
     {
-        [Key]
-        public Guid Id { get; set; }
         public string Message { get; set; }
         public DateTime LogTime { get; set; }
         public ComputerLevelLog Level { get; set; }
         public Guid ComputerId { get; set; }
         public Guid ComputerRoomId { get; set; }
         public Guid MonitorSessionId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

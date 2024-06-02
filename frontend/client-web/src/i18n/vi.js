@@ -18,6 +18,8 @@ export default {
    DeleteSuccess: "Xóa thành công",
    On: "Bật",
    Off: "Tắt",
+   NotPermission: "Bạn không có quyền thực hiện chức năng này",
+   SearchHinht: "Nhập từ khóa...",
    Validate: {
       Required: "Vui lòng nhập {0}",
       AlreadyExist: "{0} đã tồn tại",
@@ -117,12 +119,17 @@ export default {
       ComputerInfoTitle: "Thông tin máy",
       Row: "Vị trí hàng",
       Col: "Vị trí cột",
+      OS: "Hệ điều hành",
+      CPU: "Chip",
+      RAM: "RAM",
+      HardDriver: "Ổ cứng",
       Condition: "Tình trạng máy",
       DeleteSuccess: "Xóa máy {0} ở phòng máy {1} thành công",
       State: "Trạng thái",
       StateTime: "Cập nhật trạng thái lần cuối",
       IsDowloaded: "Đã tải",
       IsInstalled: "Đã cài đặt",
+      ListSoftware: "Danh sách phần mềm",
       ConditionKey: {
          Perfect: "Hoàn hảo",
          Good: "Tốt",
@@ -190,6 +197,27 @@ export default {
          Exam: "Kiểm tra"
       }
    },
+   ConfigOption: {
+      OptionName: "Key cấu hình",
+      OptionValue: "Giá trị",
+      IsSystem: "Hệ thống",
+      IsAgent: "Agent",
+      Desc: "Mô tả",
+      CreatedAt: "Ngày tạo",
+      UpdatedAt: "Ngày cập nhật",
+      AddTitle: "Thêm thiết lập",
+      EditTtile: "Sửa thiết lập",
+      Validate: {
+         ConflicOptionName: "Tên thiết lập đã tồn tại",
+         CantEditOptionNameSystem: "Không thể sửa tên của thiết lập hệ thống"
+      }
+   },
+   Agent: {
+      Version: "Phiên bản",
+      IsUpdate: "Cập nhật",
+      FileName: "Tên file",
+      Size: "Dung lượng"
+   },
    Sidebar: {
       Dashboard: "Tổng quan",
       ComputerRoomManager: "Quản lý phòng máy",
@@ -197,7 +225,9 @@ export default {
       UserManager: "Quản lý người dùng",
       SoftwareManager: "Quản lý phần mềm",
       FileManager: "Quản lý file cài",
-      MonitorSessionManager: "Quản lý phiên giám sát"
+      MonitorSessionManager: "Quản lý phiên giám sát",
+      ConfigOptionManager: "Quản lý cấu hình",
+      AgentManager: "Quản lý agent",
    }
 
 }

@@ -14,11 +14,19 @@ namespace ComputerManagement.Api.Controllers.Agent
         private readonly IComputerSoftwareService _computerSoftwareService = computerSoftwareService;
 
 
-        [HttpPost("Upsert")]
-        public async Task<IActionResult> Upsert([FromBody] ComputerSoftwareDto computerSoftwareDto)
+        [HttpPost("UpsertDowloadSoftware")]
+        public async Task<IActionResult> UpsertDowloadSoftware([FromBody] ComputerSoftwareDto computerSoftwareDto)
         {
             var rs = new ServiceResponse();
-            rs.Data = await _computerSoftwareService.UpsertAsync(computerSoftwareDto);
+            rs.Data = await _computerSoftwareService.UpsertAsync(computerSoftwareDto, "dowload");
+            return Ok(rs);
+        }
+
+        [HttpPost("UpsertInstallSoftware")]
+        public async Task<IActionResult> UpsertInstallSoftware([FromBody] ComputerSoftwareDto computerSoftwareDto)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _computerSoftwareService.UpsertAsync(computerSoftwareDto, "install");
             return Ok(rs);
         }
     }
