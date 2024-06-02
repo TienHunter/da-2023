@@ -15,5 +15,18 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <returns></returns>
         Task<AgentDto> GetFirstAsync();
+
+        /// <summary>
+        /// insert or update thông tin agent
+        /// </summary>
+        /// <param name="agentFormData"></param>
+        /// <returns></returns>
+        Task<Guid> UpsertAgentAsync(AgentFormData agentFormData);
+
+        /// <summary>
+        /// lấy file của agent
+        /// </summary>
+        /// <returns></returns>
+        Task<(byte[], string?)> GetFileAgentAsync();
     }
 }

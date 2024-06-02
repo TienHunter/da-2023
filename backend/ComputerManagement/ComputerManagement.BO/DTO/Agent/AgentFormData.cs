@@ -17,6 +17,10 @@ namespace ComputerManagement.BO.DTO.Agent
         /// </summary>
         [Required]
         public string Version { get; set; }
+        /// <summary>
+        /// version
+        /// </summary>
+        public bool IsUpdate { get; set; }
 
         /// <summary>
         /// file

@@ -216,7 +216,9 @@ export default {
       Version: "Phiên bản",
       IsUpdate: "Cập nhật",
       FileName: "Tên file",
-      Size: "Dung lượng"
+      Size: "Dung lượng",
+      AddAgentTitle: "Thêm agent",
+      EditAgentTitle: "Sửa agent",
    },
    Sidebar: {
       Dashboard: "Tổng quan",

@@ -144,5 +144,12 @@ namespace ComputerManagement.Common.Enums
         /// </summary>
         CantEditOptionNameSystem=29,
 
+        /// <summary>
+        /// file không hợp lệ
+        /// </summary>
+        InvalidFile=30,
+
+        NotFoundAgent=31,
+
     }
 }

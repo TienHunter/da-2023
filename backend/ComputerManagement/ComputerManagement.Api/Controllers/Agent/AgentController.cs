@@ -1,18 +1,16 @@
-﻿
+﻿using ComputerManagement.API.Controllers.Agent;
 using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.DTO.Agent;
-using ComputerManagement.BO.DTO.File;
 using ComputerManagement.BO.Models;
-using ComputerManagement.Controllers.Web;
 using ComputerManagement.Service.Implement;
 using ComputerManagement.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
-namespace ComputerManagement.Api.Controllers.Web
+namespace ComputerManagement.Api.Controllers.Agent
 {
-
-    public class AgentController(IAgentService agentService) : BaseController<AgentDto,AgentModel>(agentService)
+    public class AgentController(IAgentService agentService) : BaseController<AgentDto, AgentModel>(agentService)
     {
         private readonly IAgentService _agentService = agentService;
         [HttpGet("GetFirst")]
@@ -23,12 +21,15 @@ namespace ComputerManagement.Api.Controllers.Web
             return Ok(rs);
         }
 
-        [HttpPost("UpsertAgent")]
-        public async Task<IActionResult> UpsertAgent([FromForm] AgentFormData agentFormData)
+        [HttpGet("GetFile")]
+        public async Task<IActionResult> GetFile()
         {
-            var rs = new ServiceResponse();
-            rs.Data = await _agentService.UpsertAgentAsync(agentFormData);
-            return Ok(rs);
+            // do something
+
+            var (bytes, contentType) = await _agentService.GetFileAgentAsync();
+
+            return File(bytes, contentType);
         }
+
     }
 }

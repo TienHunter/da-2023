@@ -9,5 +9,9 @@ class AgentService extends baseService {
    async getFirst() {
       return await instance.get(`${this.getEndpoint()}/GetFirst`);
    }
+
+   async upsertAgent(formData) {
+      return await instance.post(`${this.getEndpoint()}/UpsertAgent`, formData)
+   }
 }
 export default new AgentService();

@@ -70,22 +70,19 @@ namespace ComputerManagement.Service.Implement
         public virtual async Task<Guid> BeforeAddAsync(TModel model)
         {
             var newId = Guid.NewGuid();
-
-            var baseModel = model as BaseModel;
-            baseModel.Id = newId;
-            baseModel.CreatedBy = _contextData.Fullname;
-            baseModel.CreatedAt = DateTime.Now;
-            baseModel.UpdatedBy = _contextData.Fullname;
-            baseModel.UpdatedAt = DateTime.Now;
+            model.Id = newId;
+            model.CreatedBy = _contextData.Fullname;
+            model.CreatedAt = DateTime.Now;
+            model.UpdatedBy = _contextData.Fullname;
+            model.UpdatedAt = DateTime.Now;
 
             return newId;
 
         }
         public virtual async Task BeforeUpdateAsync(TModel model)
         {
-            var baseModel = model as BaseModel;
-            baseModel.UpdatedBy = _contextData.Fullname;
-            baseModel.UpdatedAt = DateTime.Now;
+            model.UpdatedBy = _contextData.Fullname;
+            model.UpdatedAt = DateTime.Now;
         }
 
         public virtual async Task<bool> DeleteAsync(Guid id)
