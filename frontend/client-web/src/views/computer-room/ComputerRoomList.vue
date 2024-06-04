@@ -89,7 +89,7 @@ const columns = computed(() => {
   const sorted = sortedInfo.value || {};
   return [
     {
-      title: "Name",
+      title: $t("ComputerRoom.Name"),
       dataIndex: "name",
       key: "name",
       width: "100px",
@@ -98,27 +98,27 @@ const columns = computed(() => {
       fixed: "left",
     },
     {
-      title: "Số dãy",
+      title: $t("ComputerRoom.Row"),
       dataIndex: "row",
       key: "row",
       width: "100px",
 
     },
     {
-      title: "Số lượng máy trên 1 dãy",
+      title: $t("ComputerRoom.Col"),
       dataIndex: "col",
       key: "col",
       width: "160px",
       ellipsis: true,
     },
     {
-      title: "Số máy",
+      title: $t("ComputerRoom.CurrentCapacity"),
       dataIndex: "capacity",
       key: "capacity",
       width: "150px",
     },
     {
-      title: "Action",
+      title: $t("Action"),
       dataIndex: "operation",
       key: "operation",
       width: "100px",
@@ -174,8 +174,6 @@ const loadData = async () => {
     let rs = await computerRoomService.getList(pagingParam);
     if (rs && rs.success && rs.data) {
       let temp = rs.data.list?.map((item) => {
-        item.colorState = util.genColorState("state", item.state);
-        item.textState = util.genTextState("state", item.state);
         item.capacity = `${item.currentCapacity || 0}/${item.maxCapacity || 0
           }`;
         return item;

@@ -40,9 +40,9 @@
                </template>
                <template v-else-if="column.key === 'operation'">
                   <div class="flex gap-2">
-                     <a-button round>
+                     <a-button round @click="viewDetail(record)">
                         <template #icon>
-                           <EditOutlined />
+                           <EyeOutlined />
                         </template>
                      </a-button>
                      <a-button round class="bg-red-200" @click="onDelete(record)">
@@ -137,7 +137,7 @@ const columns = computed(() => {
          width: "150px",
       },
       {
-         title: "Action",
+         title: $t("Action"),
          dataIndex: "operation",
          key: "operation",
          width: "100px",
@@ -204,8 +204,6 @@ const loadData = async () => {
       let rs = await monitorSessionService.getListByComputerRoomId(route.params.id, pagingParam);
       if (rs.success && rs.data) {
          let temp = rs.data.list?.map((item) => {
-            item.colorState = util.genColorState("state", item.state);
-            item.textState = util.genTextState("state", item.state);
             item.computerRoomName = item?.computerRoom?.name;
             item.startDate = item.startDate ? dayjs(item.startDate).format(FormatDateKey.Default) : "";
             item.endDate = item.endDate ? dayjs(item.endDate).format(FormatDateKey.Default) : "";
@@ -270,31 +268,20 @@ const onDelete = (record) => {
       title: "Cảnh báo",
       icon: h(ExclamationCircleOutlined),
       content: h("div", [
-         `Bạn có chắc chắn muốn xóa phòng máy ${record.name}.`,
+         `Bạn có chắc chắn muốn xóa phiên giám sát ở phòng máy ${record.computerRoomName} `,
          h("br"),
-         `Khi xóa phòng
-           máy thì thông tin các máy trong phòng và các thông tin liên quan sẽ bị
-           xóa đi.`,
+         `Thời gian: ${record.startDate} - ${record.endDate}`,
       ]),
       okText: "Yes",
       okType: "danger",
       async onOk() {
          try {
-            let rs = await computerRoomService.delete(record.id);
+            let rs = await monitorSessionService.delete(record.id);
             if (rs?.success && rs?.data) {
-               message.success($t("ComputerRoom.DeleteSuccess", [record.name]));
-               if (dataSource.value.length > 1) {
-                  let indexToDelete = dataSource.value.findIndex(
-                     (item) => item.id === record.id
-                  );
-                  if (indexToDelete != -1) {
-                     dataSource.value.splice(indexToDelete, 1);
-                     pagingParam.total -= 1;
-                  }
-               } else {
-                  pagingParam.pageNumber = 1;
-                  await loadData();
-               }
+               message.success($t("DeleteSuccess"));
+               pagingParam.pageNumber = 1;
+               await loadData();
+
             }
          } catch (errors) {
             message.error($t("UnknownError"));
@@ -325,6 +312,14 @@ const refreshGrid = async () => {
    pagination.pageSize = 20;
    pagination.pageNumber = 1;
    await loadData();
+}
+
+/**
+ * xem chi tiết
+ * @param item 
+ */
+const viewDetail = (item) => {
+   router.push({ name: "MonitorSessionView", params: { id: item.id } })
 }
 // ========== end methods ==========
 </script>

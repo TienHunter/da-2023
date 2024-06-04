@@ -36,11 +36,6 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round>
-                <template #icon>
-                  <EditOutlined />
-                </template>
-              </a-button>
               <a-button round class="bg-red-200" @click="onDelete(record)">
                 <template #icon>
                   <DeleteOutlined />
@@ -209,7 +204,10 @@ const onDelete = (record) => {
     title: "Cảnh báo",
     icon: h(ExclamationCircleOutlined),
     content: h("div", [
-      `Bạn có chắc chắn muốn xóa file cài ${record.fileName} của phần mềm ${record?.software.name}.`
+      `Bạn có chắc chắn muốn xóa file cài `,
+      h("b", record.fileName),
+      ` của phần mềm `,
+      h("b", record?.software.name)
     ]),
     okText: "Yes",
     okType: "danger",

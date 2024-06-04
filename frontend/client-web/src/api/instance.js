@@ -3,7 +3,7 @@ import axios from "axios";
 import router from "@/routers";
 import { localStore } from "../utils";
 import { LocalStorageKey } from "../constants";
-const BASE_URL = "https://localhost:44313/api-web/";
+const BASE_URL = `${process.env.VUE_APP_API_BASE_URL}/api-web`;
 const instance = axios.create({
    baseURL: BASE_URL, // Thay thế bằng URL của API thực tế
    // Các cấu hình khác của Axios

@@ -3,7 +3,7 @@
       <div class="container-content">
          <div class="toolbars flex justify-between p-4 rounded">
             <div class="toolbars-left">
-               <router-link :to="{ name: 'SoftwareList' }">
+               <router-link :to="{ name: 'FileList' }">
                   <a-button shape="circle">
                      <template #icon>
                         <ArrowLeftOutlined />

@@ -73,6 +73,9 @@ export default {
       State: "Tình trang",
       StateHint: "Vui lòng chọn tình trạng phòng máy",
       SearchListHint: "Nhập tên phòng máy...",
+      CurrentCapacity: "Số máy",
+      CreatedAt: "Ngày tạo",
+      UpdatedAt: "Ngày cập nhật",
       Validate: {
          NameRequired: "Vui lòng nhập tên phòng máy",
          NameConflic: "Tên phòng máy đã tồn tại",

@@ -14,16 +14,11 @@
             <a-col class="gutter-row" :span="6">
               <label class="font-bold">{{ field.title }}</label>
             </a-col>
-
-            <a-col v-if="field.key == 'capacity'" class="gutter-row" :span="18">
-              <div class="gutter-box">{{ data[field.key] }}</div>
-            </a-col>
-            <a-col v-else class="gutter-row" :span="18">
+            <a-col class="gutter-row" :span="18">
               <div class="gutter-box">{{ data[field.key] }}</div>
             </a-col>
           </template>
         </a-row>
-        {{ data }}
       </div>
     </div>
   </div>
@@ -34,27 +29,43 @@ import { ref, reactive, onBeforeMount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import _ from "lodash";
 import { message } from "ant-design-vue";
-import { ResponseCode, UserRole } from "@/constants";
+import { FormatDateKey, ResponseCode, UserRole } from "@/constants";
 import { util } from "@/utils";
+import moment from "moment";
 const route = useRoute();
 const router = useRouter();
 const fields = reactive([
   {
-    title: "Name",
+    title: $t("ComputerRoom.Name"),
     dataIndex: "name",
     key: "name",
   },
   {
-    title: "Layout",
-    dataIndex: "layout",
-    key: "layout",
+    title: $t("ComputerRoom.Row"),
+    dataIndex: "row",
+    key: "row",
+
   },
   {
-    title: "Capacity",
+    title: $t("ComputerRoom.Col"),
+    dataIndex: "col",
+    key: "col",
+  },
+  {
+    title: $t("ComputerRoom.CurrentCapacity"),
     dataIndex: "capacity",
     key: "capacity",
   },
-
+  {
+    title: $t("ComputerRoom.CreatedAt"),
+    dataIndex: "createdAt",
+    key: "createdAt",
+  },
+  {
+    title: $t("ComputerRoom.UpdatedAt"),
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+  },
 ]);
 let data = ref({});
 const loading = reactive({
@@ -65,24 +76,9 @@ onBeforeMount(async () => {
     loading.isLoadingBeforeMount = true;
     let computerRoom = await computerRoomService.getById(route.params.id);
     if (computerRoom?.success && computerRoom?.data) {
-      computerRoom.data.colorState = util.genColorState(
-        "state",
-        computerRoom.data.state
-      );
-      computerRoom.data.textState = util.genTextState(
-        "state",
-        computerRoom.data.state
-      );
-      computerRoom.data.capacity = `${computerRoom.data.currentCapacity || 0
-        }/${computerRoom.data.maxCapacity || 0}`;
-      computerRoom.data.colorPending = computerRoom.data.pending
-        ? "orange"
-        : "green";
-      computerRoom.data.textPending = computerRoom.data.pending
-        ? "chật"
-        : "trống";
-      computerRoom.data.layout = `${computerRoom.data.row || 0} x ${computerRoom.data.col || 0
-        }`;
+      computerRoom.data.capacity = `${computerRoom.data.currentCapacity || 0}/${computerRoom.data.maxCapacity || 0}`;
+      computerRoom.data.createdAt = computerRoom.data.createdAt ? moment(computerRoom.data.createdAt).format(FormatDateKey.Default) : "";
+      computerRoom.data.updatedAt = computerRoom.data.updatedAt ? moment(computerRoom.data.updatedAt).format(FormatDateKey.Default) : "";
       data.value = _.cloneDeep(computerRoom.data);
     }
   } catch (error) {

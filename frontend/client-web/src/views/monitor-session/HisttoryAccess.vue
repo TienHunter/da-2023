@@ -111,7 +111,7 @@ const onUseSocket = () => {
   // còn phiêm thì mới mở socket
   if (props.isHasSession) {
     // lắng nghe socket
-    const conn = new HubConnectionBuilder().withUrl("https://localhost:44313/ws").configureLogging(LogLevel.Information).withAutomaticReconnect().build();
+    const conn = new HubConnectionBuilder().withUrl(`${process.env.VUE_APP_API_BASE_URL}/ws`).configureLogging(LogLevel.Information).withAutomaticReconnect().build();
     conn.start()
       .then(() => {
         console.log("SignalR connection established:");

@@ -48,11 +48,6 @@
                            <EyeOutlined />
                         </template>
                      </a-button>
-                     <a-button round>
-                        <template #icon>
-                           <EditOutlined />
-                        </template>
-                     </a-button>
                      <a-button round class="bg-red-200" @click="onDelete(record)">
                         <template #icon>
                            <DeleteOutlined />
@@ -142,7 +137,7 @@ const columns = computed(() => {
          width: "150px",
       },
       {
-         title: "Action",
+         title: $t("Action"),
          dataIndex: "operation",
          key: "operation",
          width: "140px",
