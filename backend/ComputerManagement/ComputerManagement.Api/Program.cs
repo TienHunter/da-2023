@@ -144,6 +144,10 @@ builder.Services.AddScoped<IConfigOptionService, ConfigOptionService>();
 builder.Services.AddScoped<IAgentRepo, AgentRepo>();
 builder.Services.AddScoped<IAgentService, AgentService>();
 
+builder.Services.AddScoped<IStudentRepo, StudentRepo>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+
+
 
 builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
@@ -188,7 +192,6 @@ app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<AuthMiddleware>();
 app.UseMiddleware<AuthMiddleware>();
 app.MapControllers();
 app.MapHub<MonitorSessionHub>("/ws");

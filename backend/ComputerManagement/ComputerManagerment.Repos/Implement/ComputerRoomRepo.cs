@@ -128,7 +128,6 @@ namespace ComputerManagerment.Repos.Implement
                     }).ToListAsync();
             }
 
-
             return (entities, totalCount);
         }
     }

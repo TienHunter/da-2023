@@ -151,5 +151,10 @@ namespace ComputerManagement.Common.Enums
 
         NotFoundAgent=31,
 
+        /// <summary>
+        /// trùng mssv
+        /// </summary>
+        ConflicStudentCode=32,
+
     }
 }

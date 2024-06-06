@@ -139,8 +139,6 @@ namespace ComputerManagement.Service.Implement
         public override async Task ValidateBeforeAddAsync(Computer computer)
         {
             await base.ValidateBeforeAddAsync(computer);
-
-
             // check conflic mac address
             var computerByMac = await _computerRepo.GetQueryable().Where(c => c.MacAddress == computer.MacAddress).FirstOrDefaultAsync();
             if (computerByMac != null)
@@ -238,6 +236,30 @@ namespace ComputerManagement.Service.Implement
             }
 
             return rs;
+        }
+
+        public override async Task ValidateBeforeUpdateAsync(Computer computer)
+        {
+            var computerByMac = await _computerRepo.GetQueryable().Where(c => c.MacAddress == computer.MacAddress && c.Id != computer.Id).FirstOrDefaultAsync();
+            if (computerByMac != null)
+            {
+                throw new BaseException { StatusCode = HttpStatusCode.Conflict, Code = ServiceResponseCode.ConflicMacAddress };
+            }
+            var computerByNameAndComputerRoomID = await _computerRepo.GetQueryable().Where(c => c.Name == computer.Name && c.ComputerRoomId == computer.ComputerRoomId && c.Id != computer.Id).FirstOrDefaultAsync();
+            if (computerByNameAndComputerRoomID != null)
+            {
+                throw new BaseException { StatusCode = HttpStatusCode.Conflict, Code = ServiceResponseCode.ConflicNameComputer };
+            }
+            // check postion computer
+            var computerByRowCol = await _computerRepo.GetQueryable().Where(c => c.Row == computer.Row && c.Col == computer.Col && c.ComputerRoomId == computer.ComputerRoomId && c.Id != computer.Id).FirstOrDefaultAsync();
+            if (computerByRowCol != null)
+            {
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.Conflict,
+                    Code = ServiceResponseCode.ConflicRowColComputer
+                };
+            }
         }
     }
 }
