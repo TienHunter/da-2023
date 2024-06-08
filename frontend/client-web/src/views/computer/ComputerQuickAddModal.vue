@@ -114,6 +114,7 @@ const rules = {
 const onOk = async () => {
    try {
       confirmLoading.value = true;
+      errorCode.value = 0;
       await formRef.value.validate();
       try {
          let rs = await computerService.add(formState);

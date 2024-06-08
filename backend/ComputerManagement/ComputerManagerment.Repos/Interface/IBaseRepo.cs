@@ -24,7 +24,7 @@ namespace ComputerManagerment.Repos.Interface
         /// <param name="fieldSort"></param>
         /// <param name="sortAsc"></param>
         /// <returns></returns>
-        Task<(List<T>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc);
+        Task<(List<T>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null);
 
         /// <summary>
         /// lấy bản ghi theo id

@@ -149,7 +149,7 @@ const columns = computed(() => {
    const sorted = sortedInfo.value || {};
    return [
       {
-         title: "Name",
+         title: $t("ComputerRoom.Name"),
          dataIndex: "name",
          key: "name",
          width: "80px",
@@ -170,7 +170,7 @@ const columns = computed(() => {
          width: "120px",
       },
       {
-         title: "Action",
+         title: $t("Action"),
          dataIndex: "operation",
          key: "operation",
          width: "40px",

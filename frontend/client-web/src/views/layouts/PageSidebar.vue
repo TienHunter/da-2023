@@ -52,10 +52,17 @@
       </a-menu-item>
       <a-menu-item key="Agent">
         <router-link :to="{ name: 'Agent' }">
-          <SettingOutlined />
+          <WindowsOutlined />
           <span>{{ $t("Sidebar.AgentManager") }}</span>
         </router-link>
       </a-menu-item>
+      <a-menu-item key="Student">
+        <router-link :to="{ name: 'Student' }">
+          <UsergroupAddOutlined />
+          <span>{{ $t("Sidebar.StudentManager") }}</span>
+        </router-link>
+      </a-menu-item>
+
     </a-menu>
   </a-layout-sider>
 </template>

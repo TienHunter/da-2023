@@ -108,8 +108,8 @@ const columns = computed(() => {
                value: MonitorType.Exam,
             },
          ],
-         filteredValue: filtered.monitorType || null,
-         onFilter: (value, record) => record.monitorType.includes(value),
+         filterMultiple: false,
+         onFilter: (value, record) => record.monitorType == value,
       },
       {
          title: $t("MonitorSession.StartDate"),
@@ -225,6 +225,7 @@ const handleTableChange = async (pag, filters, sorter) => {
    pagingParam.pageSize = pag.pageSize;
    pagingParam.fieldSort = sorter.field;
    pagingParam.sortAsc = sorter.order == "ascend" ? true : false;
+   pagingParam.filters = util.stringifyValue(_.cloneDeep(filters));
 
    await loadData();
 };
@@ -293,6 +294,8 @@ const refreshGrid = async () => {
    pagingParam.pageSize = 20;
    pagingParam.fieldSort = "UpdatedAt";
    pagingParam.sortAsc; false;
+   pagingParam.filters = null;
+   searchText.value = "";
    await loadData();
 }
 

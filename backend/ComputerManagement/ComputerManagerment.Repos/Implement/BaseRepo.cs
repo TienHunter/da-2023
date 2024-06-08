@@ -35,7 +35,7 @@ namespace ComputerManagerment.Repos.Implement
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public virtual async Task<(List<T>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public virtual async Task<(List<T>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
         {
             throw new NotImplementedException();
         }

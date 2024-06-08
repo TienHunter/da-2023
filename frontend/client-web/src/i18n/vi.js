@@ -223,6 +223,17 @@ export default {
       AddAgentTitle: "Thêm agent",
       EditAgentTitle: "Sửa agent",
    },
+   Student: {
+      StudentCode: "Mã số sinh viên",
+      StudentName: "Tên sinh viên",
+      CreatedAt: "Ngày tạo",
+      UpdatedAt: "Ngày cập nhật",
+      AddTitle: "Thêm sinh viên",
+      EditTitle: 'Sửa sinh viên',
+      Validate: {
+         ConflicStudentCode: "Mã số sinh viên bị trùng"
+      }
+   },
    Sidebar: {
       Dashboard: "Tổng quan",
       ComputerRoomManager: "Quản lý phòng máy",
@@ -233,6 +244,8 @@ export default {
       MonitorSessionManager: "Quản lý phiên giám sát",
       ConfigOptionManager: "Quản lý cấu hình",
       AgentManager: "Quản lý agent",
-   }
+      StudentManager: "Quản lý sinh viên"
+   },
+
 
 }

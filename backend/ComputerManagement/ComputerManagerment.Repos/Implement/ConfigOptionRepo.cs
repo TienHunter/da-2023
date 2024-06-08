@@ -13,7 +13,7 @@ namespace ComputerManagerment.Repos.Implement
     public class ConfigOptionRepo(AppDbContext dbContext) : BaseRepo<ConfigOption>(dbContext), IConfigOptionRepo
     {
 
-        public override async Task<(List<ConfigOption>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<ConfigOption>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<ConfigOption>();

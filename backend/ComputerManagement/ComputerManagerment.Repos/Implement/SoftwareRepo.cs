@@ -16,7 +16,7 @@ namespace ComputerManagerment.Repos.Implement
         {
             return await _dbSet.Where(cr => ids.Contains(cr.Id)).ToListAsync();
         }
-        public override async Task<(List<SoftwareModel>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<SoftwareModel>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<SoftwareModel>();

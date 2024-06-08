@@ -45,9 +45,12 @@
             </div>
           </template>
           <template v-else-if="column.key === 'computerRoomName'">
-            <span>
+            <router-link :to="{ name: 'ComputerRoomView', params: { id: record.computerRoom.id } }">
+              {{ record.computerRoom.name }}
+            </router-link>
+            <!-- <span>
               {{ record?.computerRoom?.name }}
-            </span>
+            </span> -->
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
@@ -87,38 +90,49 @@ const loading = reactive({
   loadingInputSearch: false,
 });
 const searchText = ref("");
-const columns = [
-  {
-    title: $t("Computer.Name"),
-    dataIndex: "name",
-    key: "name",
-    width: "100px",
-  },
-  {
-    title: $t("Computer.MacAddress"),
-    dataIndex: "macAddress",
-    key: "macAddress",
-    width: "150px",
-  },
-  {
-    title: $t("ComputerRoom.Name"),
-    dataIndex: "computerRoomName",
-    key: "computerRoomName",
-    width: "100px",
-  },
-  {
-    title: $t("Computer.Condition"),
-    dataIndex: "listError",
-    key: "listError",
-    width: "100px",
-  },
-  {
-    title: "Action",
-    key: "operation",
-    fixed: "right",
-    width: 100,
-  },
-];
+const filteredInfo = ref();
+const sortedInfo = ref();
+const columns = computed(() => {
+  const filtered = filteredInfo.value || {};
+  const sorted = sortedInfo.value || {};
+  return [
+    {
+      title: $t("Computer.Name"),
+      dataIndex: "name",
+      key: "name",
+      width: "60px",
+      sorter: (a, b) => a > b,
+      sortOrder: sorted.columnKey === 'name' && sorted.order,
+      fixed: "left",
+    },
+    {
+      title: $t("Computer.MacAddress"),
+      dataIndex: "macAddress",
+      key: "macAddress",
+      width: "120px",
+    },
+    {
+      title: $t("ComputerRoom.Name"),
+      dataIndex: "computerRoomName",
+      key: "computerRoomName",
+      width: "100px",
+      sorter: (a, b) => a > b,
+      sortOrder: sorted.columnKey === 'computerRoomName' && sorted.order,
+    },
+    {
+      title: $t("Computer.Condition"),
+      dataIndex: "listError",
+      key: "listError",
+      width: "100px",
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
+    },
+  ];
+})
 const pagingParam = reactive({
   pageSize: 20,
   pageNumber: 1,
@@ -212,13 +226,8 @@ const loadData = async () => {
  * @param {*} sorter
  */
 const handleTableChange = async (pag, filters, sorter) => {
-  console.log(
-    pag.pageSize,
-    pag?.current,
-    sorter.field,
-    sorter.order,
-    filters
-  );
+  filteredInfo.value = filters;
+  sortedInfo.value = sorter;
   pagingParam.pageNumber = pag?.current || 1;
   pagingParam.pageSize = pag.pageSize;
   pagingParam.fieldSort = sorter.field;
@@ -302,6 +311,7 @@ const refreshGrid = async () => {
   pagingParam.pageSize = 20;
   pagingParam.fieldSort = "UpdatedAt";
   pagingParam.sortAsc; false;
+  searchText.value = "";
   await loadData();
 }
 /**

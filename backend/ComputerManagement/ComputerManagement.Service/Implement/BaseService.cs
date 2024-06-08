@@ -107,7 +107,7 @@ namespace ComputerManagement.Service.Implement
         }
         public virtual async Task<(List<TDto>, int)> GetListAsync(PagingParam pagingParam)
         {
-            var (entities, totalCount) = await _baseRepo.GetListAsync(pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
+            var (entities, totalCount) = await _baseRepo.GetListAsync(pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc,pagingParam.Filters);
             var dtos = _mapper.Map<List<TDto>>(entities);
             return (dtos, totalCount);
         }

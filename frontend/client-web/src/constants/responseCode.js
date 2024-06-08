@@ -38,6 +38,17 @@ const ResponseCode = {
    /// không thể sửa option name hệ thông
    /// </summary>
    CantEditOptionNameSystem: 29,
+   /// <summary>
+   /// file không hợp lệ
+   /// </summary>
+   InvalidFile: 30,
+
+   NotFoundAgent: 31,
+
+   /// <summary>
+   /// trùng mssv
+   /// </summary>
+   ConflicStudentCode: 32,
 
 }
 export default ResponseCode;

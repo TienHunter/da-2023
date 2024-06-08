@@ -12,7 +12,7 @@ namespace ComputerManagerment.Repos.Implement
 {
     public class StudentRepo(AppDbContext dbContext) : BaseRepo<Student>(dbContext), IStudentRepo
     {
-        public override async Task<(List<Student>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<Student>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<Student>();

@@ -358,14 +358,6 @@ const handleRenderComputerError = (errorId) => {
  * @param {*} sorter
  */
 const handleTableChange = async (pag, filters, sorter) => {
-  console.log(
-    pag.pageSize,
-    pag?.current,
-    sorter.field,
-    sorter.order,
-    filters
-  );
-
   await loadData();
 };
 

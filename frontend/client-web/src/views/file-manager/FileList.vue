@@ -71,7 +71,7 @@ const columns = [
     title: $t("File.FileName"),
     dataIndex: "fileName",
     key: "fileName",
-    width: "300px",
+    width: "360px",
     sorter: true,
     fixed: "left",
     ellipsis: true,

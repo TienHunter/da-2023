@@ -13,5 +13,7 @@ namespace ComputerManagement.BO.DTO
         public int PageSize { get; set; }
         public string FieldSort { get; set; } = "UpdateAt";
         public bool SortAsc { get; set; } = false;
+
+        public Dictionary<string, string>? Filters { get; set; }
     }
 }

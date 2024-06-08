@@ -1,7 +1,10 @@
 ﻿using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Enums;
 using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +23,43 @@ namespace ComputerManagerment.Repos.Implement
         {
             return await _dbSet.Include(c => c.ComputerRoom).Include(c=>c.User).FirstOrDefaultAsync(c=>c.Id == id);
         }
-        public override async Task<(List<MonitorSession>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<MonitorSession>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<MonitorSession>();
-
-            //if (!string.IsNullOrEmpty(keySearch))
-            //{
-            //    query = query.Where(e => e.Name.Contains(keySearch));
-            //}
-
+            query = query.Include(c => c.ComputerRoom).Include(c => c.User);
+            if (!string.IsNullOrEmpty(keySearch))
+            {
+                query = query.Where(e => e.ComputerRoom != null && e.ComputerRoom.Name != null &&  e.ComputerRoom.Name.Contains(keySearch));
+            }
+            if (filters != null)
+            {
+                foreach (var keyValuePair in filters)
+                {
+                    string key = keyValuePair.Key;
+                    string value = keyValuePair.Value;
+                    if (key == "monitorType" && !string.IsNullOrEmpty(value) && value != "null")
+                    {
+                        try
+                        {
+                            List<MonitorType> listMonitorType = JsonConvert.DeserializeObject<List<MonitorType>>(value);
+                            if(listMonitorType != null)
+                            {
+                                query = query.Where(ms => listMonitorType.Contains(ms.MonitorType));
+                            }
+                            
+                        }catch (Exception ex)
+                        {
+                            // logger
+                        };
+                    }
+                }
+            }
             switch (fieldSort?.ToLower())
             {
-
+                case "computerroomname":
+                    query = sortAsc ? query.OrderBy(e => e.ComputerRoom.Name) : query.OrderByDescending(e => e.ComputerRoom.Name);
+                    break;
                 case "startdate":
                     query = sortAsc ? query.OrderBy(e => e.StartDate) : query.OrderByDescending(e => e.StartDate);
                     break;
@@ -54,15 +81,13 @@ namespace ComputerManagerment.Repos.Implement
             if (pageNumber > 0 && pageSize > 0)
             {
                 entities = await query
-                .Include(c => c.ComputerRoom)
-                .Include(c => c.User)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.Include(c => c.ComputerRoom).Include(c => c.User).ToListAsync();
+                entities = await query.ToListAsync();
             }
             return (entities, totalCount);
         }

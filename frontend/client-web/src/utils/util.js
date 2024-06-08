@@ -186,6 +186,19 @@ const util = {
             break;
       }
       return { label, color }
+   },
+
+   /**
+    * strinfy value của object
+    * @param {*} obj 
+    */
+   stringifyValue(obj) {
+      if (obj != null) {
+         for (const key in obj) {
+            obj[key] = JSON.stringify(obj[key]);
+         }
+      }
+      return obj;
    }
 }
 

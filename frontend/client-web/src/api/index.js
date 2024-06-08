@@ -9,3 +9,4 @@ export { default as commandOptionService } from "./services/commandOptionService
 export { default as configOptionService } from "./services/configOptionService.js";
 export { default as computerSoftwareService } from "./services/computerSoftwareService.js";
 export { default as agentService } from "./services/agentService.js";
+export { default as studentService } from "./services/studentService.js";

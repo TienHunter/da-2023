@@ -9,6 +9,7 @@ import routeUser from "../views/user/route.js";
 import routeMonitorSession from "../views/monitor-session/route.js";
 import routeConfigOption from "../views/config-option/route.js";
 import routeAgent from "../views/agent/route.js";
+import routeStudent from "../views/student/route.js";
 import HelloWorld from "../components/HelloWorld.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
 import localStore from "../utils/localStore.js";
@@ -24,6 +25,7 @@ const routes = [
    ...routeMonitorSession,
    ...routeConfigOption,
    ...routeAgent,
+   ...routeStudent,
    {
       path: "/:pathMatch(.*)*",
       redirect: to => {

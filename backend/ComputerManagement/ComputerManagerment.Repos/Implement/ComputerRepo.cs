@@ -26,19 +26,21 @@ namespace ComputerManagerment.Repos.Implement
             return rs;
         }
 
-        public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
+        public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<Computer>();
-
+            query = query.Include(c => c.ComputerRoom);
             if (!string.IsNullOrEmpty(keySearch))
             {
-                query = query.Where(e => e.Name.Contains(keySearch));
+                query = query.Where(e => e.Name.Contains(keySearch) || (e.ComputerRoom != null && e.ComputerRoom.Name.Contains(keySearch)));
             }
 
             switch (fieldSort?.ToLower())
             {
-
+                case "computerroomname":
+                    query = sortAsc ? query.OrderBy(e => e.ComputerRoom.Name) : query.OrderByDescending(e => e.ComputerRoom.Name);
+                    break;
                 case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
@@ -57,14 +59,13 @@ namespace ComputerManagerment.Repos.Implement
             if (pageNumber > 0 && pageSize > 0)
             {
                 entities = await query
-                .Include(c => c.ComputerRoom)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
             }
             else
             {
-                entities = await query.Include(c => c.ComputerRoom).ToListAsync();
+                entities = await query.ToListAsync();
             }
 
 
@@ -83,7 +84,7 @@ namespace ComputerManagerment.Repos.Implement
 
             switch (fieldSort?.ToLower())
             {
-
+               
                 case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
@@ -105,17 +106,20 @@ namespace ComputerManagerment.Repos.Implement
 
         public async Task<(List<Computer>, int)> GetListBySoftwareIdAsync(Guid softwareId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc)
         {
-            var query = _dbSet.AsQueryable().Include(c => c.ComputerRoom).Include(c => c.ComputerSoftwares.Where(cs => cs.SoftwareId == softwareId)).Where(c => true);
+            var query = _dbSet.AsQueryable();
+            query = query.Include(c => c.ComputerRoom).Include(c => c.ComputerSoftwares.Where(cs => cs.SoftwareId == softwareId));
             var entities = new List<Computer>();
 
             if (!string.IsNullOrEmpty(keySearch))
             {
-                query = query.Where(e => e.Name.Contains(keySearch));
+                query = query.Where(e => e.Name.Contains(keySearch) || (e.ComputerRoom != null && e.ComputerRoom.Name.Contains(keySearch)));
             }
 
             switch (fieldSort?.ToLower())
             {
-
+                case "computerroomname":
+                    query = sortAsc ? query.OrderBy(e => e.ComputerRoom.Name) : query.OrderByDescending(e => e.ComputerRoom.Name);
+                    break;
                 case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;

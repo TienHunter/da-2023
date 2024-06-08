@@ -194,13 +194,6 @@ const loadData = async () => {
  * @param {*} sorter
  */
 const handleTableChange = async (pag, filters, sorter) => {
-  console.log(
-    pag.pageSize,
-    pag?.current,
-    sorter.field,
-    sorter.order,
-    filters
-  );
   filteredInfo.value = filters;
   sortedInfo.value = sorter;
   pagingParam.pageNumber = pag?.current || 1;
