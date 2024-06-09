@@ -30,6 +30,7 @@ namespace ComputerManagement.Data
         public DbSet<ConfigOption> ConfigOption { get; set; }
         public DbSet<AgentModel> Agent { get; set; }
         public DbSet<Student> Student { get; set; }
+        public DbSet<FileProof> FileProof { get; set; }
 
     }
 }

@@ -8,7 +8,6 @@ const routerDashboard = [
          // we return a redirect path/location here.
          return { name: "Dashboard" }
       },
-
    },
    {
       path: "/dashboard",

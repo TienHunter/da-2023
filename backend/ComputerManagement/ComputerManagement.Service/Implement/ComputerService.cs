@@ -171,13 +171,6 @@ namespace ComputerManagement.Service.Implement
         public async Task<List<ComputerDto>> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
         {
             var computers = await _computerRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.FieldSort, pagingParam.SortAsc);
-            foreach (var item in computers)
-            {
-                if (item?.ComputerState?.LastUpdate < DateTime.Now.AddMinutes(-3))
-                {
-                    item.ComputerState.State = false;
-                }
-            }
             return _mapper.Map<List<ComputerDto>>(computers);
         }
 

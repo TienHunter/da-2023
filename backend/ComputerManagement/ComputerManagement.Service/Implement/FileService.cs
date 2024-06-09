@@ -29,7 +29,11 @@ namespace ComputerManagement.Service.Implement
             // validate
             if (fileSource.FilePath == null || fileSource.FilePath.Length == 0)
             {
-                throw new ArgumentException("File is empty or null.");
+                throw new BaseException
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Code = ServiceResponseCode.InvalidFile
+                };
             }
 
             _ = await _softwareRepo.GetAsync(fileSource.SoftwareId) ?? throw new BaseException
@@ -65,15 +69,15 @@ namespace ComputerManagement.Service.Implement
             return newGuid;
 
         }
-        public async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
-        {
-            var filePath = Path.Combine(directoryPath, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            return filePath;
-        }
+        //public async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
+        //{
+        //    var filePath = Path.Combine(directoryPath, fileName);
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await file.CopyToAsync(stream);
+        //    }
+        //    return filePath;
+        //}
 
         public async Task<List<FileDto>> GetListFileBySoftwareId(Guid softwareId)
         {

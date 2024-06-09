@@ -65,7 +65,7 @@
 <script setup>
 import { computed, h, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { computerService } from "../../api";
+import { computerService, configOptionService } from "../../api";
 import util from "@/utils/util";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
@@ -202,20 +202,32 @@ const pagingParam = reactive({
   sortAsc: false,
 });
 const interval = ref(null);
+/**
+ * kiểm tra khoản thời gian chênh lệch cập nhật lại state cho máy tính
+ */
+const checkTime = ref(60000);
 // ========== end state ==========
 
 // ========== start life cycle ==========
 onBeforeMount(async () => {
-  await loadData();
+  try {
+    getConfigCheckComputerState();
+    await loadData();
+    while (true) {
+      autoUpdateState();
+      await new Promise(resolve => setTimeout(resolve, checkTime.value));
+    }
+  } catch (error) {
+
+  }
+
 });
 
 onMounted(() => {
   onUseSocket();
-
-  // chạy mỗi 5 phút
   interval.value = setInterval(async () => {
     autoUpdateState();
-  }, 60000);
+  }, 5000);
 })
 onBeforeUnmount(() => {
   clearInterval(interval.value); // Xóa interval khi component bị hủy
@@ -223,6 +235,20 @@ onBeforeUnmount(() => {
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const getConfigCheckComputerState = async () => {
+  while (true) {
+    try {
+      let rs = await configOptionService.getByOptionName("CHECK_COMPUTER_STATE");
+      if (rs && rs.data) {
+        checkTime.value = Number(rs.data.optionValue) || checkTime.value;
+      }
+    } catch (error) {
+      console.error("Error fetching option:", error);
+      // Bạn có thể thêm logic để xử lý lỗi ở đây nếu cần thiết
+    }
+    await new Promise(resolve => setTimeout(resolve, checkTime.value));
+  }
+}
 const onUseSocket = () => {
 
   // còn phiêm thì mới mở socket
@@ -274,7 +300,6 @@ const updateComputerState = (item) => {
 }
 
 const autoUpdateState = () => {
-  console.log("workers update state");
   dataSource.value.forEach(element => {
     if (element && element.computerState && element.computerState.lastUpdate) {
       try {
@@ -312,6 +337,7 @@ const loadData = async () => {
         return item;
       });
       dataSource.value = _.cloneDeep(datas);
+      autoUpdateState();
     }
   } catch (error) {
     console.log(error);

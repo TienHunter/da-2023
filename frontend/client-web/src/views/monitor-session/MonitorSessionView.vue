@@ -1,7 +1,7 @@
 <template>
    <div class="container-content">
       <div class="content h-full">
-         <a-tabs v-model:activeKey="activeKey" :destroyInactiveTabPane="true" class="h-full">
+         <a-tabs v-model:activeKey="activeKey" class="h-full">
             <template #leftExtra>
                <router-link :to="{ name: 'MonitorSessionList' }">
                   <a-button shape="circle" size="small" class="mr-2">
@@ -14,8 +14,8 @@
             <a-tab-pane key="MonitorSessionInfoView">
                <template #tab>
                   <span>
-                     <apple-outlined />
-                     Thông tin chi tiết
+                     <ZoomInOutlined />
+                     {{ $t("MonitorSession.DetailInfo") }}
                   </span>
                </template>
                <MonitorSessionInfoView :data="monitorSessionData" />
@@ -23,23 +23,31 @@
             <a-tab-pane key="ComputerRoomComputerList">
                <template #tab>
                   <span>
-                     <android-outlined />
-                     Danh sách máy
+                     <desktop-outlined />
+                     {{ $t("MonitorSession.ListComputer") }}
                   </span>
                </template>
                <ComputerRoomComputerList :computerRoomId="monitorSessionData.computerRoomId"
                   :useSocket="isHasSession" />
             </a-tab-pane>
-            <a-tab-pane key="ComputerRoomMonitorSessionList">
+            <a-tab-pane key="HistoryAccess">
                <template #tab>
                   <span>
-                     <android-outlined />
-                     Lịch sử truy cập
+                     <HistoryOutlined />
+                     {{ $t("MonitorSession.HistoryAccess") }}
                   </span>
                </template>
                <HisttoryAccess :data="monitorSessionData" :isHasSession="isHasSession" />
             </a-tab-pane>
-
+            <a-tab-pane key="FileProof">
+               <template #tab>
+                  <span>
+                     <CameraOutlined />
+                     {{ $t("MonitorSession.FileProof") }}
+                  </span>
+               </template>
+               <FileProofListByMonitorSession :data="monitorSessionData" :isHasSession="isHasSession" />
+            </a-tab-pane>
          </a-tabs>
       </div>
    </div>
@@ -51,6 +59,7 @@ import MonitorSessionInfoView from "./MonitorSessionInfoView.vue";
 import ComputerRoomComputerList from "../computer-room/ComputerRoomComputerList.vue";
 import HisttoryAccess from "./HisttoryAccess.vue";
 import moment from "moment";
+import FileProofListByMonitorSession from "./FileProofListByMonitorSession.vue";
 // ========== start state ========== 
 const router = useRouter();
 const route = useRoute();

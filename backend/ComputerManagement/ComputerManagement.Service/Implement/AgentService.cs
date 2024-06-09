@@ -105,15 +105,15 @@ namespace ComputerManagement.Service.Implement
             return agentExist.Id;
         }
 
-        private async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
-        {
-            var filePath = Path.Combine(directoryPath, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            return filePath;
-        }
+        //private async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
+        //{
+        //    var filePath = Path.Combine(directoryPath, fileName);
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await file.CopyToAsync(stream);
+        //    }
+        //    return filePath;
+        //}
 
     }
 }

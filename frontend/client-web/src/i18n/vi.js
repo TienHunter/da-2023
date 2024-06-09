@@ -20,6 +20,8 @@ export default {
    Off: "Tắt",
    NotPermission: "Bạn không có quyền thực hiện chức năng này",
    SearchHinht: "Nhập từ khóa...",
+   NotPerrmissionPage: "Bạn không có quyền truy cập trang này",
+   BackHome: "Trờ lại trang chủ",
    Validate: {
       Required: "Vui lòng nhập {0}",
       AlreadyExist: "{0} đã tồn tại",
@@ -123,7 +125,7 @@ export default {
       Row: "Vị trí hàng",
       Col: "Vị trí cột",
       OS: "Hệ điều hành",
-      CPU: "Chip",
+      CPU: "CPU",
       RAM: "RAM",
       HardDriver: "Ổ cứng",
       Condition: "Tình trạng máy",
@@ -195,6 +197,10 @@ export default {
       Session: "Phiên giám sát",
       QuickAddMonitorSessionTitle: "Thêm nhanh phiên giám sát",
       AddDomain: "Thêm tên miền",
+      DetailInfo: "Thông tin chi tiết",
+      ListComputer: "Danh sách máy",
+      HistoryAccess: "Lịch sử truy cập",
+      FileProof: "Danh sách minh chứng vi phạm",
       MonitorType: {
          Practive: "Thực hành",
          Exam: "Kiểm tra"
@@ -233,6 +239,12 @@ export default {
       Validate: {
          ConflicStudentCode: "Mã số sinh viên bị trùng"
       }
+   },
+   FileProof: {
+      StudentCode: "MSSV",
+      StudentName: "Tên sinh viên",
+      ComputerName: "Tên máy",
+      CreatedAt: "Ngày tạo",
    },
    Sidebar: {
       Dashboard: "Tổng quan",

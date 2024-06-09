@@ -14,7 +14,7 @@
         <a-tab-pane key="ComputerRoomInfoView">
           <template #tab>
             <span>
-              <apple-outlined />
+              <ZoomInOutlined />
               Thông tin chi tiết
             </span>
           </template>
@@ -23,7 +23,7 @@
         <a-tab-pane key="ComputerRoomComputerList">
           <template #tab>
             <span>
-              <android-outlined />
+              <desktop-outlined />
               Danh sách máy
             </span>
           </template>
@@ -32,7 +32,7 @@
         <a-tab-pane key="ComputerRoomMonitorSessionList">
           <template #tab>
             <span>
-              <android-outlined />
+              <VideoCameraOutlined />
               Danh sách phiên theo dõi
             </span>
           </template>

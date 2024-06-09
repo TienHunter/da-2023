@@ -21,6 +21,7 @@ using ComputerManagement.Service.Worker;
 using ComputerManagement.Service.Queue;
 using Microsoft.AspNetCore.WebSockets;
 using ComputerManagement.Service.Hubs;
+using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -66,7 +67,7 @@ builder.Services.Configure<FileConfig>(options =>
     builder.Configuration.GetSection("FileConfig").Bind(options);
 });
 
-// add di fileConfig
+// add di emailConfig
 builder.Services.Configure<EmailConfig>(options =>
 {
     builder.Configuration.GetSection("EmailConfig").Bind(options);
@@ -101,6 +102,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // add di
+// Đọc cấu hình từ appsettings.json
+var baseUrlConfig = builder.Configuration.GetSection("BaseUrlConfig").Get<BaseUrlConfig>();
+
+// Đăng ký BaseUrlConfig như một singleton
+builder.Services.AddSingleton(baseUrlConfig);
+
 builder.Services.AddSingleton<ShareDb>();
 builder.Services.AddSingleton<MonitorSessionHub>();
 builder.Services.AddScoped<IEmailService,EmailService>();
@@ -146,6 +153,9 @@ builder.Services.AddScoped<IAgentService, AgentService>();
 
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+
+builder.Services.AddScoped<IFileProofRepo, FileProofRepo>();
+builder.Services.AddScoped<IFileProofService, FileProofService>();
 
 
 

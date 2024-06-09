@@ -10,3 +10,4 @@ export { default as configOptionService } from "./services/configOptionService.j
 export { default as computerSoftwareService } from "./services/computerSoftwareService.js";
 export { default as agentService } from "./services/agentService.js";
 export { default as studentService } from "./services/studentService.js";
+export { default as fileProofService } from "./services/fileProofService.js";

@@ -271,5 +271,20 @@ namespace ComputerManagement.Service.Implement
                 };
             }
         }
+
+        public virtual async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
+        {
+            // Kiểm tra và tạo thư mục nếu nó không tồn tại
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            var filePath = Path.Combine(directoryPath, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            return filePath;
+        }
     }
 }

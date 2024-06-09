@@ -117,8 +117,6 @@ const onUseSocket = () => {
         console.log("SignalR connection established:");
         // kết nối theo id session
         conn.invoke("Connect", props.data.id)
-        // kết nối theo id computerRoom
-        conn.invoke("Connect", props.data.computerRoomId)
       })
       .catch((error) => {
         console.error("Error establishing SignalR connection:", error);
@@ -184,10 +182,13 @@ const handleChangeSelectLevel = (val) => {
   filterData();
 }
 const filterData = (item) => {
-  if (item && checkFilter(item)) {
-    dataClones.value.unshift(item);
+  if (item) {
+    if (checkFilter(item)) {
+      dataClones.value.unshift(item);
+    }
+  } else {
+    dataClones.value = _.cloneDeep(datas.value.filter(i => checkFilter(i)));
   }
-  dataClones.value = _.cloneDeep(datas.value.filter(i => checkFilter(i)));
 }
 const checkFilter = (i) => {
   if (i) {

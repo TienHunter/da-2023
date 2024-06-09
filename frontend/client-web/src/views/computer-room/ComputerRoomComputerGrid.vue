@@ -16,7 +16,7 @@
                     <a-badge :count="dataRender[row][col]['listErrorId']?.length" :overflow-count="10" class="pointer"
                       @click="quickViewComputer(dataRender[row][col]['id'])">
 
-                      <LaptopOutlined class="text-6xl"
+                      <desktop-outlined class="text-6xl"
                         :class="{ 'text-blue-500': dataRender[row][col]?.computerState?.['state'], 'text-gray-500': !dataRender[row][col]?.computerState?.['state'] }" />
 
                     </a-badge>
@@ -60,7 +60,7 @@
 <script setup>
 import { computed, h, onBeforeMount, onUnmounted, reactive, ref, onBeforeUnmount, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { computerRoomService, computerService } from "../../api";
+import { computerRoomService, computerService, configOptionService } from "../../api";
 import util from "@/utils/util";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
@@ -112,6 +112,11 @@ const computerPropView = reactive({
   isShow: false,
   id: null
 })
+
+/**
+ * kiểm tra khoản thời gian chênh lệch cập nhật lại state cho máy tính
+ */
+const checkTime = ref(60000);
 // ========== end state ==========
 
 // ========== start life cycle ==========
@@ -121,7 +126,7 @@ onBeforeMount(async () => {
     if (rs && rs.success && rs.data) {
       computerRoom.value = rs.data;
     }
-
+    getConfigCheckComputerState();
     await loadData();
     handleDataRender();
   } catch (error) {
@@ -133,11 +138,9 @@ onBeforeMount(async () => {
 
 onMounted(() => {
   onUseSocket();
-
-  // chạy mỗi 5 phút
   interval.value = setInterval(async () => {
     autoUpdateState();
-  }, 60000);
+  }, 5000);
 })
 onBeforeUnmount(() => {
   clearInterval(interval.value); // Xóa interval khi component bị hủy
@@ -152,6 +155,21 @@ onBeforeUnmount(() => {
 // ========== end life cycle ==========
 
 // ========== start methods ==========
+const getConfigCheckComputerState = async () => {
+  while (true) {
+    try {
+      let rs = await configOptionService.getByOptionName("CHECK_COMPUTER_STATE");
+      if (rs && rs.data) {
+        checkTime.value = Number(rs.data.optionValue) || checkTime.value;
+      }
+    } catch (error) {
+      console.error("Error fetching option:", error);
+      // Bạn có thể thêm logic để xử lý lỗi ở đây nếu cần thiết
+    }
+    await new Promise(resolve => setTimeout(resolve, checkTime.value));
+  }
+}
+
 const onUseSocket = () => {
 
   // còn phiêm thì mới mở socket
@@ -192,7 +210,6 @@ const onUseSocket = () => {
  * cập nhật state cho máy tính
  */
 const updateComputerState = (item) => {
-  debugger;
   console.log(item);
   if (item) {
     let computer = dataSource.value?.find(c => c.id == item.computerId)
@@ -204,15 +221,15 @@ const updateComputerState = (item) => {
 }
 
 const autoUpdateState = () => {
-  console.log("workers update state");
+  console.log("check state");
   dataSource.value.forEach(element => {
     if (element && element.computerState && element.computerState.lastUpdate) {
       try {
         let latestUpdate = moment(element.computerState.lastUpdate);
         let now = moment();
 
-        const differenceInMinutes = now.diff(latestUpdate, 'minutes');
-        if (differenceInMinutes > 5) {
+        const differenceInMinutes = now.diff(latestUpdate, 'milliseconds');
+        if (differenceInMinutes > checkTime.value) {
           element.computerState.state = false;
         }
 
@@ -231,6 +248,7 @@ const loadData = async () => {
     );
     if (rs.success && rs.data) {
       dataSource.value = _.cloneDeep(rs.data);
+      autoUpdateState();
     }
   } catch (error) {
     console.log(error);

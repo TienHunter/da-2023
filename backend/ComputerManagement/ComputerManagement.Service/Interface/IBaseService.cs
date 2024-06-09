@@ -1,5 +1,6 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,5 +130,14 @@ namespace ComputerManagement.Service.Interface
         /// <param name="permissionKeys"></param>
         /// <returns></returns>
         Task CheckPermission(List<UserRole> permissionKeys);
+
+        /// <summary>
+        /// upload file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="directoryPath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName);
     }
 }

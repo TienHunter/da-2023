@@ -1,6 +1,6 @@
 <template>
   <div class="container-content">
-    <div class="toolbars flex justify-between">
+    <div class="toolbars flex justify-between bg-gray-200">
       <div class="toolbar-left">
         <router-link :to="{ name: 'ComputerList' }">
           <a-button shape="circle" size="small" class="mr-2">
@@ -169,14 +169,9 @@ const fields = reactive([
     key: "os",
   },
   {
-    title: $t("Computer.OS"),
-    dataIndex: "os",
-    key: "os",
-  },
-  {
     title: $t("Computer.CPU"),
     dataIndex: "cpu",
-    key: "cppu",
+    key: "cpu",
   },
   {
     title: $t("Computer.RAM"),
@@ -329,6 +324,8 @@ const updateCommandOptionDowloadFile = async (record, keyOption, value) => {
     position: sticky;
     top: 0;
     padding: 16px;
+    z-index: 1;
+
   }
 
   .content {

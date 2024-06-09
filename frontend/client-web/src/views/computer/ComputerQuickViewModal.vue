@@ -67,6 +67,36 @@ const fieldsMaster = [
       key: "macAddress"
    },
    {
+      title: $t("Computer.Row"),
+      dataIndex: "row",
+      key: "row"
+   },
+   {
+      title: $t("Computer.Col"),
+      dataIndex: "col",
+      key: "col"
+   },
+   {
+      title: $t("Computer.OS"),
+      dataIndex: "os",
+      key: "os"
+   },
+   {
+      title: $t("Computer.CPU"),
+      dataIndex: "cpu",
+      key: "cpu"
+   },
+   {
+      title: $t("Computer.RAM"),
+      dataIndex: "ram",
+      key: "ram"
+   },
+   {
+      title: $t("Computer.HardDriver"),
+      dataIndex: "hardDriver",
+      key: "hardDriver"
+   },
+   {
       title: $t("Computer.Condition"),
       dataIndex: "listError",
       key: "listError"

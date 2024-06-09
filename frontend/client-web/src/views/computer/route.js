@@ -3,9 +3,6 @@ import ComputerView from "./ComputerView.vue";
 import ComputerEdit from "./ComputerEdit.vue";
 import ComputerAdd from "./ComputerAdd.vue";
 import { Permission, FormMode } from "../../constants";
-import ComputerDetailView from "./ComputerDetailView.vue";
-import ComputerHistoryView from "./ComputerHistoryView.vue";
-import ComputerNoteView from "./ComputerNoteView.vue";
 import { computerService } from "@/api";
 const routes = [
    {

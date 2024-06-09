@@ -10,7 +10,7 @@ import routeMonitorSession from "../views/monitor-session/route.js";
 import routeConfigOption from "../views/config-option/route.js";
 import routeAgent from "../views/agent/route.js";
 import routeStudent from "../views/student/route.js";
-import HelloWorld from "../components/HelloWorld.vue";
+import AccessDenied from "../views/AccessDenied.vue";
 import LocalStorageKey from "../constants/localStorageKey.js";
 import localStore from "../utils/localStore.js";
 
@@ -27,13 +27,18 @@ const routes = [
    ...routeAgent,
    ...routeStudent,
    {
+      path: "/access-denied",
+      name: "AccessDenied",
+      component: AccessDenied
+   },
+   {
       path: "/:pathMatch(.*)*",
       redirect: to => {
 
          return { name: "Dashboard" }
       },
-
    },
+
 ];
 
 const router = createRouter({
@@ -52,7 +57,7 @@ router.beforeEach((to, from, next) => {
             if (to.meta.permission.includes(userInfor.roleID)) {
                next();
             } else {
-               next({ name: "NotFound" });
+               next({ name: "NotPermission" });
             }
          } else {
             next();

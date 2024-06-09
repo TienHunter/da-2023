@@ -14,7 +14,7 @@
             <a-tab-pane key="SoftwareDetail">
                <template #tab>
                   <span>
-                     <apple-outlined />
+                     <ZoomInOutlined />
                      Thông tin chi tiết
                   </span>
                </template>
@@ -26,7 +26,7 @@
             <a-tab-pane key="ComputerRoomList">
                <template #tab>
                   <span>
-                     <android-outlined />
+                     <HomeOutlined />
                      Thông tin phần mềm ở các phòng máy
                   </span>
                </template>
@@ -38,7 +38,7 @@
             <a-tab-pane key="ComputerRoomMonitorSessionList">
                <template #tab>
                   <span>
-                     <android-outlined />
+                     <desktop-outlined />
                      Thông tin phần mềm ở các máy
                   </span>
                </template>
