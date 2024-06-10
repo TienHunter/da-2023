@@ -19,5 +19,12 @@ namespace ComputerManagement.Service.Interface
         /// <param name="pagingParam"></param>
         /// <returns></returns>
         Task<(List<MonitorSessionDto>, int)> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam);
+
+        /// <summary>
+        /// lấy thông tin phiên làm việc đang hoạt động theo id phòng máy
+        /// </summary>
+        /// <param name="computerRoomId"></param>
+        /// <returns></returns>
+        Task<MonitorSessionDto> GetCurrentByComputerRoomIdAsync(Guid computerRoomId);
     }
 }

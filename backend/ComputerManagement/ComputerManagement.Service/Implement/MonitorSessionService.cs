@@ -55,5 +55,13 @@ namespace ComputerManagement.Service.Implement
             await base.HandleDataBeforeMapAddAsync(dto);
             dto.Domains = dto.Domains.Where(domain => !string.IsNullOrEmpty(domain)).ToList();
         }
+
+        public async Task<MonitorSessionDto> GetCurrentByComputerRoomIdAsync(Guid computerRoomId)
+        {
+            var timeNow = DateTime.Now;
+            var monitorSession = await _monitorSessionRepo.GetQueryable().Where(m => m.ComputerRoomId == computerRoomId && (m.StartDate <= timeNow && timeNow < m.EndDate )).FirstOrDefaultAsync();
+
+            return _mapper.Map<MonitorSessionDto>(monitorSession);
+        }
     }
 }
