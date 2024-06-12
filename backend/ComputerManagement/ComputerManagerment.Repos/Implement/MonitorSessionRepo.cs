@@ -21,7 +21,7 @@ namespace ComputerManagerment.Repos.Implement
         }
         public override async Task<MonitorSession> GetAsync(Guid id)
         {
-            return await _dbSet.Include(c => c.ComputerRoom).Include(c=>c.User).FirstOrDefaultAsync(c=>c.Id == id);
+            return await _dbSet.Include(c => c.ComputerRoom).Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
         }
         public override async Task<(List<MonitorSession>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? filters = null)
         {
@@ -30,7 +30,7 @@ namespace ComputerManagerment.Repos.Implement
             query = query.Include(c => c.ComputerRoom).Include(c => c.User);
             if (!string.IsNullOrEmpty(keySearch))
             {
-                query = query.Where(e => e.ComputerRoom != null && e.ComputerRoom.Name != null &&  e.ComputerRoom.Name.Contains(keySearch));
+                query = query.Where(e => e.ComputerRoom != null && e.ComputerRoom.Name != null && e.ComputerRoom.Name.Contains(keySearch));
             }
             if (filters != null)
             {
@@ -43,12 +43,43 @@ namespace ComputerManagerment.Repos.Implement
                         try
                         {
                             List<MonitorType> listMonitorType = JsonConvert.DeserializeObject<List<MonitorType>>(value);
-                            if(listMonitorType != null)
+                            if (listMonitorType != null)
                             {
                                 query = query.Where(ms => listMonitorType.Contains(ms.MonitorType));
                             }
-                            
-                        }catch (Exception ex)
+
+                        }
+                        catch (Exception ex)
+                        {
+                            // logger
+                        };
+                    }
+                    if (key == "state" && !string.IsNullOrEmpty(value) && value != "null")
+                    {
+                        try
+                        {
+                            List<int> states = JsonConvert.DeserializeObject<List<int>>(value);
+                            if (states != null && states.Count > 0)
+                            {
+                                var state = states[0];
+                                var now = DateTime.Now;
+                                switch (state)
+                                {
+                                    case 1:
+                                        query = query.Where(ms => ms.StartDate < now && now < ms.EndDate);
+                                        break;
+                                    case 2:
+                                        query = query.Where(ms => now < ms.StartDate);
+                                        break;
+                                    case 3:
+                                        query = query.Where(ms => now > ms.EndDate);
+                                        break;
+                                }
+
+                            }
+
+                        }
+                        catch (Exception ex)
                         {
                             // logger
                         };

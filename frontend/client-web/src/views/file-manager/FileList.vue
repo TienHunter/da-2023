@@ -17,13 +17,11 @@
       }" :data-source="dataSource" :pagination="pagination" :scroll="scrollConfig" :loading="loading.loadingTable"
         @change="handleTableChange">
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
-            <router-link :to="{ name: 'SoftwareView', params: { id: record.id } }">
-              {{ record.name }}
+          <template v-if="column.key === 'softwareName'">
+            <router-link :to="{ name: 'SoftwareView', params: { id: record?.software?.id } }">
+              {{ record?.software?.name }}
             </router-link>
-          </template>
-          <template v-else-if="column.key === 'softwareName'">
-            {{ record?.software?.name }}
+
           </template>
           <template v-else-if="column.key === 'fileSize'">
             {{ `${record?.size / 1024}` }}

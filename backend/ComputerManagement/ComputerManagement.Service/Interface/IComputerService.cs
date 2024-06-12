@@ -46,5 +46,18 @@ namespace ComputerManagement.Service.Interface
         /// <param name="pagingParam"></param>
         /// <returns></returns
         Task<(List<ComputerDto>, int)> GetListBySoftwareIdAsync(Guid softwareId, PagingParam pagingParam);
+
+        /// <summary>
+        /// lấy số lượng máy đang bật và tổng số máy
+        /// </summary>
+        /// <param name="checkTime"></param>
+        /// <returns></returns>
+        Task<List<int>> GetComputerOnlineChart(long checkTime);
+
+        /// <summary>
+        /// thống kê số lượng máy tính theo tình trạng
+        /// </summary>
+        /// <returns></returns>
+        Task<List<int>> GetComputerByListErrorChart();
     }
 }

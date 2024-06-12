@@ -34,6 +34,9 @@
                   </a-tag>
 
                </template>
+               <template v-else-if="column.key === 'state'">
+                  {{ record?.state?.text }}
+               </template>
                <template v-else-if="column.key === 'domains'">
                   <div v-for="(domain, index) in record.domains" :key="index">
                      <a-tag>
@@ -69,8 +72,9 @@ import util from "@/utils/util";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { FormatDateKey, MonitorType } from "@/constants";
+import { FormatDateKey, MonitorStateTime, MonitorType } from "@/constants";
 import dayjs from "dayjs";
+import moment from "moment";
 // ========== start state ==========
 const router = useRouter();
 const [modal, contextHolder] = Modal.useModal();
@@ -110,6 +114,28 @@ const columns = computed(() => {
          ],
          filterMultiple: false,
          onFilter: (value, record) => record.monitorType == value,
+      },
+      {
+         title: $t("MonitorSession.State"),
+         dataIndex: "state",
+         key: "state",
+         width: "120px",
+         filters: [
+            {
+               text: $t("MonitorSession.StateType.Running"),
+               value: MonitorStateTime.Running,
+            },
+            {
+               text: $t("MonitorSession.StateType.YetStarted"),
+               value: MonitorStateTime.YetStarted,
+            },
+            {
+               text: $t("MonitorSession.StateType.Finished"),
+               value: MonitorStateTime.Finished,
+            },
+         ],
+         filterMultiple: false,
+         onFilter: (value, record) => record?.state?.value == value,
       },
       {
          title: $t("MonitorSession.StartDate"),
@@ -191,9 +217,11 @@ const loadData = async () => {
       if (rs.success && rs.data) {
          let temp = rs.data.list?.map((item) => {
             item.computerRoomName = item?.computerRoom?.name;
+            item.state = bindMonitorState(item);
             item.startDate = item.startDate ? dayjs(item.startDate).format(FormatDateKey.Default) : "";
             item.endDate = item.endDate ? dayjs(item.endDate).format(FormatDateKey.Default) : "";
             item.ownerIdText = item?.user?.fullname;
+
             return item;
          });
          dataSource.value = _.cloneDeep(temp);
@@ -205,6 +233,22 @@ const loadData = async () => {
       loading.loadingTable = false;
    }
 };
+
+const bindMonitorState = (item) => {
+   const state = {};
+   const now = moment();
+   if (now.isBefore(moment(item.startDate))) {
+      state.value = MonitorStateTime.YetStarted;
+      state.text = $t("MonitorSession.StateType.YetStarted")
+   } else if (now.isSameOrAfter(moment(item.endDate))) {
+      state.value = MonitorStateTime.Finished;
+      state.text = $t("MonitorSession.StateType.Finished")
+   } else {
+      state.value = MonitorStateTime.Running;
+      state.text = $t("MonitorSession.StateType.Running")
+   }
+   return state;
+}
 /**
  * paging
  * @param {*} pag

@@ -124,6 +124,30 @@ const columns = computed(() => {
       dataIndex: "listError",
       key: "listError",
       width: "100px",
+      filters: [
+        {
+          text: $t("Computer.ComputerError.Perfect"),
+          value: ComputerKey.ComputerError.Perfect,
+        },
+        {
+          text: $t("Computer.ComputerError.Hardware"),
+          value: ComputerKey.ComputerError.Hardware,
+        },
+        {
+          text: $t("Computer.ComputerError.Software"),
+          value: ComputerKey.ComputerError.Software,
+        },
+        {
+          text: $t("Computer.ComputerError.Network"),
+          value: ComputerKey.ComputerError.Network,
+        },
+        {
+          text: $t("Computer.ComputerError.OS"),
+          value: ComputerKey.ComputerError.OS,
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => record.listError?.find(e => e.value == value),
     },
     {
       title: "Action",
@@ -232,7 +256,7 @@ const handleTableChange = async (pag, filters, sorter) => {
   pagingParam.pageSize = pag.pageSize;
   pagingParam.fieldSort = sorter.field;
   pagingParam.sortAsc = sorter.order == "ascend" ? true : false;
-
+  pagingParam.filters = util.stringifyValue(_.cloneDeep(filters));
   await loadData();
 };
 
@@ -306,11 +330,14 @@ const onDelete = (record) => {
 };
 
 const refreshGrid = async () => {
+  filteredInfo.value = null;
+  sortedInfo.value = null;
   pagingParam.keySearch = "";
   pagingParam.pageNumber = 1;
   pagingParam.pageSize = 20;
   pagingParam.fieldSort = "UpdatedAt";
   pagingParam.sortAsc; false;
+  pagingParam.filters = null;
   searchText.value = "";
   await loadData();
 }

@@ -17,5 +17,11 @@ class ComputerService extends baseService {
    async getListFilterBySoftware(softwareId, paging) {
       return await instance.post(`${this.getEndpoint()}/GetListFilterBySoftware/${softwareId}`, paging);
    }
+   async getComputerOnLineChart(checkTime) {
+      return await instance.get(`${this.getEndpoint()}/GetComputerOnLineChart/${checkTime}`);
+   }
+   async getComputerByListErrorChart() {
+      return await instance.get(`${this.getEndpoint()}/GetComputerByListErrorChart`);
+   }
 }
 export default new ComputerService();

@@ -189,6 +189,7 @@ export default {
    MonitorSession: {
       ComputerRoomName: "Tên phòng máy",
       MonitorTypeLabel: "Loại giám sát",
+      State: "Trạng thái",
       StartDate: "Thời gian bắt đầu",
       EndDate: "Thời gian kết thúc",
       Domain: "Tên miền cho phép",
@@ -204,6 +205,11 @@ export default {
       MonitorType: {
          Practive: "Thực hành",
          Exam: "Kiểm tra"
+      },
+      StateType: {
+         Running: "Đang hoạt động",
+         YetStarted: "Chưa bắt đầu",
+         Finished: "Đã kết thúc",
       }
    },
    ConfigOption: {
@@ -258,6 +264,24 @@ export default {
       AgentManager: "Quản lý agent",
       StudentManager: "Quản lý sinh viên"
    },
+   ChartComputerOnline: {
+      Label: "Thống kế số lượng máy tính đang hoạt động",
+      Labels: {
+         ComputerOnline: "Số lượng máy online",
+         ComputerTotal: "Tổng số máy"
+      }
+   },
+   ChartComputerCondition: {
+      Label: "Thống kế tình trạng máy tính",
+      Labels: {
+         Perfect: "Tốt",
+         Hardware: "Lỗi phần cứng",
+         Software: "Lỗi phần mềm",
+         Network: "Lỗi mạng",
+         OS: "Lỗi hệ điều hành",
+         Total: "Tổng số máy"
+      }
+   }
 
 
 }

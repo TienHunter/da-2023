@@ -3,6 +3,7 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Data;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,12 @@ namespace ComputerManagerment.Repos.Implement
         }
         public override async Task<Computer?> GetAsync(Guid id)
         {
-            var rs =  await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
-          
+            var rs = await _dbSet.Include(c => c.ComputerRoom).SingleOrDefaultAsync(c => c.Id == id);
+
             return rs;
         }
 
-        public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? Filters = null)
+        public override async Task<(List<Computer>, int)> GetListAsync(string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? filters = null)
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<Computer>();
@@ -35,7 +36,39 @@ namespace ComputerManagerment.Repos.Implement
             {
                 query = query.Where(e => e.Name.Contains(keySearch) || (e.ComputerRoom != null && e.ComputerRoom.Name.Contains(keySearch)));
             }
+            if (filters != null)
+            {
+                foreach (var keyValuePair in filters)
+                {
+                    string key = keyValuePair.Key;
+                    string value = keyValuePair.Value;
+                    if (key == "listError" && !string.IsNullOrEmpty(value) && value != "null")
+                    {
+                        try
+                        {
+                            List<ComputerErrorId> listComputerErrorId = JsonConvert.DeserializeObject<List<ComputerErrorId>>(value);
+                            if (listComputerErrorId != null && listComputerErrorId.Count > 0)
+                            {
+                                var computerErrorId = listComputerErrorId[0];
+                                if (computerErrorId == ComputerErrorId.Perfect)
+                                {
+                                    query = query.Where(ms => string.IsNullOrEmpty(ms.ListErrorId));
+                                }
+                                else
+                                {
+                                    query = query.Where(ms => ms.ListErrorId.Contains(computerErrorId.ToString()));
+                                }
 
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            // logger
+                        };
+                    }
+                }
+            }
             switch (fieldSort?.ToLower())
             {
                 case "computerroomname":
@@ -84,7 +117,7 @@ namespace ComputerManagerment.Repos.Implement
 
             switch (fieldSort?.ToLower())
             {
-               
+
                 case "name":
                     query = sortAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                     break;
@@ -149,5 +182,31 @@ namespace ComputerManagerment.Repos.Implement
             return (entities, totalCount);
         }
 
+        public async Task<List<int>> GetComputerOnlineChart(long checkTime)
+        {
+           var rs = new List<int>();
+
+            var computerStates = await _dbSet.Include(c => c.ComputerState).Select(c => c.ComputerState).ToListAsync();
+            var countComputerOnline = computerStates.Where(c => c != null && c.State && Math.Abs(DateTime.Now.Subtract(c.LastUpdate).TotalMilliseconds) <= checkTime).Count();
+            var totalCount = computerStates.Count();
+            rs.Add(countComputerOnline);
+            rs.Add(totalCount);
+
+            return rs;
+        }
+
+        public async Task<List<int>> GetComputerByListErrorChart()
+        {
+            var rs = new List<int>();
+            var errors = await _dbSet.Select(c => c.ListErrorId).ToListAsync();
+            rs.Add(errors.Count(e => string.IsNullOrEmpty(e)));
+            rs.Add(errors.Count(e => !string.IsNullOrEmpty(e) && e.Contains(ComputerErrorId.Hardware.ToString())));
+            rs.Add(errors.Count(e => !string.IsNullOrEmpty(e) && e.Contains(ComputerErrorId.Software.ToString())));
+            rs.Add(errors.Count(e => !string.IsNullOrEmpty(e) && e.Contains(ComputerErrorId.Network.ToString())));
+            rs.Add(errors.Count(e => !string.IsNullOrEmpty(e) && e.Contains(ComputerErrorId.OS.ToString())));
+            rs.Add(errors.Count);
+            return rs;
+
+        }
     }
 }

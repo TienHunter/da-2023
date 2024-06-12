@@ -20,12 +20,6 @@
           <span>{{ $t("Sidebar.ComputerManager") }}</span>
         </router-link>
       </a-menu-item>
-      <a-menu-item key="User">
-        <router-link :to="{ name: 'UserList' }">
-          <user-outlined />
-          <span>{{ $t("Sidebar.UserManager") }}</span>
-        </router-link>
-      </a-menu-item>
       <a-menu-item key="Software">
         <router-link :to="{ name: 'SoftwareList' }">
           <ShoppingOutlined />
@@ -44,13 +38,13 @@
           <span>{{ $t("Sidebar.MonitorSessionManager") }}</span>
         </router-link>
       </a-menu-item>
-      <a-menu-item key="ConfigOption">
+      <a-menu-item v-if="checkShowByRole([UserRole.Admin])" key="ConfigOption">
         <router-link :to="{ name: 'ConfigOptionList' }">
           <SettingOutlined />
           <span>{{ $t("Sidebar.ConfigOptionManager") }}</span>
         </router-link>
       </a-menu-item>
-      <a-menu-item key="Agent">
+      <a-menu-item v-if="checkShowByRole([UserRole.Admin])" key="Agent">
         <router-link :to="{ name: 'Agent' }">
           <WindowsOutlined />
           <span>{{ $t("Sidebar.AgentManager") }}</span>
@@ -62,20 +56,40 @@
           <span>{{ $t("Sidebar.StudentManager") }}</span>
         </router-link>
       </a-menu-item>
+      <a-menu-item v-if="checkShowByRole([UserRole.Admin])" key="User">
+        <router-link :to="{ name: 'UserList' }">
+          <user-outlined />
+          <span>{{ $t("Sidebar.UserManager") }}</span>
+        </router-link>
+      </a-menu-item>
 
     </a-menu>
   </a-layout-sider>
 </template>
 <script setup>
+import { LocalStorageKey, UserRole } from "@/constants";
+import { localStore } from "@/utils";
 import { ref, onBeforeMount, computed, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const collapsed = ref(false);
 const selectedKeys = ref([]);
+const userInfo = localStore.getItem(LocalStorageKey.userInfor);
 watchEffect(() => {
   selectedKeys.value = [route.matched[0]?.name];
 });
+
+const checkShowByRole = (roles) => {
+  let rs = false;
+  if (!roles?.length) {
+    rs = true;
+  }
+  else if (userInfo && roles.includes(userInfo?.roleID)) {
+    rs = true;
+  }
+  return rs;
+}
 </script>
 <style scoped>
 #components-layout-demo-side .logo {

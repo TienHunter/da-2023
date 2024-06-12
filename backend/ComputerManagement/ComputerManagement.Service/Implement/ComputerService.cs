@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ComputerManagement.Service.Implement
 {
@@ -23,6 +24,7 @@ namespace ComputerManagement.Service.Implement
         private readonly IComputerRepo _computerRepo = computerRepo;
         private readonly IComputerRoomRepo _computerRoomRepo = serviceProvider.GetService(typeof(IComputerRoomRepo)) as IComputerRoomRepo;
         private readonly IComputerStateRepo _computerStateRepo = serviceProvider.GetService(typeof(IComputerStateRepo)) as IComputerStateRepo;
+        private readonly IConfigOptionRepo _configOptionRepo = serviceProvider.GetService(typeof(IConfigOptionRepo)) as IConfigOptionRepo;
 
         public async Task<ComputerDto> GetComputerByMacAddress(string macAddress)
         {
@@ -253,6 +255,16 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.ConflicRowColComputer
                 };
             }
+        }
+
+        public async Task<List<int>> GetComputerOnlineChart(long checkTime)
+        {
+            return await _computerRepo.GetComputerOnlineChart(checkTime);
+        }
+
+        public async Task<List<int>> GetComputerByListErrorChart()
+        {
+            return await _computerRepo.GetComputerByListErrorChart();
         }
     }
 }

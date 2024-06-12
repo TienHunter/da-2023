@@ -1,12 +1,22 @@
-<template lang="">
-<a-row :gutter="[16,16]">
-  <a-col :span="12"> <ChartComputer /></a-col>
-  <a-col :span="12">2</a-col>
-  <a-col :span="12">3</a-col>
-  <a-col :span="12">4</a-col>
-</a-row>
+<template>
+  <div class="container-content">
+    <a-row :gutter="[16, 16]">
+      <a-col :span="12">
+        <ChartComputerOnline />
+      </a-col>
+      <a-col :span="12"></a-col>
+      <a-col :span="24">
+        <ChartComputerCondition />
+      </a-col>
+    </a-row>
+  </div>
 </template>
 <script setup>
-import ChartComputer from "./ChartComputer.vue";
+import ChartComputerOnline from "./ChartComputerOnline.vue";
+import ChartComputerCondition from "./ChartComputerCondition.vue";
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.container-content {
+  padding: 16px;
+}
+</style>

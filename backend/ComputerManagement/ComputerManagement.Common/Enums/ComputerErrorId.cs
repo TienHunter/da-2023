@@ -8,7 +8,8 @@ namespace ComputerManagement.Common.Enums
 {
     public enum ComputerErrorId
     {
-        Hardware=1,
+        Perfect=0,
+        Hardware =1,
         Software=2,
         Network =3,
         OS=4,

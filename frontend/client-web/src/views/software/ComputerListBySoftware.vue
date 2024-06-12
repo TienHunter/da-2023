@@ -58,14 +58,16 @@
          }" :data-source="dataSource" :pagination="pagination" :scroll="scrollConfig" :loading="loading.loadingTable"
             @change="handleTableChange">
             <template #bodyCell="{ column, record }">
-               <template v-if="column.key === 'name'">
+               <template v-if="column.key === 'macAddress'">
                   <router-link :to="{ name: 'ComputerView', params: { id: record.id } }">
-                     {{ record.name }}
+                     {{ record.macAddress }}
                   </router-link>
                </template>
                <template v-else-if="column.key === 'computerRoomName'">
+                  <router-link :to="{ name: 'ComputerRoomView', params: { id: record?.computerRoom.id } }">
+                     {{ record?.computerRoom?.name }}
+                  </router-link>
 
-                  {{ record?.computerRoom?.name }}
                </template>
                <template v-else-if="column.key === 'isDowloadFile'">
                   <template v-if="record?.computerSoftwares?.[0]?.isDowloadFile">

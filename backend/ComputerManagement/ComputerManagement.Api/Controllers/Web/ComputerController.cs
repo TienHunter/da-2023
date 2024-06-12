@@ -34,5 +34,21 @@ namespace ComputerManagement.Controllers.Web
             return Ok(rs);
 
         }
+
+        [HttpGet("GetComputerOnLineChart/{checkTime}")]
+        public virtual async Task<IActionResult> GetComputerOnLineChart(long checkTime = 5000)
+        {
+            var rs = new ServiceResponse();
+             rs.Data = await _computerService.GetComputerOnlineChart(checkTime);
+            return Ok(rs);
+        }
+
+        [HttpGet("GetComputerByListErrorChart")]
+        public virtual async Task<IActionResult> GetComputerByListErrorChart()
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _computerService.GetComputerByListErrorChart();
+            return Ok(rs);
+        }
     }
 }

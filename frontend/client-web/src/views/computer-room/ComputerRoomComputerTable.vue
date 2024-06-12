@@ -288,8 +288,6 @@ const onUseSocket = () => {
  * cập nhật state cho máy tính
  */
 const updateComputerState = (item) => {
-  debugger;
-  console.log(item);
   if (item) {
     let computer = dataSource.value?.find(c => c.id == item.computerId)
     if (computer) {
