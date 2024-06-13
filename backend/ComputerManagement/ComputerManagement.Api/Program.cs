@@ -161,6 +161,7 @@ builder.Services.AddScoped<IFileProofService, FileProofService>();
 
 builder.Services.AddHostedService<CommandOptionJob>();
 // add cors
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "CorsPolicy",
@@ -169,7 +170,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("*")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
-            policy.WithOrigins("http://localhost:8080")
+            policy.WithOrigins("http://localhost:8080") // baseUrlConfig.Frontend
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
