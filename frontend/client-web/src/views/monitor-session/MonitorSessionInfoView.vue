@@ -1,13 +1,5 @@
 <template>
    <div class="container h-full bg-white p-4 rounded">
-      <div class="toolbars flex justify-between py-4 rounded">
-         <div class="toolbars-left"></div>
-         <div class="toolbars-right flex gap-2">
-            <!-- <router-link :to="{ name: 'MonitorSessionEdit', params: { id: route.params.id } }" disabled> -->
-            <a-button type="primary" ghost>{{ $t("Edit") }}</a-button>
-            <!-- </router-link> -->
-         </div>
-      </div>
       <div class="content">
          <div class="master">
             <a-row :gutter="[16, 24]">
@@ -84,6 +76,11 @@ const fields = reactive([
       title: $t("MonitorSession.EndDate"),
       dataIndex: "endDate",
       key: "endDate",
+   },
+   {
+      title: $t("MonitorSession.Domain"),
+      dataIndex: "domains",
+      key: "domains",
    },
 ]);
 const data = ref({});

@@ -192,7 +192,7 @@ const dataSource = ref([]);
 const showTotal = computed(
   () => `Total ${dataSource.value?.length || 0} items`
 );
-const scrollConfig = ref({ x: 1200, y: 360 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 320px)" });
 const selectRows = reactive({
   selectedRowKeys: [],
 });

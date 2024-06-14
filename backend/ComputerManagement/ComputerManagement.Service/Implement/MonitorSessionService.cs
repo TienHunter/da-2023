@@ -24,7 +24,7 @@ namespace ComputerManagement.Service.Implement
 
         public async Task<(List<MonitorSessionDto>, int)> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
         {
-            var (entities, totalCount) = await _monitorSessionRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc);
+            var (entities, totalCount) = await _monitorSessionRepo.GetListComputerByComputerRoomIdAsync(computerRoomId, pagingParam.KeySearch, pagingParam.PageNumber, pagingParam.PageSize, pagingParam.FieldSort, pagingParam.SortAsc, pagingParam.Filters);
             var dtos = _mapper.Map<List<MonitorSessionDto>>(entities);
             return (dtos, totalCount);
         }

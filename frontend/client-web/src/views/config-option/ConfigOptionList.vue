@@ -156,7 +156,7 @@ const pagination = computed(() => ({
    showTotal: (total) => `Total ${total} items`,
 }));
 const dataSource = ref([]);
-const scrollConfig = ref({ x: 1200, y: 400 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 240px)" });
 const selectRows = reactive({
    selectedRowKeys: [],
 });

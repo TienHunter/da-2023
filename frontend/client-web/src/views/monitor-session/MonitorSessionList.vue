@@ -92,7 +92,7 @@ const columns = computed(() => {
          title: $t("MonitorSession.ComputerRoomName"),
          dataIndex: "computerRoomName",
          key: "computerRoomName",
-         width: "100px",
+         width: "160px",
          sorter: (a, b) => a > b,
          sortOrder: sorted.columnKey === 'computerRoomName' && sorted.order,
          fixed: "left",
@@ -101,7 +101,7 @@ const columns = computed(() => {
          title: $t("MonitorSession.MonitorTypeLabel"),
          dataIndex: "monitorType",
          key: "monitorType",
-         width: "100px",
+         width: "160px",
          filters: [
             {
                text: $t("MonitorSession.MonitorType.Practive"),
@@ -142,17 +142,18 @@ const columns = computed(() => {
          dataIndex: "startDate",
          key: "startDate",
          width: "160px",
+         sorter: true
       },
       {
          title: $t("MonitorSession.EndDate"),
          dataIndex: "endDate",
          key: "endDate",
-         width: "160px",
+         width: "170px",
+         sorter: true
       }, {
          title: $t("MonitorSession.Domain"),
          dataIndex: "domains",
          key: "domains",
-
          ellipsis: true
 
       },
@@ -188,7 +189,7 @@ const pagination = computed(() => ({
    showTotal: (total) => `Total ${total} items`,
 }));
 const dataSource = ref([]);
-const scrollConfig = ref({ x: 1200, y: 400 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 240px)" });
 const selectRows = reactive({
    selectedRowKeys: [],
 });

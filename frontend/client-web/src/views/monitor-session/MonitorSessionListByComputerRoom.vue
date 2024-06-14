@@ -31,6 +31,9 @@
                   </a-tag>
 
                </template>
+               <template v-else-if="column.key === 'state'">
+                  {{ record?.state?.text }}
+               </template>
                <template v-else-if="column.key === 'domains'">
                   <div v-for="(domain, index) in record.domains" :key="index">
                      <a-tag>
@@ -69,7 +72,7 @@ import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import MonitorSessionQuickAddModal from "./MonitorSessionQuickAddModal.vue";
-import { FormatDateKey, MonitorType } from "@/constants";
+import { FormatDateKey, MonitorType, MonitorStateTime } from "@/constants";
 import moment from "moment";
 import dayjs from "dayjs";
 // ========== start state ==========
@@ -87,17 +90,10 @@ const columns = computed(() => {
    const sorted = sortedInfo.value || {};
    return [
       {
-         title: $t("MonitorSession.ComputerRoomName"),
-         dataIndex: "computerRoomName",
-         key: "computerRoomName",
-         width: "100px",
-         fixed: "left",
-      },
-      {
          title: $t("MonitorSession.MonitorTypeLabel"),
          dataIndex: "monitorType",
          key: "monitorType",
-         width: "100px",
+         width: "140px",
          filters: [
             {
                text: $t("MonitorSession.MonitorType.Practive"),
@@ -108,25 +104,49 @@ const columns = computed(() => {
                value: MonitorType.Exam,
             },
          ],
-         filteredValue: filtered.monitorType || null,
-         onFilter: (value, record) => record.monitorType.includes(value),
+         filterMultiple: false,
+         onFilter: (value, record) => record.monitorType == value,
+      },
+      {
+         title: $t("MonitorSession.State"),
+         dataIndex: "state",
+         key: "state",
+         width: "120px",
+         filters: [
+            {
+               text: $t("MonitorSession.StateType.Running"),
+               value: MonitorStateTime.Running,
+            },
+            {
+               text: $t("MonitorSession.StateType.YetStarted"),
+               value: MonitorStateTime.YetStarted,
+            },
+            {
+               text: $t("MonitorSession.StateType.Finished"),
+               value: MonitorStateTime.Finished,
+            },
+         ],
+         filterMultiple: false,
+         onFilter: (value, record) => record?.state?.value == value,
       },
       {
          title: $t("MonitorSession.StartDate"),
          dataIndex: "startDate",
          key: "startDate",
          width: "160px",
+         sorter: true
       },
       {
          title: $t("MonitorSession.EndDate"),
          dataIndex: "endDate",
          key: "endDate",
-         width: "160px",
+         width: "170px",
+         sorter: true
       }, {
          title: $t("MonitorSession.Domain"),
          dataIndex: "domains",
          key: "domains",
-
+         idth: "200px",
          ellipsis: true
 
       },
@@ -162,7 +182,7 @@ const pagination = computed(() => ({
    showTotal: (total) => `Total ${total} items`,
 }));
 const dataSource = ref([]);
-const scrollConfig = ref({ x: 1200, y: 400 });
+const scrollConfig = ref({ x: 1200, y: "calc(100vh - 340px)" });
 const selectRows = reactive({
    selectedRowKeys: [],
 });
@@ -205,6 +225,7 @@ const loadData = async () => {
       if (rs.success && rs.data) {
          let temp = rs.data.list?.map((item) => {
             item.computerRoomName = item?.computerRoom?.name;
+            item.state = bindMonitorState(item);
             item.startDate = item.startDate ? dayjs(item.startDate).format(FormatDateKey.Default) : "";
             item.endDate = item.endDate ? dayjs(item.endDate).format(FormatDateKey.Default) : "";
             item.ownerIdText = item?.user?.fullname;
@@ -239,7 +260,7 @@ const handleTableChange = async (pag, filters, sorter) => {
    pagingParam.pageSize = pag.pageSize;
    pagingParam.fieldSort = sorter.field;
    pagingParam.sortAsc = sorter.order == "ascend" ? true : false;
-
+   pagingParam.filters = util.stringifyValue(_.cloneDeep(filters));
    await loadData();
 };
 
@@ -306,11 +327,13 @@ const afterSaveModalQuickAddMonitorSession = async (data) => {
 const refreshGrid = async () => {
    filteredInfo.value = null;
    sortedInfo.value = null;
-   pagination.keySearch = "";
-   pagination.fieldSort = "UpdatedAt";
-   pagination.sortAsc = false;
-   pagination.pageSize = 20;
-   pagination.pageNumber = 1;
+   pagingParam.keySearch = "";
+   pagingParam.pageNumber = 1;
+   pagingParam.pageSize = 20;
+   pagingParam.fieldSort = "UpdatedAt";
+   pagingParam.sortAsc; false;
+   pagingParam.filters = null;
+   searchText.value = "";
    await loadData();
 }
 
@@ -320,6 +343,22 @@ const refreshGrid = async () => {
  */
 const viewDetail = (item) => {
    router.push({ name: "MonitorSessionView", params: { id: item.id } })
+}
+
+const bindMonitorState = (item) => {
+   const state = {};
+   const now = moment();
+   if (now.isBefore(moment(item.startDate))) {
+      state.value = MonitorStateTime.YetStarted;
+      state.text = $t("MonitorSession.StateType.YetStarted")
+   } else if (now.isSameOrAfter(moment(item.endDate))) {
+      state.value = MonitorStateTime.Finished;
+      state.text = $t("MonitorSession.StateType.Finished")
+   } else {
+      state.value = MonitorStateTime.Running;
+      state.text = $t("MonitorSession.StateType.Running")
+   }
+   return state;
 }
 // ========== end methods ==========
 </script>

@@ -110,7 +110,7 @@ const dataClones = ref([]);
 const showTotal = computed(
    () => `Total ${dataClones.value?.length || 0} items`
 );
-const scrollConfig = ref({ x: 1200 });
+const scrollConfig = ref({ y: "calc(100vh - 340px)" });
 // ========== end state ==========
 
 // ========== start lifecycle ========== 

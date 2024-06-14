@@ -19,7 +19,8 @@ namespace ComputerManagerment.Repos.Interface
         /// <param name="PageSize"></param>
         /// <param name="FieldSort"></param>
         /// <param name="SortAsc"></param>
+        /// <param name="filtes"></param>
         /// <returns></returns>
-        Task<(List<MonitorSession>, int)> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc);
+        Task<(List<MonitorSession>, int)> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, string keySearch, int pageNumber, int pageSize, string fieldSort, bool sortAsc, Dictionary<string, string>? filters = null);
     }
 }

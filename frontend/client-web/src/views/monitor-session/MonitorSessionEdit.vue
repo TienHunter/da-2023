@@ -86,7 +86,7 @@ const formItemLayout = {
          span: 24,
       },
       sm: {
-         span: 12,
+         span: 18,
       },
    },
 };
@@ -97,7 +97,7 @@ const formItemLayoutWithOutLabel = {
          offset: 0,
       },
       sm: {
-         span: 12,
+         span: 18,
          offset: 6,
       },
    },
@@ -269,6 +269,12 @@ const resetForm = () => {
 
 .container-content {
    position: relative;
+   height: calc(100vh - 48px);
+
+   .content {
+      height: calc(100% - 48px);
+      overflow: auto;
+   }
 
    .list-session {
       background-color: white;
