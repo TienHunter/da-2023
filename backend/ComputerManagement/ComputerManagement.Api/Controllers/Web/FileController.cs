@@ -60,6 +60,10 @@ namespace ComputerManagement.Api.Controllers.Web
             
             var (bytes, contentType) = await _fileService.GetFileByFileName(filename);
 
+            //return new FileContentResult(bytes, contentType)
+            //{
+            //    FileDownloadName = filename
+            //};
             return File(bytes, contentType);
         }
     }

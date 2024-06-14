@@ -25,9 +25,19 @@
                            <CloseCircleOutlined />
                         </template>
                      </template>
+                     <template v-else-if="field.key === 'fileName'">
+
+                        <div class="flex items-center gap-2">
+                           <span>{{ agentInfo?.fileName }}</span>
+                           <a-button round @click="dowloadAgentFile()">
+                              <DownloadOutlined />
+                           </a-button>
+                        </div>
+
+                     </template>
                      <template v-else-if="field.key === 'size'">
 
-                        {{ agentInfo?.[field.key] || 0 }} {{ "B" }}
+                        {{ (agentInfo?.[field.key] || 0) / 1024 }} {{ "KB" }}
 
                      </template>
                      <template v-else-if="field.key === 'createdAt' || field.key === 'updatedAt'">
@@ -215,6 +225,26 @@ const edit = () => {
 const add = () => {
    modalMode.value = FormMode.Add;
    visible.value = true;
+}
+
+const dowloadAgentFile = async () => {
+   try {
+      let blob = await agentService.getFile();
+      // Tạo URL tạm thời từ Blob
+      const url = URL.createObjectURL(blob);
+      // Tạo một liên kết tải về
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = agentInfo.value.fileName; // Tên của file khi tải về
+      // Thêm liên kết vào body và nhấp tự động
+      document.body.appendChild(link);
+      link.click();
+      // Xóa URL tạm thời sau khi đã sử dụng
+      URL.revokeObjectURL(url);
+   } catch (error) {
+      console.log(error);
+      message.error("UnknownError");
+   }
 }
 </script>
 <style lang="">

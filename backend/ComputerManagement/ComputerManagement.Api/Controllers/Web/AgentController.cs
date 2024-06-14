@@ -30,5 +30,15 @@ namespace ComputerManagement.Api.Controllers.Web
             rs.Data = await _agentService.UpsertAgentAsync(agentFormData);
             return Ok(rs);
         }
+
+        [HttpGet("GetFile")]
+        public async Task<IActionResult> GetFile()
+        {
+            // do something
+
+            var (bytes, contentType) = await _agentService.GetFileAgentAsync();
+
+            return File(bytes, contentType);
+        }
     }
 }

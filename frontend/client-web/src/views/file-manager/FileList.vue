@@ -34,7 +34,7 @@
           </template>
           <template v-else-if="column.key === 'operation'">
             <div class="flex gap-2">
-              <a-button round :disabled="!record?.fileName" @click="dowliadFile(record?.fileName)">
+              <a-button round :disabled="!record?.fileName" @click="dowloadFile(record?.fileName)">
                 <template #icon>
                   <DownloadOutlined />
                 </template>
@@ -244,7 +244,7 @@ const onDelete = (record) => {
 /**
  * tải file
  */
-const dowliadFile = async (fileName) => {
+const dowloadFile = async (fileName) => {
   if (fileName) {
     try {
       let blob = await fileService.getFileByFilename(fileName);

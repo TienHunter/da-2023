@@ -52,13 +52,14 @@ namespace ComputerManagement.Api.Controllers.Agent
         /// </summary>
         /// <param name="softwareId"></param>
         /// <returns></returns>
-        [HttpGet("GetFileLatestBySoftwareId/{softwareId}")]
+        [HttpGet("GetFileNameLatestBySoftwareId/{softwareId}")]
         public async Task<IActionResult> GetFileVersionLatestBySoftwareId([FromRoute][Required] Guid softwareId)
         {
-            // do something
+            var rs = new ServiceResponse();
 
-            var (bytes, contentType) = await _fileService.GetFileVersionLatestBySoftwareIdAsync(softwareId);
-            return File(bytes, contentType);
+            rs.Data= await _fileService.GetFileVersionLatestBySoftwareIdAsync(softwareId);
+            return Ok(rs);
         }
+
     }
 }

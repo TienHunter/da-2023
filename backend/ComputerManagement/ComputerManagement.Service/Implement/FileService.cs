@@ -198,22 +198,9 @@ namespace ComputerManagement.Service.Implement
             return (guid, version, extension);
         }
 
-        public async Task<(byte[], string?)> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId)
+        public async Task<string> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId)
         {
-            var fileNameVersionLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).FirstOrDefaultAsync();
-
-            if (string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId?.FileName))
-            {
-                throw new BaseException
-                {
-                    StatusCode = HttpStatusCode.NotFound,
-                    Code = ServiceResponseCode.NotFoundFile
-                };
-            }
-            var filePath = Path.Combine(_fileConfig.StoreFile, fileNameVersionLatestBySoftwareId.FileName);
-            var contentType = !string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId?.ContentType) ? fileNameVersionLatestBySoftwareId.ContentType : "application/octet-stream";
-            var bytes = await File.ReadAllBytesAsync(filePath);
-            return (bytes, contentType);
+            return await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).Select(f => f.FileName).FirstOrDefaultAsync();
         }
     }
 }

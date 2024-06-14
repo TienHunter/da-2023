@@ -42,6 +42,6 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <param name="softwareId"></param>
         /// <returns></returns>
-        Task<(byte[], string?)> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId);
+        Task<string> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId);
     }
 }

@@ -13,5 +13,11 @@ class AgentService extends baseService {
    async upsertAgent(formData) {
       return await instance.post(`${this.getEndpoint()}/UpsertAgent`, formData)
    }
+
+   async getFile() {
+      return await instance.get(`${this.getEndpoint()}/GetFile`, {
+         responseType: "blob",
+      })
+   }
 }
 export default new AgentService();
