@@ -28,6 +28,14 @@ namespace ComputerManagement.Api.Controllers.Agent
             await _commandOptionService.UpsertAsync(commandParam);
 
             return Ok(rs);
+        }
+
+        [HttpGet("GetListCommandOptionByComputerIdAndCommandOptionKey/{computerId}/{commandOpitonKey}")]
+        public async Task<IActionResult> GetListCommandOptionByComputerIdAndCommandOptionKey([FromRoute] Guid computerId, [FromRoute] string commandOpitonKey)
+        {
+            var rs = new ServiceResponse();
+            rs.Data = await _commandOptionService.GetListCommandOptionByComputerIdAndCommandOptionKeyAsync(computerId, commandOpitonKey);
+            return Ok(rs);
 
         }
     }

@@ -22,6 +22,16 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <param name="computerId"></param>
         /// <returns></returns>
-        Task<List<CommandOption>> GetListCommandOptionByComputerIdAsync(Guid computerId);
+        Task<List<CommandOptionDto>> GetListCommandOptionByComputerIdAsync(Guid computerId);
+
+        /// <summary>
+        /// lấy danh sách thiết lập lệnh theo id máy tính vaf key option
+        /// </summary>
+        /// <param name="computerId"></param>
+        /// <param name="commandOptionKey"></param>
+        /// <returns></returns>
+        Task<List<CommandOptionDto>> GetListCommandOptionByComputerIdAndCommandOptionKeyAsync(Guid computerId, string commandOptionKey);
+
+        
     }
 }

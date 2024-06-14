@@ -24,10 +24,16 @@ namespace ComputerManagement.Service.Implement
         private readonly ICommandOptionRepo _commandOptionRepo = commandOptionRepo;
         private readonly IComputerRepo _computerRepo = serviceProvider.GetService(typeof(IComputerRepo)) as IComputerRepo;
 
-        public async Task<List<CommandOption>> GetListCommandOptionByComputerIdAsync(Guid computerId)
+        public async Task<List<CommandOptionDto>> GetListCommandOptionByComputerIdAndCommandOptionKeyAsync(Guid computerId, string commandOptionKey)
+        {
+            var rs = await _commandOptionRepo.GetQueryable().Where(cm => cm.SourceId == computerId && cm.CommandKey == CommandOptionKey.CHECK_DOWLOAD_SOFTWARE).ToListAsync();
+            return _mapper.Map<List<CommandOptionDto>>(rs);
+        }
+
+        public async Task<List<CommandOptionDto>> GetListCommandOptionByComputerIdAsync(Guid computerId)
         {
             var rs = await _commandOptionRepo.GetQueryable().Where(cm => cm.SourceId == computerId).ToListAsync();
-            return rs;
+            return _mapper.Map<List<CommandOptionDto>>(rs);
         }
 
         public async Task UpsertAsync(CommandParam commandParam)
