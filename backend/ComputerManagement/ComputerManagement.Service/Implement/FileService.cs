@@ -8,6 +8,7 @@ using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,29 +119,19 @@ namespace ComputerManagement.Service.Implement
             return (bytes, contentType);
         }
 
-        public async Task<bool> CheckUpdateAsync(string fileName)
+        public async Task<string> CheckUpdateAsync(string fileName)
         {
-            var rs = false;
+            var rs = "";
             var (softwareId, version, contentType) = this.ParseFileName(fileName);
             // check cờ trong db 
             var fileNameLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).Select(f => f.FileName).FirstOrDefaultAsync();
             if(!string.IsNullOrEmpty(fileNameLatestBySoftwareId) && fileNameLatestBySoftwareId != fileName)
             {
-                rs = true;
+                rs = fileNameLatestBySoftwareId;
             }
             return rs;
         }
 
-        public async Task<bool> CheckInstallAsync(Guid softwareId)
-        {
-            var rs = false;
-            var software = await _softwareRepo.GetAsync(softwareId);
-            if(software != null && software.IsInstall)
-            {
-                rs = true;
-            }
-            return rs;
-        }
 
         /// <summary>
         /// tách filename từ input
@@ -207,11 +198,11 @@ namespace ComputerManagement.Service.Implement
             return (guid, version, extension);
         }
 
-        public async Task<byte[]> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId)
+        public async Task<(byte[], string?)> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId)
         {
-            var fileNameVersionLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).Select(f => f.FileName).FirstOrDefaultAsync();
+            var fileNameVersionLatestBySoftwareId = await _fileRepo.GetQueryable().Where(f => f.SoftwareId == softwareId).OrderByDescending(f => f.FileName).FirstOrDefaultAsync();
 
-            if (string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId))
+            if (string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId?.FileName))
             {
                 throw new BaseException
                 {
@@ -219,8 +210,10 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.NotFoundFile
                 };
             }
-            var filePath = Path.Combine(_fileConfig.StoreFile, fileNameVersionLatestBySoftwareId);
-            return await File.ReadAllBytesAsync(filePath);
+            var filePath = Path.Combine(_fileConfig.StoreFile, fileNameVersionLatestBySoftwareId.FileName);
+            var contentType = !string.IsNullOrEmpty(fileNameVersionLatestBySoftwareId?.ContentType) ? fileNameVersionLatestBySoftwareId.ContentType : "application/octet-stream";
+            var bytes = await File.ReadAllBytesAsync(filePath);
+            return (bytes, contentType);
         }
     }
 }

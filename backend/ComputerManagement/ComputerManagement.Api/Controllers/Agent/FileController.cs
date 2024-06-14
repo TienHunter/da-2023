@@ -23,9 +23,13 @@ namespace ComputerManagement.Api.Controllers.Agent
         public async Task<IActionResult> GetFile([FromRoute][Required] string filename)
         {
             // do something
-
-
             var (bytes, contentType) = await _fileService.GetFileByFileName(filename);
+
+            // Trả về file với nội dung và loại nội dung đã lấy, đồng thời gán tên file trả về
+            //return new FileContentResult(bytes, contentType)
+            //{
+            //    FileDownloadName = filename
+            //};
 
             return File(bytes, contentType);
         }
@@ -44,19 +48,6 @@ namespace ComputerManagement.Api.Controllers.Agent
         }
 
         /// <summary>
-        /// check install phần mềm
-        /// </summary>
-        /// <param name="softwareId"></param>
-        /// <returns></returns>
-        [HttpGet("CheckInstall/{softwareId}")]
-        public async Task<IActionResult> CheckUpdate([FromRoute][Required] Guid softwareId)
-        {
-            var rs = new ServiceResponse();
-            rs.Data = await _fileService.CheckInstallAsync(softwareId);
-            return Ok(rs);
-        }
-
-        /// <summary>
         /// lấy file version cao nhất theo softwareId
         /// </summary>
         /// <param name="softwareId"></param>
@@ -66,9 +57,8 @@ namespace ComputerManagement.Api.Controllers.Agent
         {
             // do something
 
-            var fileBytes = await _fileService.GetFileVersionLatestBySoftwareIdAsync(softwareId);
-
-            return File(fileBytes, "application/octet-stream");
+            var (bytes, contentType) = await _fileService.GetFileVersionLatestBySoftwareIdAsync(softwareId);
+            return File(bytes, contentType);
         }
     }
 }

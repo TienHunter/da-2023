@@ -36,20 +36,12 @@ namespace ComputerManagement.Service.Interface
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        Task<bool> CheckUpdateAsync(string fileName);
-
-        /// <summary>
-        /// kiểm tra có cài đặt phần mềm ở agent không
-        /// </summary>
-        /// <param name="softwareId"></param>
-        /// <returns></returns>
-        Task<bool> CheckInstallAsync(Guid softwareId);
-
+        Task<string> CheckUpdateAsync(string fileName);
         /// <summary>
         /// lấy file có version cao nhất theo id phần mềm
         /// </summary>
         /// <param name="softwareId"></param>
         /// <returns></returns>
-        Task<byte[]> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId);
+        Task<(byte[], string?)> GetFileVersionLatestBySoftwareIdAsync(Guid softwareId);
     }
 }
