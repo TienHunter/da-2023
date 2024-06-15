@@ -1,5 +1,14 @@
 <template>
-   <Bar :data="data" :options="options" />
+   <a-spin :spinning="spinning">
+      <div class="relative">
+         <a-button type="text" class="refresh-data" @click="refreshData">
+            <template #icon>
+               <ReloadOutlined />
+            </template>
+         </a-button>
+         <Bar :data="data" :options="options" />
+      </div>
+   </a-spin>
 </template>
 <script setup>
 import { computerService, configOptionService } from '@/api';
@@ -25,13 +34,17 @@ const options = {
    responsive: true,
    maintainAspectRatio: false
 }
+const spinning = ref(false);
 onBeforeMount(async () => {
    try {
+      spinning.value = true;
       await getConfigChecComputerState();
       await fetchData();
       autoUpdateDate();
    } catch (error) {
       console.log(error);
+   } finally {
+      spinning.value = false;
    }
 })
 
@@ -84,5 +97,23 @@ const autoUpdateDate = () => {
       await fetchData();
    }, checkTime.value)
 }
+
+const refreshData = async () => {
+   try {
+      spinning.value = true;
+      await getConfigChecComputerState();
+      await fetchData();
+      autoUpdateDate();
+   } catch (error) {
+      console.log(error);
+   } finally {
+      spinning.value = false;
+   }
+}
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.refresh-data {
+   position: absolute;
+   right: 0;
+}
+</style>

@@ -1,8 +1,14 @@
 <template>
-   <spin>
-
-   </spin>
-   <Bar :data="data" :options="options" />
+   <a-spin :spinning="spinning">
+      <div class="relative">
+         <a-button type="text" class="refresh-data" @click="refreshData">
+            <template #icon>
+               <ReloadOutlined />
+            </template>
+         </a-button>
+         <Bar :data="data" :options="options" />
+      </div>
+   </a-spin>
 </template>
 <script setup>
 import { computerService, configOptionService } from '@/api';
@@ -19,20 +25,22 @@ import { onBeforeMount, ref } from 'vue';
 import { Bar } from 'vue-chartjs'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
-const checkTime = ref(5000);
-const interval = ref(null);
 const data = ref({
    datasets: []
 });
+const spinning = ref(false);
 const options = {
    responsive: true,
    maintainAspectRatio: false
 }
 onBeforeMount(async () => {
    try {
+      spinning.value = true;
       await fetchData();
    } catch (error) {
       console.log(error);
+   } finally {
+      spinning.value = false;
    }
 })
 
@@ -72,5 +80,20 @@ const bindData = (data) => {
       }]
    }
 }
+const refreshData = async () => {
+   try {
+      spinning.value = true;
+      await fetchData();
+   } catch (error) {
+      console.log(error);
+   } finally {
+      spinning.value = false;
+   }
+}
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.refresh-data {
+   position: absolute;
+   right: 0;
+}
+</style>

@@ -170,7 +170,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("*")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
-            policy.WithOrigins("http://localhost:8080") // baseUrlConfig.Frontend
+            policy.WithOrigins(baseUrlConfig.Frontend) // baseUrlConfig.Frontend
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
