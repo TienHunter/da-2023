@@ -37,8 +37,9 @@ namespace ComputerManagement.Service.Implement
                     Code = ServiceResponseCode.NotFoundAgent
                 };
             };
-            var filePath = Path.Combine(_fileConfig.StoreFile, agent?.FileName);
-            if (string.IsNullOrEmpty(agent?.FileName) || !File.Exists(filePath))
+            var folderPath = Path.Combine(_env.ContentRootPath, _fileConfig.StoreFile);
+            var filePath = Path.Combine(folderPath, agent.FileName);
+            if (string.IsNullOrEmpty(agent.FileName) || !File.Exists(filePath))
             {
                 throw new BaseException
                 {

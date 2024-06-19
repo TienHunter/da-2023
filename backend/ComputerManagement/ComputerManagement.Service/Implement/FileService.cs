@@ -5,6 +5,7 @@ using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
 using ComputerManagerment.Repos.Interface;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,7 @@ namespace ComputerManagement.Service.Implement
         private readonly IFileRepo _fileRepo = fileRepo;
         private readonly ISoftwareRepo _softwareRepo = serviceProvider.GetService(typeof(ISoftwareRepo)) as ISoftwareRepo;
         private readonly FileConfig _fileConfig = fileConfig.CurrentValue;
+        
 
         public async Task<Guid> UploadFileAsync(FileSource fileSource)
         {
@@ -94,7 +96,8 @@ namespace ComputerManagement.Service.Implement
             this.CheckNullModel(fileExist);
 
             // xóa file lưu trong ổ cứng
-            var filePath = Path.Combine(_fileConfig.StoreFile, fileExist.FileName);
+            var folderPath = Path.Combine(_env.ContentRootPath, _fileConfig.StoreFile);
+            var filePath = Path.Combine(folderPath, fileExist.FileName);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -105,7 +108,8 @@ namespace ComputerManagement.Service.Implement
         public async Task<(byte[], string?)> GetFileByFileName(string fileName)
         {
             var fileSource = await _fileRepo.GetQueryable().Where(x => x.FileName == fileName).FirstOrDefaultAsync();
-            var filePath = Path.Combine(_fileConfig.StoreFile,fileName);
+            var folderPath = Path.Combine(_env.ContentRootPath, _fileConfig.StoreFile);
+            var filePath = Path.Combine(folderPath, fileName);
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath))
             {
                 throw new BaseException

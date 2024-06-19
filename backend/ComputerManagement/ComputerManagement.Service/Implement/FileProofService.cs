@@ -93,7 +93,8 @@ namespace ComputerManagement.Service.Implement
         public async Task<(byte[], string?)> GetFileByFileName(string fileName)
         {
             var fileSource = await _fileProofRepo.GetQueryable().Where(x => x.FileName == fileName).FirstOrDefaultAsync();
-            var filePath = Path.Combine(_fileConfig.StoreFileProof, fileName);
+            var folderPath = Path.Combine(_env.ContentRootPath, _fileConfig.StoreFileProof);
+            var filePath = Path.Combine(folderPath, fileName);
             if (string.IsNullOrEmpty(fileName) || !File.Exists(filePath))
             {
                 throw new BaseException

@@ -8,6 +8,7 @@ using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Hubs;
 using ComputerManagement.Service.Interface;
 using ComputerManagerment.Repos.Interface;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,7 @@ namespace ComputerManagement.Service.Implement
         protected readonly ContextData _contextData;
         protected readonly IEmailService _emailService;
         protected readonly MonitorSessionHub _monitorSessionHub;
+        protected readonly IWebHostEnvironment _env;
         #endregion
 
         public BaseService(IServiceProvider serviceProvider, IBaseRepo<TModel> baseRepo)
@@ -45,6 +47,7 @@ namespace ComputerManagement.Service.Implement
             _emailService = serviceProvider.GetService(typeof(IEmailService)) as IEmailService;
 
             _monitorSessionHub = serviceProvider.GetService(typeof(MonitorSessionHub)) as MonitorSessionHub;
+            _env = serviceProvider.GetRequiredService<IWebHostEnvironment>();
 
         }
 
@@ -274,12 +277,13 @@ namespace ComputerManagement.Service.Implement
 
         public virtual async Task<string> StoreFileAsync(IFormFile file, string directoryPath, string fileName)
         {
+            var folderPath = Path.Combine(_env.ContentRootPath, directoryPath);
             // Kiểm tra và tạo thư mục nếu nó không tồn tại
-            if (!Directory.Exists(directoryPath))
+            if (!Directory.Exists(folderPath))
             {
-                Directory.CreateDirectory(directoryPath);
+                Directory.CreateDirectory(folderPath);
             }
-            var filePath = Path.Combine(directoryPath, fileName);
+            var filePath = Path.Combine(folderPath, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
