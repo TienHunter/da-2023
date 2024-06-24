@@ -19,7 +19,7 @@
                   {{ record?.student?.studentName }}
                </template>
                <template v-else-if="column.key === 'computerName'">
-                  {{ record?.computer?.name }}
+                  {{ record?.computerName }}
                </template>
                <template v-else-if="column.key === 'createdAt'">
                   <span v-if="record[column.key]">
@@ -221,7 +221,7 @@ const filterData = (item) => {
 }
 const checkFilter = (item) => {
    if (item) {
-      return (item?.student?.studentName?.includes(searchValue.value) || item?.student?.studentCode?.includes(searchValue.value) || item?.computer?.name?.includes(searchValue.value))
+      return (item?.student?.studentName?.includes(searchValue.value) || item?.student?.studentCode?.includes(searchValue.value) || item?.computerName?.includes(searchValue.value))
    }
    return false;
 }

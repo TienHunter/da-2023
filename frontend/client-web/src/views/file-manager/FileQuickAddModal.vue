@@ -26,7 +26,7 @@
 import { computerService, fileService } from '@/api';
 import { ComputerKey, ResponseCode } from '@/constants';
 import { message } from 'ant-design-vue';
-import { reactive, ref, toRaw, defineProps, defineEmits } from 'vue';
+import { reactive, ref, toRaw } from 'vue';
 import { useRoute } from 'vue-router';
 // ========== start state ========== 
 const props = defineProps({
@@ -124,7 +124,7 @@ const handleRemove = file => {
    formState.value.fileList = newFileList;
 };
 const beforeUpload = file => {
-   formState.value.fileList = [...(formState.value.fileList || []), file];
+   formState.value.fileList = [file];
    return false;
 };
 </script>

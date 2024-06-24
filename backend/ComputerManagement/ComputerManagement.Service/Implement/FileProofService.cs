@@ -46,17 +46,15 @@ namespace ComputerManagement.Service.Implement
             }
 
             var fileName = formData.MonitorSessionId.ToString() + "_" + formData.StudentId + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") +  Path.GetExtension(formData.FileData.FileName);
-            var filePath = await this.StoreFileAsync(formData.FileData, _fileConfig.StoreFileProof, fileName);
-
             var fileProof = new FileProof
             {
                 FileName = fileName,
-                FilePath = filePath,
                 ContentType = formData.FileData.ContentType,
                 Size = formData.FileData.Length,
                 MonitorSessionId = formData.MonitorSessionId,
                 StudentId = formData.StudentId,
                 ComputerId = formData.ComputerId,
+                ComputerName = formData.ComputerName
             };
 
             var newGuid = await this.BeforeAddAsync(fileProof);
@@ -67,7 +65,8 @@ namespace ComputerManagement.Service.Implement
 
                 if(rs)
                 {
-                    var enities = await _fileProofRepo.GetQueryable().Include(f => f.Student).Include(f => f.Computer).Where(f => f.Id == newGuid).FirstOrDefaultAsync();
+                    var filePath = await this.StoreFileAsync(formData.FileData, _fileConfig.StoreFileProof, fileName);
+                    var enities = await _fileProofRepo.GetQueryable().Include(f => f.Student).Where(f => f.Id == newGuid).FirstOrDefaultAsync();
                     var dto = _mapper.Map<FileProoftDto>(fileProof);
                     // Tạo Task đẩy vào socket
                     await this.CreateAndRunTaskAsync(async () =>

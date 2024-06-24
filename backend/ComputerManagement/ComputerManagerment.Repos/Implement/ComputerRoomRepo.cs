@@ -95,7 +95,7 @@ namespace ComputerManagerment.Repos.Implement
             {
                 entities = await query
                     .Include(cr =>cr.Computers)
-                    .ThenInclude(c => c.ComputerSoftwares.Where(cs => cs.SoftwareId == softwareId))
+                   .ThenInclude(c => c.ComputerSoftwares)
                     .Select(cr => new ComputerRoom
                     {
                         Id = cr.Id,
@@ -103,8 +103,8 @@ namespace ComputerManagerment.Repos.Implement
                         Row = cr.Row,
                         CurrentCapacity = cr.CurrentCapacity,
                         MaxCapacity = cr.MaxCapacity,
-                        CurrentDowloadSoftware = cr.Computers.Where(c=> c.ComputerSoftwares.Where(cs => cs.IsDowloadFile == true).Count() > 0).Count(),
-                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Where(cs => cs.IsInstalled == true).Count() > 0).Count(),
+                        CurrentDowloadSoftware = cr.Computers.Where(c=> c.ComputerSoftwares.Any(cs => cs.IsDowloadFile == true && cs.SoftwareId == softwareId)).Count(),
+                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Any(cs => cs.IsInstalled == true && cs.SoftwareId == softwareId)).Count(),
 
                     })
                     .Skip((pageNumber - 1) * pageSize)
@@ -114,7 +114,7 @@ namespace ComputerManagerment.Repos.Implement
             else
             {
                 entities = await query.Include(cr => cr.Computers)
-                    .ThenInclude(c => c.ComputerSoftwares.Where(cs => cs.SoftwareId == softwareId))
+                    .ThenInclude(c => c.ComputerSoftwares)
                     .Select(cr => new ComputerRoom
                     {
                         Id = cr.Id,
@@ -122,8 +122,8 @@ namespace ComputerManagerment.Repos.Implement
                         Row = cr.Row,
                         CurrentCapacity = cr.CurrentCapacity,
                         MaxCapacity = cr.MaxCapacity,
-                        CurrentDowloadSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Where(cs => cs.IsDowloadFile == true).Count() > 0).Count(),
-                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Where(cs => cs.IsInstalled == true).Count() > 0).Count(),
+                        CurrentDowloadSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Any(cs => cs.IsDowloadFile == true && cs.SoftwareId == softwareId)).Count(),
+                        CurrentInstalledSoftware = cr.Computers.Where(c => c.ComputerSoftwares.Any(cs => cs.IsInstalled == true && cs.SoftwareId == softwareId)).Count(),
 
                     }).ToListAsync();
             }

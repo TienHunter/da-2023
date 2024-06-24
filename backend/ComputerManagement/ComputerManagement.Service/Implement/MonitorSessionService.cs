@@ -1,12 +1,14 @@
 ﻿using ComputerManagement.BO.DTO;
 using ComputerManagement.BO.DTO.MonitorSession;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Configs;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagement.Service.Interface;
 using ComputerManagerment.Repos.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,10 +19,11 @@ using System.Threading.Tasks;
 
 namespace ComputerManagement.Service.Implement
 {
-    public class MonitorSessionService(IServiceProvider serviceProvider, IMonitorSessionRepo monitorSessionRepo) : BaseService<MonitorSessionDto, MonitorSession>(serviceProvider, monitorSessionRepo), IMonitorSessionService
+    public class MonitorSessionService(IServiceProvider serviceProvider, IMonitorSessionRepo monitorSessionRepo, IOptionsMonitor<FileConfig> fileConfig) : BaseService<MonitorSessionDto, MonitorSession>(serviceProvider, monitorSessionRepo), IMonitorSessionService
     {
         private readonly IMonitorSessionRepo _monitorSessionRepo = monitorSessionRepo;
         private readonly IComputerRoomRepo _computerRoomRepo = serviceProvider.GetService(typeof(IComputerRoomRepo))  as IComputerRoomRepo;
+        private readonly FileConfig _fileConfig = fileConfig.CurrentValue;
 
         public async Task<(List<MonitorSessionDto>, int)> GetListComputerByComputerRoomIdAsync(Guid computerRoomId, PagingParam pagingParam)
         {
@@ -62,6 +65,40 @@ namespace ComputerManagement.Service.Implement
             var monitorSession = await _monitorSessionRepo.GetQueryable().Where(m => m.ComputerRoomId == computerRoomId && (m.StartDate <= timeNow && timeNow < m.EndDate )).FirstOrDefaultAsync();
 
             return _mapper.Map<MonitorSessionDto>(monitorSession);
+        }
+
+        public override async Task<bool> DeleteAsync(Guid id)
+        {
+            var entityExist = await _monitorSessionRepo.GetAsync(id);
+            this.CheckNullModel(entityExist);
+            var rs = await _monitorSessionRepo.DeleteAsync(entityExist);
+
+            if (rs)
+            {
+                // do after delete
+                await this.CreateAndRunTaskAsync(async () =>
+                {
+                    // xóa file minh chứng
+                    try
+                    {
+                        var filePaths = Directory.GetFiles(_fileConfig.StoreFileProof).ToList();
+                        foreach (string filePath in filePaths)
+                        {
+                            string fileName = Path.GetFileName(filePath);
+                            if (fileName.Contains(id.ToString()))
+                            {
+                                File.Delete(filePath);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // ghi log
+                    }
+                });
+            }
+
+            return rs;
         }
     }
 }

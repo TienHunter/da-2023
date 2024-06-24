@@ -65,7 +65,7 @@ const activeKey = ref("SoftwareDetail");
    overflow: hidden !important;
    padding: 0;
 
-   ::v-deep {
+   :deep {
       .ant-tabs-nav {
          padding: 0px 16px;
       }

@@ -20,7 +20,7 @@ namespace ComputerManagement.BO.DTO.FileProof
         public Guid StudentId { get; set; }
         public StudentDto? Student { get; set; }
         public Guid ComputerId { get; set; }
-        public ComputerDto? Computer { get; set; }
+        public string ComputerName { get; set; }
 
     }
 }

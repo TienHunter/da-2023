@@ -202,7 +202,7 @@ const handleRemove = file => {
    formState.value.fileList = newFileList;
 };
 const beforeUpload = file => {
-   formState.value.fileList = [...(formState.value.fileList || []), file];
+   formState.value.fileList = [file];
    return false;
 };
 const reloadData = async () => {

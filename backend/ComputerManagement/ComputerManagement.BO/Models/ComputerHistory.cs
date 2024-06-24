@@ -17,6 +17,8 @@ namespace ComputerManagement.BO.Models
         public ComputerLevelLog Level { get; set; }
         public Guid ComputerId { get; set; }
         public Guid ComputerRoomId { get; set; }
+        [ForeignKey("MonitorSession")]
         public Guid MonitorSessionId { get; set; }
+        public virtual MonitorSession MonitorSession { get; set; }
     }
 }

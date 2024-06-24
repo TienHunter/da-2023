@@ -24,4 +24,9 @@
 		<ProjectReference Include="..\ComputerManagement.BO\ComputerManagement.BO.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Data\" />
+	  <Folder Include="Migrations\" />
+	</ItemGroup>
+
 </Project>

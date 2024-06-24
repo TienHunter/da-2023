@@ -130,7 +130,7 @@
 import { computed, h, nextTick, onBeforeMount, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { commandOptionService, computerRoomService, computerService } from "../../api";
-import util from "@/utils/util";
+import { localStore, util } from "@/utils";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import { CommandOptionKey, CommonKey, UserRole } from "@/constants";
@@ -433,5 +433,5 @@ const unSelect = () => {
 
 }
 
-::v-deep {}
+:deep {}
 </style>

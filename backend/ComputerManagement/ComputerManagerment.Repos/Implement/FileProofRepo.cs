@@ -16,7 +16,7 @@ namespace ComputerManagerment.Repos.Implement
         {
             var query = _dbSet.AsQueryable();
             var entities = new List<FileProof>();
-            query = query.Include(f => f.Student).Include(f => f.Computer).Where(c => c.MonitorSessionId == monitorSesisonId).OrderByDescending(e => e.UpdatedAt);
+            query = query.Include(f => f.Student).Where(c => c.MonitorSessionId == monitorSesisonId).OrderByDescending(e => e.UpdatedAt);
             entities = await query.ToListAsync();
 
             return entities;

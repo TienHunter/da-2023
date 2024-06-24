@@ -26,7 +26,7 @@
 import { computerService, configOptionService } from '@/api';
 import { ComputerKey, FormMode, ResponseCode } from '@/constants';
 import { message } from 'ant-design-vue';
-import { reactive, ref, toRaw, defineProps, defineEmits, onBeforeMount } from 'vue';
+import { reactive, ref, toRaw, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 // ========== start state ========== 
 const props = defineProps({
@@ -103,7 +103,7 @@ onBeforeMount(async () => {
       }
    } catch (error) {
       console.log(error);
-      message.error($t("UnknowError"));
+      message.error($t("UnknownError"));
    }
 });
 // ========== end lifecycle ==========

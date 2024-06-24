@@ -158,8 +158,8 @@ const onSubmit = async (key) => {
             message.success($t("SaveSuccess"));
             if (key == 1) {
                router.push({
-                  name: "FileView",
-                  params: { id: rs.data },
+                  name: "FileList",
+                  params: {},
                });
             } else {
                resetForm();
@@ -181,7 +181,6 @@ const resetForm = () => {
    formRef.value.resetFields();
 };
 const handleChange = (value) => {
-   console.log("select:", value);
 }
 const handleRemove = file => {
    const index = formState.value.fileList.indexOf(file);
@@ -190,7 +189,7 @@ const handleRemove = file => {
    formState.value.fileList = newFileList;
 };
 const beforeUpload = file => {
-   formState.value.fileList = [...(formState.value.fileList || []), file];
+   formState.value.fileList = [file];
    return false;
 };
 </script>

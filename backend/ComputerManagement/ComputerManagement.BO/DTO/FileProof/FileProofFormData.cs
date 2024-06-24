@@ -20,6 +20,8 @@ namespace ComputerManagement.BO.DTO.FileProof
 
         [Required]
         public Guid ComputerId { get; set; }
+        [Required]
+        public string ComputerName { get; set; }
 
         [Required]
         public IFormFile FileData { get; set; }

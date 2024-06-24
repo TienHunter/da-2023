@@ -1,11 +1,11 @@
 <template>
    <a-modal v-model:open="visible"
-      :title="props.formode == FormMode.Update ? $t('Student.EditTitle') : $t('Student.AddTitle')"
+      :title="props.formMode == FormMode.Update ? $t('Student.EditTitle') : $t('Student.AddTitle')"
       :confirm-loading="confirmLoading" width="400px" @ok="onOk" @cancel="onCancel">
       <div class="container flex">
          <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
             <a-form-item name="studentCode" :label="$t('Student.StudentCode')">
-               <a-input v-model:value="formState.studentCode" />
+               <a-input v-model:value="formState.studentCode" :disabled="props.formMode == FormMode.Update" />
             </a-form-item>
             <a-form-item name="studentName" :label="$t('Student.StudentName')">
                <a-input v-model:value="formState.studentName" />
@@ -21,12 +21,12 @@ import { FormMode, ResponseCode } from '@/constants';
 import { message } from 'ant-design-vue';
 import moment from 'moment';
 import dayjs from 'dayjs';
-import { reactive, ref, toRaw, defineProps, defineEmits, watch, onBeforeMount } from 'vue';
+import { reactive, ref, toRaw, watch, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { localStore } from '@/utils';
 // ========== start state ========== 
 const props = defineProps({
-   formode: {
+   formMode: {
       type: Number,
       default: FormMode.Add
    },
@@ -77,7 +77,7 @@ const rules = {
 // ========== start lifecycle ========== 
 onBeforeMount(async () => {
    try {
-      if (props.formode == FormMode.Update) {
+      if (props.formMode == FormMode.Update) {
          let rs = await studentService.getById(props.id);
          if (rs && rs.data) {
             formState.value = rs.data
@@ -87,7 +87,7 @@ onBeforeMount(async () => {
          }
       }
    } catch (error) {
-      message.error($t("UnknowError"));
+      message.error($t("UnknownError"));
       emit("toggleShowModal", false);
       console.log(error);
    }
@@ -100,10 +100,10 @@ const onOk = async () => {
       errorCode.value = 0;
       await formRef.value.validate();
       try {
-         let rs = props.formode == FormMode.Update ? await studentService.update(formState.value, formState.value.id) : await studentService.add(formState.value);
+         let rs = props.formMode == FormMode.Update ? await studentService.update(formState.value, formState.value.id) : await studentService.add(formState.value);
          if (rs && rs.success && rs.data) {
             formRef.value.id = rs.data;
-            message.success("SaveSuccess")
+            message.success($t("SaveSuccess"))
             emit('afterSave', {
                data: rs.data
             });

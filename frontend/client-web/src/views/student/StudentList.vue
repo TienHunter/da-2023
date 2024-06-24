@@ -316,7 +316,7 @@ const afterSaveModal = async (e) => {
             if (propsModalEdit.formMode == FormMode.Add) {
                dataSource.value.unshift(rs.data);
             } else {
-               let index = dataSource.value.indexOf(i => i.id = rs.data.id);
+               let index = dataSource.value.findIndex(i => i.id == rs.data.id);
                if (index != -1) {
                   dataSource.value.splice(index, 1, rs.data);
                } else {

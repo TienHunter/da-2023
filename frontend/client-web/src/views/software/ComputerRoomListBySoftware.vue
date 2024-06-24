@@ -398,5 +398,5 @@ const unSelect = () => {
 
 }
 
-::v-deep {}
+:deep {}
 </style>

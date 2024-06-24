@@ -207,6 +207,8 @@ namespace ComputerManagement.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MonitorSessionId");
+
                     b.ToTable("computer_history");
                 });
 
@@ -400,6 +402,10 @@ namespace ComputerManagement.Data.Migrations
                     b.Property<Guid>("ComputerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ComputerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -411,10 +417,6 @@ namespace ComputerManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -435,7 +437,7 @@ namespace ComputerManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ComputerId");
+                    b.HasIndex("MonitorSessionId");
 
                     b.HasIndex("StudentId");
 
@@ -668,6 +670,17 @@ namespace ComputerManagement.Data.Migrations
                     b.Navigation("ComputerRoom");
                 });
 
+            modelBuilder.Entity("ComputerManagement.BO.Models.ComputerHistory", b =>
+                {
+                    b.HasOne("ComputerManagement.BO.Models.MonitorSession", "MonitorSession")
+                        .WithMany()
+                        .HasForeignKey("MonitorSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MonitorSession");
+                });
+
             modelBuilder.Entity("ComputerManagement.BO.Models.ComputerSoftware", b =>
                 {
                     b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
@@ -709,9 +722,9 @@ namespace ComputerManagement.Data.Migrations
 
             modelBuilder.Entity("ComputerManagement.BO.Models.FileProof", b =>
                 {
-                    b.HasOne("ComputerManagement.BO.Models.Computer", "Computer")
+                    b.HasOne("ComputerManagement.BO.Models.MonitorSession", "MonitorSession")
                         .WithMany()
-                        .HasForeignKey("ComputerId")
+                        .HasForeignKey("MonitorSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -721,7 +734,7 @@ namespace ComputerManagement.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Computer");
+                    b.Navigation("MonitorSession");
 
                     b.Navigation("Student");
                 });

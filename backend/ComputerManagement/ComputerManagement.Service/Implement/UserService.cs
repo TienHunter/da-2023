@@ -2,6 +2,7 @@
 using ComputerManagement.BO.DTO.Users;
 using ComputerManagement.BO.Lib.Interface;
 using ComputerManagement.BO.Models;
+using ComputerManagement.Common.Configs;
 using ComputerManagement.Common.Enums;
 using ComputerManagement.Common.Exceptions;
 using ComputerManagerment.Repos.Interface;
@@ -23,13 +24,14 @@ namespace ComputerManagement.Service.Implement
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserRepop _userRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IServiceProvider serviceProvider, IUserRepop userRepo) : base(serviceProvider, userRepo)
+        private readonly BaseUrlConfig _baseUrlConfig;
+        public UserService(IServiceProvider serviceProvider, IUserRepop userRepo, BaseUrlConfig baseUrlConfig) : base(serviceProvider, userRepo)
         {
             _userRepo = userRepo;
             _jwtGenerate = serviceProvider.GetService(typeof(IJwtGenerator)) as IJwtGenerator;
             _passwordHasher = serviceProvider.GetService(typeof(IPasswordHasher)) as IPasswordHasher;
             _httpContextAccessor = serviceProvider.GetService(typeof(IHttpContextAccessor)) as IHttpContextAccessor;
-
+            _baseUrlConfig = baseUrlConfig;
         }
 
         public async Task<ServiceResponse> Login(UserLogin userLogin)
@@ -254,7 +256,7 @@ namespace ComputerManagement.Service.Implement
                             var subject = "Tài khoản đã được kích hoạt";
                             var bodySend = File.ReadAllText(filePath);
                             // Thay thế chuỗi ##UrlLogin## bằng đường dẫn đăng nhập
-                            bodySend = bodySend.Replace("##UrlLogin##", "http://localhost:8080/login");
+                            bodySend = bodySend.Replace("##UrlLogin##", $"{_baseUrlConfig.Frontend}/login");
                             await _emailService.SenEmailAsync(userExist.Email, subject, bodySend);
                         }else if(userState == UserState.Revoked)
                         {
