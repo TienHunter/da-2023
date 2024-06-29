@@ -129,11 +129,14 @@ const dataMonitorTypes = ref([
       label: $t("MonitorSession.MonitorType.Exam")
    }
 ])
-
+const errorCode = ref(0);
 const validateTimeRange = async (_rule, value) => {
-   if (!formState.value?.timeRange.length) {
-      return Promise.reject($t("Validate.Required", [$t("MonitorSession.Session")]));
-   } else {
+   if (!formState.value?.timeRange?.length) {
+      return Promise.reject($t("Validate.Required", [$t("MonitorSession.SessionTime")]));
+   } else if (errorCode.value == ResponseCode.ConflicMonitorSessionTime) {
+      return Promise.reject($t("MonitorSession.Validate.ConflicMonitorSessionTime"));
+   }
+   else {
       return Promise.resolve();
    }
 }
@@ -142,7 +145,7 @@ const rules = {
    computerRoomId: [
       {
          required: true,
-         message: $t("Validate.Required", [$t("MonitorSession.Date")]),
+         message: $t("Validate.Required", [$t("MonitorSession.ComputerRoomName")]),
          trigger: "change",
       },
    ],
@@ -244,13 +247,11 @@ const onSubmit = async (key) => {
          }
       } catch (error) {
          console.log(error);
-         switch (error?.Code) {
-            case ResponseCode.ConflicComputerRoomName:
-               isCallCheck.value = true;
-               await formRef.value.validateFields("name");
-               break;
-            default:
-               break;
+         if (error?.Code && ![ResponseCode.Error, ResponseCode.Exception].includes(error.Code)) {
+            errorCode.value = error.Code;
+            await formRef.value.validate();
+         } else {
+            message.error($t("UnknownError"))
          }
       }
    } catch (error) {

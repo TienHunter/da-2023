@@ -196,12 +196,16 @@ export default {
       OwnerIdText: "Người sở hữu",
       Date: "Ngày",
       Session: "Phiên giám sát",
+      SessionTime: "Giờ giám sát",
       QuickAddMonitorSessionTitle: "Thêm nhanh phiên giám sát",
       AddDomain: "Thêm tên miền",
       DetailInfo: "Thông tin chi tiết",
       ListComputer: "Danh sách máy",
       HistoryAccess: "Lịch sử truy cập",
       FileProof: "Danh sách minh chứng vi phạm",
+      Validate: {
+         ConflicMonitorSessionTime: "Phiên giám sát đã bị trùng thời gian"
+      },
       MonitorType: {
          Practive: "Thực hành",
          Exam: "Kiểm tra"

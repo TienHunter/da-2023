@@ -21,7 +21,7 @@ import {
    CategoryScale,
    LinearScale
 } from 'chart.js'
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, onBeforeUnmount } from 'vue';
 import { Bar } from 'vue-chartjs'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -48,6 +48,11 @@ onBeforeMount(async () => {
    }
 })
 
+onBeforeUnmount(() => {
+   if (interval.value) {
+      clearInterval(interval.value);
+   }
+})
 /**
  * lấy config thời gian check computer state
  */
