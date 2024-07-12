@@ -133,7 +133,7 @@ import { commandOptionService, computerRoomService, computerService } from "../.
 import { localStore, util } from "@/utils";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
-import { CommandOptionKey, CommonKey, UserRole } from "@/constants";
+import { CommandOptionKey, CommonKey, UserRole, LocalStorageKey } from "@/constants";
 // ========== start state ==========
 const props = defineProps({
    masterId: {
